@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
@@ -25,12 +26,20 @@ namespace TheBiscuitMachine.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMediator(cfg =>
+            services.AddMassTransit(x =>
             {
-                cfg.AddSagaStateMachine<BiscuitMachineStateMachine, BiscuitMachineSaga>().InMemoryRepository();
+                x.UsingInMemory((context, cfg) =>
+                {
+                    cfg.AutoStart = true;
 
-                cfg.AddConsumers(Assembly.GetExecutingAssembly());
+                    cfg.ConfigureEndpoints(context);
+                });
+
+                x.AddSagaStateMachine<BiscuitMachineStateMachine, BiscuitMachineSaga>().InMemoryRepository();
+                x.AddConsumers(Assembly.GetExecutingAssembly());
             });
+
+            services.AddMassTransitHostedService();
 
             services.AddLoggerFactory(Configuration);
 

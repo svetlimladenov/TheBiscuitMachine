@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using MassTransit.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using TheBiscuitMachine.Web.Contracts;
@@ -12,9 +13,9 @@ namespace TheBiscuitMachine.Web.Controllers
     [Route("Biscuit")]
     public class BiscuitController : ControllerBase
     {
-        private readonly IMediator mediator;
+        private readonly IBus mediator;
 
-        public BiscuitController(IMediator mediator)
+        public BiscuitController(IBus mediator)
         {
             this.mediator = mediator;
         }
@@ -22,7 +23,7 @@ namespace TheBiscuitMachine.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Start(string userId)
         {
-            await this.mediator.Send<StartBiscuitMachine>(new { UserId = userId });
+            await this.mediator.Publish<StartBiscuitMachine>(new { UserId = userId });
 
             return Ok();
         }
