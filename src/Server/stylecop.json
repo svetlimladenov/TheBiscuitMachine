@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "layoutRules": {
+      "newlineAtEndOfFile": "require"
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace"
+    }
+  }
+}
