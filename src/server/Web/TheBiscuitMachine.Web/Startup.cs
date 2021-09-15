@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using TheBiscuitMachine.Web.DependencyInjectionRegistrations;
 using TheBiscuitMachine.Web.Hubs;
 using TheBiscuitMachine.Web.Middlewares;
@@ -27,6 +28,8 @@ namespace TheBiscuitMachine.Web
             services.AddMediator(cfg =>
             {
                 cfg.AddSagaStateMachine<BiscuitMachineStateMachine, BiscuitMachineSaga>().InMemoryRepository();
+
+                cfg.AddConsumers(Assembly.GetExecutingAssembly());
             });
 
             services.AddLoggerFactory(Configuration);
