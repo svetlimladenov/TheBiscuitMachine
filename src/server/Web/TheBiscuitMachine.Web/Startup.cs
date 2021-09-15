@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TheBiscuitMachine.Web.Hubs;
+using TheBiscuitMachine.Web.Middlewares;
 
 namespace TheBiscuitMachine.Web
 {
@@ -42,6 +43,8 @@ namespace TheBiscuitMachine.Web
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(Configuration);
 
             app.UseAuthorization();
 
