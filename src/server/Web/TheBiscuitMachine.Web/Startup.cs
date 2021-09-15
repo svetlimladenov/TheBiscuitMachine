@@ -26,27 +26,7 @@ namespace TheBiscuitMachine.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var schedulerEndpoint = new Uri("queue:scheduler");
-            services.AddMassTransit(x =>
-            {
-                x.AddMessageScheduler(schedulerEndpoint);
-
-                x.UsingInMemory((context, cfg) =>
-                {
-                    cfg.AutoStart = true;
-
-                    cfg.UseMessageScheduler(schedulerEndpoint);
-
-                    cfg.UseInMemoryScheduler("scheduler");
-
-                    cfg.ConfigureEndpoints(context);
-                });
-
-                x.AddSagaStateMachine<BiscuitMachineStateMachine, BiscuitMachineSaga>().InMemoryRepository();
-                x.AddConsumers(Assembly.GetExecutingAssembly());
-            });
-
-            services.AddMassTransitHostedService();
+            services.AddMassTransit();
 
             services.AddLoggerFactory(Configuration);
 
