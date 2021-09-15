@@ -27,7 +27,10 @@ namespace TheBiscuitMachine.Web.Sagas
 
             Initially(
                 When(StartMachineEvent)
-                .PublishAsync(ctx => ctx.Init<StartHeatingOven>(new { ctx.Data.UserId })));
+                .PublishAsync(ctx => ctx.Init<StartHeatingOven>(new { ctx.Data.UserId }))
+                .TransitionTo(Final));
+
+            SetCompletedWhenFinalized();
         }
 
         public Event<StartBiscuitMachine> StartMachineEvent { get; set; }
