@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,9 @@ namespace TheBiscuitMachine.Web.Consumers
 
             var userId = context.Message.UserId;
 
-            await this.hubContext.Clients.All.SendAsync("ReceiveMessage", userId);
+            await this.hubContext.Clients.All.SendAsync("MachineStarted", userId);
+
+            await context.SchedulePublish<OvenHeated>(DateTime.Now.AddSeconds(10), new { UserId = context.Message.UserId });
         }
     }
 }
