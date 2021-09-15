@@ -1,0 +1,10 @@
+.conveyor-wrapper {
+  border-bottom: 4px solid black;
+  display: flex;
+  justify-content: space-between;
+}
+
+.conveyor-wrapper .element {
+  padding: 5em 10em;
+  border: 1px solid yellow;
+}
