@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using TheBiscuitMachine.Web.DependencyInjectionRegistrations;
 using TheBiscuitMachine.Web.Hubs;
 using TheBiscuitMachine.Web.Middlewares;
+using TheBiscuitMachine.Web.Sagas;
 
 namespace TheBiscuitMachine.Web
 {
@@ -22,6 +24,11 @@ namespace TheBiscuitMachine.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMediator(cfg =>
+            {
+                cfg.AddSagaStateMachine<BiscuitMachineStateMachine, BiscuitMachineSaga>().InMemoryRepository();
+            });
+
             services.AddLoggerFactory(Configuration);
 
             services.AddSignalR();
