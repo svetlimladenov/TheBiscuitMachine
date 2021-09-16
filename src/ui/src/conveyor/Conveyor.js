@@ -1,7 +1,5 @@
 import "../App.css";
 import React from "react";
-import * as signalR from "@microsoft/signalr";
-import { machineEndpoints } from "../shared/signalr-endpoints";
 
 class Conveyor extends React.Component {
   renderMachineComponents = () => {

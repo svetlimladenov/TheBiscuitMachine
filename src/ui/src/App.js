@@ -39,21 +39,26 @@ class App extends React.Component {
         .then(() => console.log("Connection started!"))
         .catch((err) => console.log("Error while establishing connection :("));
 
-      this.state.hubConnection.on("MachineStarted", () => {
-        this.setMessage("Machine Started, heating the oven...");
-      });
-
-      this.state.hubConnection.on("OvenHeated", () => {
-        this.setMessage("Oven heated, starting the conveyor...");
-        this.handleStartConveyor();
-      });
-
-      this.state.hubConnection.on("OvenOverheated", () => {
-        this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
-        this.handleStop();
-      });
+      this.setupHubEvents();
     });
   }
+
+  setupHubEvents = () => {
+    const { hubConnection } = this.state;
+    hubConnection.on("MachineStarted", () => {
+      this.setMessage("Machine Started, heating the oven...");
+    });
+
+    hubConnection.on("OvenHeated", () => {
+      this.setMessage("Oven heated, starting the conveyor...");
+      this.handleStartConveyor();
+    });
+
+    hubConnection.on("OvenOverheated", () => {
+      this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
+      this.handleStop();
+    });
+  };
 
   setMessage = (message) => {
     this.setState({ message: message });
