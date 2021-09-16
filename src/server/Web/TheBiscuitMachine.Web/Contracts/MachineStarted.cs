@@ -1,6 +1,6 @@
 ﻿namespace TheBiscuitMachine.Web.Contracts
 {
-    public interface OvenHeated
+    public interface MachineStarted
     {
         string UserId { get; }
     }

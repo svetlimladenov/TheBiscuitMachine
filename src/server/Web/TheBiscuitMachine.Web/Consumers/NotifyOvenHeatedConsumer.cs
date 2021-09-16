@@ -7,19 +7,20 @@ using TheBiscuitMachine.Web.Hubs;
 
 namespace TheBiscuitMachine.Web.Consumers
 {
-    public class OvenHeatedConsumer : IConsumer<OvenHeated>
+    public class NotifyOvenHeatedConsumer : IConsumer<NotifyOvenHeated>
     {
-        private readonly ILogger<OvenHeatedConsumer> logger;
+        private readonly ILogger<NotifyOvenHeatedConsumer> logger;
         private readonly IHubContext<MachineHub> hubContext;
 
-        public OvenHeatedConsumer(ILogger<OvenHeatedConsumer> logger, IHubContext<MachineHub> hubContext)
+        public NotifyOvenHeatedConsumer(ILogger<NotifyOvenHeatedConsumer> logger, IHubContext<MachineHub> hubContext)
         {
             this.logger = logger;
             this.hubContext = hubContext;
         }
 
-        public async Task Consume(ConsumeContext<OvenHeated> context)
+        public async Task Consume(ConsumeContext<NotifyOvenHeated> context)
         {
+            logger.LogError("OVEN HEATED!!!");
             await hubContext.Clients.All.SendAsync("OvenHeated");
         }
     }

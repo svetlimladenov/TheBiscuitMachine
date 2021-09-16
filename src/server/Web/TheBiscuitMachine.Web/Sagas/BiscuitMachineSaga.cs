@@ -13,5 +13,7 @@ namespace TheBiscuitMachine.Web.Sagas
         public string UserId { get; set; }
 
         public string CurrentState { get; set; }
+
+        public Guid? OvenHeatedTimeoutTokenId { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace TheBiscuitMachine.Web.Sagas
         {
             InstanceState(x => x.CurrentState);
 
-            Event(() => StartMachineEvent, x =>
+            Event(() => StartMachine, x =>
             {
                 x.CorrelateBy(x => x.UserId, x => x.Message.UserId);
 
@@ -25,14 +25,33 @@ namespace TheBiscuitMachine.Web.Sagas
                 });
             });
 
+            Event(() => OvenHeated, x => x.CorrelateBy(x => x.UserId, m => m.Message.UserId));
+            Schedule(() => OvenHeatedSchedule, instance => instance.OvenHeatedTimeoutTokenId, s =>
+            {
+                s.Delay = TimeSpan.FromSeconds(10);
+            });
+
             Initially(
-                When(StartMachineEvent)
-                .PublishAsync(ctx => ctx.Init<StartHeatingOven>(new { ctx.Data.UserId }))
-                .TransitionTo(Final));
+                When(StartMachine)
+                    .PublishAsync(ctx => ctx.Init<MachineStarted>(new { ctx.Data.UserId }))
+                    .TransitionTo(OvenHeating)
+                    .Schedule(OvenHeatedSchedule, ctx => ctx.Init<OvenHeated>(new { ctx.Data.UserId })));
+
+            During(
+                OvenHeating,
+                When(OvenHeated)
+                    .PublishAsync(ctx => ctx.Init<NotifyOvenHeated>(new { ctx.Data.UserId }))
+                    .TransitionTo(Final));
 
             SetCompletedWhenFinalized();
         }
 
-        public Event<StartBiscuitMachine> StartMachineEvent { get; set; }
+        public State OvenHeating { get; private set; }
+
+        public Event<StartBiscuitMachine> StartMachine { get; private set; }
+
+        public Event<OvenHeated> OvenHeated { get; private set; }
+
+        public Schedule<BiscuitMachineSaga, OvenHeated> OvenHeatedSchedule { get; private set; }
     }
 }
