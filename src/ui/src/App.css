@@ -8,10 +8,11 @@
 .conveyor-wrapper .element {
   padding: 30px 50px;
   border: 1px solid red;
-  font-size: 3em;
+  font-size: 5em;
 }
 
 .conveyor-wrapper .biscuit {
+  top: 50px;
   position: absolute;
-  transition: left 1s ease-out, top 1s ease-out;
+  transition: left 2s linear;
 }

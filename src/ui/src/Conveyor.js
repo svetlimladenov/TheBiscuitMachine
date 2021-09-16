@@ -19,9 +19,7 @@ class Conveyor extends React.Component {
     this.handleStartConveyor = this.startConveyor.bind(this);
     this.handlePause = this.handlePause.bind(this);
     this.handleStop = this.handleStop.bind(this);
-
     this.displayMessage = this.displayMessage.bind(this);
-
     this.interval = null;
   }
 
@@ -34,25 +32,28 @@ class Conveyor extends React.Component {
           return;
         }
 
+        // Update the biscuits
         const movedBiscuits = biscuits.map((biscuit) => {
           return { y: biscuit.y + 700, step: biscuit.step + 1, id: biscuit.id };
         });
 
+        // add new biscuit
         movedBiscuits.push({ y: 0, step: 0, id: currentId });
 
+        // filter the biscut for the box
         const biscuitForBox = movedBiscuits.filter(
           (biscuit) => biscuit.step === 4
         );
 
         let updatedBox = [...box, ...biscuitForBox];
 
-        const updatedBiscuits = movedBiscuits.filter(
-          (biscuit) => biscuit.step <= 3
-        );
-
         if (updatedBox.length === 10) {
           updatedBox = [];
         }
+
+        const updatedBiscuits = movedBiscuits.filter(
+          (biscuit) => biscuit.step <= 3
+        );
 
         return {
           step: step + 1,
@@ -141,8 +142,8 @@ class Conveyor extends React.Component {
       <div>
         <h1>{this.state.message}</h1>
         <div className="conveyor-wrapper">
-          {this.renderBiscuits()}
           {this.renderMachineComponents()}
+          {this.renderBiscuits()}
         </div>
         <button onClick={this.startMachine}>Start</button>
         <button onClick={this.handlePause}>Pause</button>
