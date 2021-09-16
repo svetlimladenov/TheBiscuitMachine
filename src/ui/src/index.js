@@ -2,12 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import Conveyor from "./Conveyor";
+import App from "./App";
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <App /> */}
-    <Conveyor />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

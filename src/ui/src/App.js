@@ -1,0 +1,170 @@
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import * as signalR from "@microsoft/signalr";
+import { machineEndpoints } from "./shared/signalr-endpoints";
+
+import Conveyor from "./conveyor/Conveyor";
+import Login from "./users/Login";
+import Register from "./users/Register";
+
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      message: "Machine Not Started",
+      conveyor: ["extruder", "stamper", "oven", "box"],
+      biscuits: [],
+      isRunning: false,
+      step: 0,
+      currentId: 0,
+      hubConnection: null,
+      intervalId: 0,
+      box: [],
+      boxSize: 5,
+    };
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId);
+  }
+
+  componentDidMount() {
+    const hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/machinehub")
+      .build();
+
+    this.setState({ hubConnection }, () => {
+      this.state.hubConnection
+        .start()
+        .then(() => console.log("Connection started!"))
+        .catch((err) => console.log("Error while establishing connection :("));
+
+      this.state.hubConnection.on("MachineStarted", () => {
+        this.setMessage("Machine Started, heating the oven...");
+      });
+
+      this.state.hubConnection.on("OvenHeated", () => {
+        this.setMessage("Oven heated, starting the conveyor...");
+        this.handleStartConveyor();
+      });
+
+      this.state.hubConnection.on("OvenOverheated", () => {
+        this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
+        this.handleStop();
+      });
+    });
+  }
+
+  setMessage = (message) => {
+    this.setState({ message: message });
+  };
+
+  handleStart = () => {
+    console.log("starting ?");
+    const userId = "12345-54212";
+    this.state.hubConnection.invoke(machineEndpoints.start, userId);
+  };
+
+  handlePause = () => {
+    clearInterval(this.state.intervalId);
+  };
+
+  handleStop = () => {
+    clearInterval(this.state.intervalId);
+  };
+
+  deliverBiscuits = () => {
+    const box = 10;
+    clearInterval(this.state.intervalId);
+    this.state.hubConnection
+      .invoke(machineEndpoints.deliverBiscuits, box)
+      .then((result) => {
+        console.log("done");
+      });
+  };
+
+  handleStartConveyor = () => {
+    const newIntervalId = setInterval(() => {
+      if (this.state.box.length === this.state.boxSize) {
+        this.setState({ box: [] });
+        this.deliverBiscuits();
+      }
+
+      this.setState(({ step, biscuits, box, currentId }) => {
+        // Update the biscuits
+        const movedBiscuits = biscuits.map((biscuit) => {
+          return { y: biscuit.y + 700, step: biscuit.step + 1, id: biscuit.id };
+        });
+
+        // add new biscuit
+        movedBiscuits.push({ y: 0, step: 0, id: currentId });
+
+        // filter the biscut for the box
+        const biscuitForBox = movedBiscuits.filter(
+          (biscuit) => biscuit.step === 4
+        );
+
+        let updatedBox = [...box, ...biscuitForBox];
+
+        const updatedBiscuits = movedBiscuits.filter(
+          (biscuit) => biscuit.step <= 3
+        );
+
+        return {
+          step: step + 1,
+          currentId: currentId + 1,
+          biscuits: updatedBiscuits,
+          box: updatedBox,
+        };
+      });
+    }, 2000);
+
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        intervalId: newIntervalId,
+      };
+    });
+  };
+
+  render() {
+    return (
+      <Router>
+        <div>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/conveyor">Conveyor</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
+            </ul>
+          </nav>
+
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/conveyor">
+              <Conveyor
+                {...this.state}
+                handleStart={this.handleStart}
+                handleStop={this.handlePause}
+                handlePause={this.handlePause}
+              />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
+}
+
+export default App;
