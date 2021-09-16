@@ -1,13 +1,30 @@
 ﻿using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using TheBiscuitMachine.Web.Contracts;
 
 namespace TheBiscuitMachine.Web.Hubs
 {
     public class MachineHub : Hub
     {
-        public async Task SendMessage(string user, string message)
+        private readonly ILogger<MachineHub> logger;
+        private readonly IBus bus;
+
+        public MachineHub(ILogger<MachineHub> logger, IBus bus)
         {
-            await Clients.All.SendAsync("Test", user, message);
+            this.logger = logger;
+            this.bus = bus;
+        }
+
+        public async Task Start(string userId)
+        {
+            await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId });
+        }
+
+        public void DeliverBiscuits(int biscuitsCount)
+        {
+            this.logger.LogError("Delivering biscuits" + biscuitsCount);
         }
     }
 }

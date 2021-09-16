@@ -2,6 +2,8 @@ import "./App.css";
 import React from "react";
 import * as signalR from "@microsoft/signalr";
 
+import { machineEndpoints } from "./shared/signalr-endpoints";
+
 class Conveyor extends React.Component {
   constructor() {
     super();
@@ -9,29 +11,30 @@ class Conveyor extends React.Component {
       message: "Machine Not Started",
       conveyor: ["extruder", "stamper", "oven", "box"],
       biscuits: [],
-      box: [],
       isRunning: false,
       step: 0,
       currentId: 0,
+      hubConnection: null,
+      intervalId: 0,
+      box: [],
+      boxSize: 5,
     };
 
     this.renderMachineComponents = this.renderMachineComponents.bind(this);
-    this.handleStartConveyor = this.startConveyor.bind(this);
+    this.handleStartMachine = this.handleStartMachine.bind(this);
+    this.handleStartConveyor = this.handleStartConveyor.bind(this);
     this.handlePause = this.handlePause.bind(this);
     this.handleStop = this.handleStop.bind(this);
-    this.displayMessage = this.displayMessage.bind(this);
-    this.interval = null;
   }
 
-  startConveyor() {
-    this.setState({ isRunning: true });
+  handleStartConveyor = () => {
+    const newIntervalId = setInterval(() => {
+      if (this.state.box.length === this.state.boxSize) {
+        this.setState({ box: [] });
+        this.deliverBiscuits();
+      }
 
-    this.interval = setInterval(() => {
-      this.setState(({ step, biscuits, isRunning, box, currentId }) => {
-        if (!isRunning) {
-          return;
-        }
-
+      this.setState(({ step, biscuits, box, currentId }) => {
         // Update the biscuits
         const movedBiscuits = biscuits.map((biscuit) => {
           return { y: biscuit.y + 700, step: biscuit.step + 1, id: biscuit.id };
@@ -47,10 +50,6 @@ class Conveyor extends React.Component {
 
         let updatedBox = [...box, ...biscuitForBox];
 
-        if (updatedBox.length === 10) {
-          updatedBox = [];
-        }
-
         const updatedBiscuits = movedBiscuits.filter(
           (biscuit) => biscuit.step <= 3
         );
@@ -63,17 +62,34 @@ class Conveyor extends React.Component {
         };
       });
     }, 2000);
-  }
 
-  handlePause() {
-    clearInterval(this.interval);
-  }
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        intervalId: newIntervalId,
+      };
+    });
+  };
 
-  handleStop() {
-    clearInterval(this.interval);
-  }
+  handlePause = () => {
+    clearInterval(this.state.intervalId);
+  };
 
-  renderMachineComponents() {
+  handleStop = () => {
+    clearInterval(this.state.intervalId);
+  };
+
+  deliverBiscuits = () => {
+    const box = 10;
+    clearInterval(this.state.intervalId);
+    this.state.hubConnection
+      .invoke(machineEndpoints.deliverBiscuits, box)
+      .then((result) => {
+        console.log("done");
+      });
+  };
+
+  renderMachineComponents = () => {
     const { conveyor } = this.state;
     return conveyor.map((element, idx) => {
       return (
@@ -83,9 +99,9 @@ class Conveyor extends React.Component {
         </div>
       );
     });
-  }
+  };
 
-  renderBiscuits() {
+  renderBiscuits = () => {
     const { biscuits } = this.state;
     return biscuits.map((biscuit, idx) => {
       return (
@@ -94,52 +110,46 @@ class Conveyor extends React.Component {
         </div>
       );
     });
-  }
+  };
+
+  handleStartMachine = () => {
+    const userId = "12345-54212";
+    this.state.hubConnection.invoke(machineEndpoints.start, userId);
+  };
+
+  displayMessage = (message) => {
+    this.setState({ message: message });
+  };
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    clearInterval(this.state.intervalId);
   }
 
   componentDidMount() {
-    const connection = new signalR.HubConnectionBuilder()
+    const hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:5001/machinehub")
-      .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    connection
-      .start()
-      .then((x) => {
-        console.log("Connected!!!");
-      })
-      .catch((err) => console.error(err));
+    this.setState({ hubConnection }, () => {
+      this.state.hubConnection
+        .start()
+        .then(() => console.log("Connection started!"))
+        .catch((err) => console.log("Error while establishing connection :("));
 
-    connection.on("MachineStarted", () => {
-      this.displayMessage("Machine Started, heating the oven...");
+      this.state.hubConnection.on("MachineStarted", () => {
+        this.displayMessage("Machine Started, heating the oven...");
+      });
+
+      this.state.hubConnection.on("OvenHeated", () => {
+        this.displayMessage("Oven heated, starting the conveyor...");
+        this.handleStartConveyor();
+      });
+
+      this.state.hubConnection.on("OvenOverheated", () => {
+        this.displayMessage("OVEN OVERHEATED, stopping the conveyor...");
+        this.handleStop();
+      });
     });
-
-    connection.on("OvenHeated", () => {
-      this.displayMessage("Oven heated, starting the conveyor...");
-      this.startConveyor();
-    });
-
-    connection.on("OvenOverheated", () => {
-      this.displayMessage("OVEN OVERHEATED, stopping the conveyor...");
-      this.handleStop();
-    });
-  }
-
-  startMachine() {
-    const userId = "12345-54212";
-    fetch(`https://localhost:5001/Machine/Start?userId=${userId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).catch((err) => console.error(err));
-  }
-
-  displayMessage(message) {
-    this.setState({ message: message });
   }
 
   render() {
@@ -150,7 +160,7 @@ class Conveyor extends React.Component {
           {this.renderMachineComponents()}
           {this.renderBiscuits()}
         </div>
-        <button onClick={this.startMachine}>Start</button>
+        <button onClick={this.handleStartMachine}>Start</button>
         <button onClick={this.handlePause}>Pause</button>
         <button onClick={this.handleStop}>Stop</button>
         <div>
