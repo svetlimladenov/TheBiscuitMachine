@@ -7,7 +7,7 @@ import Conveyor from "./Conveyor";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <App /> */}
     <Conveyor />
   </React.StrictMode>,
   document.getElementById("root")

@@ -2,10 +2,16 @@
   border-bottom: 4px solid black;
   display: flex;
   justify-content: space-between;
+  position: relative;
 }
 
 .conveyor-wrapper .element {
   padding: 30px 50px;
   border: 1px solid red;
   font-size: 3em;
+}
+
+.conveyor-wrapper .biscuit {
+  position: absolute;
+  transition: left 1s ease-out, top 1s ease-out;
 }
