@@ -121,6 +121,11 @@ class Conveyor extends React.Component {
       this.displayMessage("Oven heated, starting the conveyor...");
       this.startConveyor();
     });
+
+    connection.on("OvenOverheated", () => {
+      this.displayMessage("OVEN OVERHEATED, stopping the conveyor...");
+      this.handleStop();
+    });
   }
 
   startMachine() {

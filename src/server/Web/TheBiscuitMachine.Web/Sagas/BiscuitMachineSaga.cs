@@ -14,6 +14,6 @@ namespace TheBiscuitMachine.Web.Sagas
 
         public string CurrentState { get; set; }
 
-        public Guid? OvenHeatedTimeoutTokenId { get; set; }
+        public Guid? ScheduleTokenId { get; set; }
     }
 }
