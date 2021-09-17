@@ -24,6 +24,21 @@ namespace TheBiscuitMachine.Infrastructure
                 .HasOne(u => u.Machine)
                 .WithOne(m => m.User)
                 .HasForeignKey<Machine>(m => m.UserId);
+
+            modelBuilder
+                .Entity<User>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<Machine>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<BiscuitPackage>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }
