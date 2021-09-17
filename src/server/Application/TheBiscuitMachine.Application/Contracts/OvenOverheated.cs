@@ -1,4 +1,4 @@
-﻿namespace TheBiscuitMachine.Web.Contracts
+﻿namespace TheBiscuitMachine.Application.Contracts
 {
     public interface OvenOverheated
     {

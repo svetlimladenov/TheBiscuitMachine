@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using TheBiscuitMachine.Web.Contracts;
+using TheBiscuitMachine.Application.Contracts;
 
-namespace TheBiscuitMachine.Web.Consumers
+namespace TheBiscuitMachine.Application.Consumers
 {
     public class LoginConsumer : IConsumer<LoginRequest>
     {

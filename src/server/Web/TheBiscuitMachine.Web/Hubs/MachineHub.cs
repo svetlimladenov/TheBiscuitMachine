@@ -2,7 +2,7 @@
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using TheBiscuitMachine.Web.Contracts;
+using TheBiscuitMachine.Application.Contracts;
 
 namespace TheBiscuitMachine.Web.Hubs
 {

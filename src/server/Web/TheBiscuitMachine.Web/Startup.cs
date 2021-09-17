@@ -1,16 +1,13 @@
-using System;
-using System.Reflection;
-using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TheBiscuitMachine.Application;
 using TheBiscuitMachine.Web.DependencyInjectionRegistrations;
 using TheBiscuitMachine.Web.Hubs;
 using TheBiscuitMachine.Web.Middlewares;
-using TheBiscuitMachine.Web.Sagas;
 
 namespace TheBiscuitMachine.Web
 {
@@ -26,7 +23,8 @@ namespace TheBiscuitMachine.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMassTransit();
+            services.AddApplication();
+            services.AddApplicationServices();
 
             services.AddLoggerFactory(Configuration);
 

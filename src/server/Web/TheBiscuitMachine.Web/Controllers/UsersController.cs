@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using TheBiscuitMachine.Web.Contracts;
+using TheBiscuitMachine.Application.Contracts;
 
 namespace TheBiscuitMachine.Web.Controllers
 {

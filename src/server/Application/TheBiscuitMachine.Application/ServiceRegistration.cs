@@ -2,14 +2,14 @@
 using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
-using TheBiscuitMachine.Web.Contracts;
-using TheBiscuitMachine.Web.Sagas;
+using TheBiscuitMachine.Application.Contracts;
+using TheBiscuitMachine.Application.Sagas;
 
-namespace TheBiscuitMachine.Web.DependencyInjectionRegistrations
+namespace TheBiscuitMachine.Application
 {
-    public static class MassTransitRegistrationExtensions
+    public static class ServiceRegistration
     {
-        public static IServiceCollection AddMassTransit(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             var schedulerEndpoint = new Uri("queue:scheduler");
             services.AddMassTransit(x =>

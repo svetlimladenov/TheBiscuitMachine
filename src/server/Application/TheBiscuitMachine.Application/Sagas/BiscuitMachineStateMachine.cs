@@ -1,9 +1,9 @@
 ﻿using System;
 using Automatonymous;
 using MassTransit;
-using TheBiscuitMachine.Web.Contracts;
+using TheBiscuitMachine.Application.Contracts;
 
-namespace TheBiscuitMachine.Web.Sagas
+namespace TheBiscuitMachine.Application.Sagas
 {
     public class BiscuitMachineStateMachine : MassTransitStateMachine<BiscuitMachineSaga>
     {
@@ -13,7 +13,7 @@ namespace TheBiscuitMachine.Web.Sagas
 
             Event(() => StartMachine, x =>
             {
-                x.CorrelateBy(x => x.UserId, x => x.Message.UserId);
+                x.CorrelateBy(i => i.UserId, m => m.Message.UserId);
 
                 x.SelectId(ctx => NewId.NextGuid());
 
@@ -25,10 +25,10 @@ namespace TheBiscuitMachine.Web.Sagas
                 });
             });
 
-            Event(() => OvenHeated, x => x.CorrelateBy(x => x.UserId, m => m.Message.UserId));
-            Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(10));
-            Event(() => OvenOverheated, x => x.CorrelateBy(x => x.UserId, m => m.Message.UserId));
-            Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(30));
+            Event(() => OvenHeated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
+            Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(1));
+            Event(() => OvenOverheated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
+            Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(100));
 
             Initially(
                 When(StartMachine)
