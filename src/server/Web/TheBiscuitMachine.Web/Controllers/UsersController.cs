@@ -9,24 +9,27 @@ namespace TheBiscuitMachine.Web.Controllers
     [Route("Users")]
     public class UsersController : ControllerBase
     {
-        private readonly IRequestClient<LoginRequest> requestClient;
+        private readonly IRequestClient<LoginRequest> loginRequestClient;
+        private readonly IRequestClient<RegisterRequest> registerRequestClient;
 
-        public UsersController(IRequestClient<LoginRequest> requestClient)
+        public UsersController(IRequestClient<LoginRequest> requestClient, IRequestClient<RegisterRequest> registerRequestClient)
         {
-            this.requestClient = requestClient;
+            this.loginRequestClient = requestClient;
+            this.registerRequestClient = registerRequestClient;
         }
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login(string username)
         {
-            var success = await this.requestClient.GetResponse<LoginResponse>(new { Username = username });
-            return Ok();
+            var success = await this.loginRequestClient.GetResponse<LoginResponse>(new { Username = username });
+            return Ok(success.Message.Success);
         }
 
         [HttpPost("Register")]
-        public IActionResult Register()
+        public async Task<IActionResult> Register(string username, string email)
         {
-            return Ok();
+            var success = await this.registerRequestClient.GetResponse<RegisterResponse>(new { Username = username, Email = email });
+            return Ok(success.Message.Success);
         }
     }
 }

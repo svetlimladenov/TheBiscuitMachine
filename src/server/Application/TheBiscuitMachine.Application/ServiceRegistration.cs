@@ -31,6 +31,7 @@ namespace TheBiscuitMachine.Application
                 x.AddConsumers(Assembly.GetExecutingAssembly());
 
                 x.AddRequestClient<LoginRequest>();
+                x.AddRequestClient<RegisterRequest>();
             });
 
             services.AddMassTransitHostedService();
