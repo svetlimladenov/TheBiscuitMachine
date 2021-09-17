@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using TheBiscuitMachine.Application.Contracts;
@@ -8,7 +9,7 @@ namespace TheBiscuitMachine.Web.Controllers
 {
     [ApiController]
     [Route("Users")]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiController
     {
         private readonly IRequestClient<LoginRequest> loginRequestClient;
         private readonly IRequestClient<RegisterRequest> registerRequestClient;
@@ -29,8 +30,20 @@ namespace TheBiscuitMachine.Web.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterInputModel user)
         {
-            var success = await this.registerRequestClient.GetResponse<RegisterResponse>(new { Username = user.Username, Email = user.Email });
-            return Ok(success.Message.Success);
+            var result = await this.registerRequestClient.GetResponse<RegisterResponse>(new { user.Username, user.Email });
+
+            if (!result.Message.Success)
+            {
+                return BadRequest("Username", result.Message.ValidationError);
+            }
+
+            return CreatedAtAction(nameof(GetUser), new { id = result.Message.UserId }, result.Message.UserId);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUser(string id)
+        {
+            return Ok();
         }
     }
 }
