@@ -16,6 +16,11 @@ namespace TheBiscuitMachine.Web.Controllers
             this.mediator = mediator;
         }
 
+        /// <summary>
+        /// Use only for manual start of a machine, otherwise use the Hub method
+        /// </summary>
+        /// <param name="userId">The user id, for which we want to start a machine</param>
+        /// <returns>A result of the execution</returns>
         [Route("Start")]
         [HttpPost]
         public async Task<IActionResult> Start(string userId)
