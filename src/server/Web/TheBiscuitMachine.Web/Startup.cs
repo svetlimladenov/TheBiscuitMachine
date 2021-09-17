@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TheBiscuitMachine.Application;
+using TheBiscuitMachine.Infrastructure;
 using TheBiscuitMachine.Web.DependencyInjectionRegistrations;
 using TheBiscuitMachine.Web.Hubs;
 using TheBiscuitMachine.Web.Middlewares;
@@ -25,6 +26,8 @@ namespace TheBiscuitMachine.Web
         {
             services.AddApplication();
             services.AddApplicationServices();
+
+            services.AddInfrastructure(Configuration);
 
             services.AddLoggerFactory(Configuration);
 
