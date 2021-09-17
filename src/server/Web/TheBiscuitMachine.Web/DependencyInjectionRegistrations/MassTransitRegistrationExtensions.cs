@@ -2,6 +2,7 @@
 using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
+using TheBiscuitMachine.Web.Contracts;
 using TheBiscuitMachine.Web.Sagas;
 
 namespace TheBiscuitMachine.Web.DependencyInjectionRegistrations
@@ -28,6 +29,8 @@ namespace TheBiscuitMachine.Web.DependencyInjectionRegistrations
 
                 x.AddSagaStateMachine<BiscuitMachineStateMachine, BiscuitMachineSaga>().InMemoryRepository();
                 x.AddConsumers(Assembly.GetExecutingAssembly());
+
+                x.AddRequestClient<LoginRequest>();
             });
 
             services.AddMassTransitHostedService();

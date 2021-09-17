@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using MassTransit;
+using Microsoft.AspNetCore.Mvc;
+using TheBiscuitMachine.Web.Contracts;
 
 namespace TheBiscuitMachine.Web.Controllers
 {
@@ -6,9 +9,17 @@ namespace TheBiscuitMachine.Web.Controllers
     [Route("Users")]
     public class UsersController : ControllerBase
     {
-        [HttpPost("Login")]
-        public IActionResult Login()
+        private readonly IRequestClient<LoginRequest> requestClient;
+
+        public UsersController(IRequestClient<LoginRequest> requestClient)
         {
+            this.requestClient = requestClient;
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(string username)
+        {
+            var success = await this.requestClient.GetResponse<LoginResponse>(new { Username = username });
             return Ok();
         }
 
