@@ -2,6 +2,7 @@
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using TheBiscuitMachine.Application.Contracts;
+using TheBiscuitMachine.Web.Models;
 
 namespace TheBiscuitMachine.Web.Controllers
 {
@@ -26,9 +27,9 @@ namespace TheBiscuitMachine.Web.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(string username, string email)
+        public async Task<IActionResult> Register(RegisterInputModel user)
         {
-            var success = await this.registerRequestClient.GetResponse<RegisterResponse>(new { Username = username, Email = email });
+            var success = await this.registerRequestClient.GetResponse<RegisterResponse>(new { Username = user.Username, Email = user.Email });
             return Ok(success.Message.Success);
         }
     }
