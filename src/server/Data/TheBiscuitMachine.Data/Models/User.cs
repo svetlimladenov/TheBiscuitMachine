@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TheBiscuitMachine.Data.Models
 {
@@ -15,5 +16,20 @@ namespace TheBiscuitMachine.Data.Models
         public Machine Machine { get; set; }
 
         public List<BiscuitPackage> BiscuitPackages { get; set; }
+
+        public Machine AddMachine()
+        {
+            var machine = new Machine()
+            {
+                Id = Guid.NewGuid().ToString(),
+                User = this,
+                Name = $"{this.Username}'s Biscuit Machine",
+            };
+
+            this.Machine = machine;
+            this.MachineId = machine.Id;
+
+            return Machine;
+        }
     }
 }
