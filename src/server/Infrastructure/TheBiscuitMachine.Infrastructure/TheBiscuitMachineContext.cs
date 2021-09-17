@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using TheBiscuitMachine.Application.Common.Interfaces;
 using TheBiscuitMachine.Data.Models;
 
 namespace TheBiscuitMachine.Infrastructure
 {
-    public class TheBiscuitMachineContext : DbContext
+    public class TheBiscuitMachineContext : DbContext, IDbContext
     {
         public TheBiscuitMachineContext(DbContextOptions<TheBiscuitMachineContext> options)
             : base(options)
@@ -15,6 +17,11 @@ namespace TheBiscuitMachine.Infrastructure
         public DbSet<Machine> Machines { get; set; }
 
         public DbSet<BiscuitPackage> BiscuitPackages { get; set; }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return base.SaveChangesAsync();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

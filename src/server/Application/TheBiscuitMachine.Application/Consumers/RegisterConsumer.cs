@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using TheBiscuitMachine.Application.Common.Consumer;
+using TheBiscuitMachine.Application.Common.Interfaces;
 using TheBiscuitMachine.Application.Common.ValidationErrors;
 using TheBiscuitMachine.Application.Contracts;
 using TheBiscuitMachine.Data.Models;
@@ -10,16 +11,16 @@ namespace TheBiscuitMachine.Application.Consumers
 {
     public class RegisterConsumer : BaseConsumer, IConsumer<RegisterRequest>
     {
-        private readonly IUserService userService;
+        private readonly IDbContext context;
 
-        public RegisterConsumer(IUserService userService)
+        public RegisterConsumer(IDbContext context)
         {
-            this.userService = userService;
+            this.context = context;
         }
 
         public async Task Consume(ConsumeContext<RegisterRequest> context)
         {
-            var user = await this.userService.GetUserAsync(context.Message.Username);
+            var user = await this.context.Users.FirstOrDefaultAsync(x => x.Username == context.Message.Username);
 
             if (user != null)
             {
@@ -41,9 +42,9 @@ namespace TheBiscuitMachine.Application.Consumers
 
         private async Task<string> SaveUser(User user)
         {
-            var dbUser = await this.userService.AddAsync(user);
-            await this.userService.SaveChangesAsync();
-            return dbUser.Id;
+            var dbUser = await this.context.Users.AddAsync(user);
+            await this.context.SaveChangesAsync();
+            return dbUser.Entity.Id;
         }
     }
 }
