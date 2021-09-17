@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TheBiscuitMachine.Application.Consumers;
+using TheBiscuitMachine.Infrastructure.Services;
 
 namespace TheBiscuitMachine.Infrastructure
 {
@@ -12,6 +14,8 @@ namespace TheBiscuitMachine.Infrastructure
                  options.UseSqlServer(
                      configuration.GetConnectionString("DefaultConnection"),
                      b => b.MigrationsAssembly(typeof(TheBiscuitMachineContext).Assembly.FullName)));
+
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }
