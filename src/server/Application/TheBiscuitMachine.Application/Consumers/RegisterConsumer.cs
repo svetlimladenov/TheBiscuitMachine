@@ -1,47 +1,49 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MassTransit;
+using TheBiscuitMachine.Application.Common.Consumer;
+using TheBiscuitMachine.Application.Common.ValidationErrors;
 using TheBiscuitMachine.Application.Contracts;
 using TheBiscuitMachine.Data.Models;
 
 namespace TheBiscuitMachine.Application.Consumers
 {
-    public class RegisterConsumer : IConsumer<RegisterRequest>
+    public class RegisterConsumer : BaseConsumer, IConsumer<RegisterRequest>
     {
-        private readonly IUserService userRepository;
+        private readonly IUserService userService;
 
-        public RegisterConsumer(IUserService userRepository)
+        public RegisterConsumer(IUserService userService)
         {
-            this.userRepository = userRepository;
+            this.userService = userService;
         }
 
         public async Task Consume(ConsumeContext<RegisterRequest> context)
         {
-            var message = context.Message;
+            var user = await this.userService.GetUserAsync(context.Message.Username);
 
-            var user = await this.userRepository.GetUserAsync(context.Message.Username);
-
-            // User already exists
             if (user != null)
             {
-                await context.RespondAsync<RegisterResponse>(new { Success = false });
+                await context.RespondAsync<RegisterResponse>(CreateValidationErrorResponse(ValidationErrors.UserAlreadyRegistered));
+                return;
             }
 
             var newUser = new User()
             {
-                Username = message.Username,
-                Email = message.Email
+                Username = context.Message.Username,
+                Email = context.Message.Email
             };
 
             newUser.AddMachine();
-            await SaveUser(newUser);
+            var userId = await SaveUser(newUser);
 
-            await context.RespondAsync<RegisterResponse>(new { Success = true });
+            await context.RespondAsync<RegisterResponse>(new { Success = true, UserId = userId });
         }
 
-        private async Task SaveUser(User user)
+        private async Task<string> SaveUser(User user)
         {
-            await this.userRepository.AddAsync(user);
-            await this.userRepository.SaveChangesAsync();
+            var dbUser = await this.userService.AddAsync(user);
+            await this.userService.SaveChangesAsync();
+            return dbUser.Id;
         }
     }
 }

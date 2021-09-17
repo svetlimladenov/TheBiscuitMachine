@@ -34,7 +34,7 @@ namespace TheBiscuitMachine.Web.Controllers
 
             if (!result.Message.Success)
             {
-                return BadRequest("Username", result.Message.ValidationError);
+                return BadRequest(result.Message.ValidationErrors);
             }
 
             return CreatedAtAction(nameof(GetUser), new { id = result.Message.UserId }, result.Message.UserId);
