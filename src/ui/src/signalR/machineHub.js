@@ -1,4 +1,5 @@
 import * as signalR from "@microsoft/signalr";
+import { defaults } from "../shared/fetch";
 
 const events = {
   machineStartedEvent: "MachineStarted",
@@ -6,10 +7,15 @@ const events = {
   ovenOverheatedEvent: "OvenOverheated",
 };
 
+const serverEvents = {
+  startBiscuitMachine: "StartBiscuitMachine",
+  deliverBiscuits: "DeliverBiscuits",
+};
+
 const MachineHub = {
   createConnection(url) {
     const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(url)
+      .withUrl(`${defaults.signalRUrl}${url}`)
       .build();
 
     this.hubConnection = hubConnection;
@@ -24,11 +30,12 @@ const MachineHub = {
   subscibeToOvenOverheated(callback) {
     this.hubConnection.on(events.ovenOverheatedEvent, callback);
   },
-};
-
-export const serverEvents = {
-  start: "Start",
-  deliverBiscuits: "DeliverBiscuits",
+  startMachine(userId) {
+    this.hubConnection.invoke(serverEvents.startBiscuitMachine, userId);
+  },
+  deliverBiscuits(userId) {
+    this.hubConnection.invoke(serverEvents.deliverBiscuits, userId);
+  },
 };
 
 export default MachineHub;

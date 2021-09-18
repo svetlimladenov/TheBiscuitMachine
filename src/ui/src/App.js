@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import MachineHub, { serverEvents } from "./signalR/machineHub";
+import fetch from "./shared/fetch";
 
 import Conveyor from "./components/Conveyor";
 import Login from "./components/Login";
@@ -25,13 +26,11 @@ class App extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
-    this.hubConnection.stop();
+    this.state.hubConnection.stop();
   }
 
   componentDidMount() {
-    const hubConnection = MachineHub.createConnection(
-      "https://localhost:5001/machinehub"
-    );
+    const hubConnection = MachineHub.createConnection("/machinehub");
     MachineHub.subscribeToMachineStartup(this.handleMachineStarted);
     MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
     MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
@@ -60,7 +59,7 @@ class App extends React.Component {
 
   handleStart = () => {
     const userId = "12345-54212";
-    this.state.hubConnection.invoke(serverEvents.start, userId);
+    MachineHub.startMachine(userId);
   };
 
   handlePause = () => {
@@ -121,12 +120,7 @@ class App extends React.Component {
 
   deliverBiscuits = () => {
     const box = 10;
-    clearInterval(this.state.intervalId);
-    this.state.hubConnection
-      .invoke(serverEvents.deliverBiscuits, box)
-      .then((result) => {
-        console.log("done");
-      });
+    MachineHub.deliverBiscuits(box);
   };
 
   handleLoginSubmit = (data) => {

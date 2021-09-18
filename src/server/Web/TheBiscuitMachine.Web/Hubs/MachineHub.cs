@@ -17,7 +17,7 @@ namespace TheBiscuitMachine.Web.Hubs
             this.bus = bus;
         }
 
-        public async Task Start(string userId)
+        public async Task StartBiscuitMachine(string userId)
         {
             await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId });
         }
