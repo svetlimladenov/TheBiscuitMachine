@@ -16,9 +16,9 @@ function Conveyor(props) {
   };
 
   const renderBiscuits = () => {
-    const { biscuits } = props;
+    const { biscuits, speed } = props;
     return biscuits.map((biscuit) => {
-      return <Biscuit key={biscuit.id} y={biscuit.y} />;
+      return <Biscuit key={biscuit.id} y={biscuit.y} speed={speed} />;
     });
   };
 

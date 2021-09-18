@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import MachineHub, { serverEvents } from "./signalR/machineHub";
-import fetch from "./shared/fetch";
+import MachineHub from "./signalR/machineHub";
+import pulse from "./shared/utils";
 
 import Conveyor from "./components/Conveyor";
 import Login from "./components/Login";
@@ -21,12 +21,15 @@ class App extends React.Component {
       intervalId: 0,
       box: [],
       boxSize: 5,
+      speed: 5,
     };
   }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
-    this.state.hubConnection.stop();
+    this.setState((prevState) => {
+      prevState.hubConnection.stop();
+    });
   }
 
   componentDidMount() {
@@ -78,24 +81,7 @@ class App extends React.Component {
       }
 
       this.setState(({ step, biscuits, box, currentId }) => {
-        // Update the biscuits
-        const movedBiscuits = biscuits.map((biscuit) => {
-          return { y: biscuit.y + 700, step: biscuit.step + 1, id: biscuit.id };
-        });
-
-        // add new biscuit
-        movedBiscuits.push({ y: 0, step: 0, id: currentId });
-
-        // filter the biscut for the box
-        const biscuitForBox = movedBiscuits.filter(
-          (biscuit) => biscuit.step === 4
-        );
-
-        let updatedBox = [...box, ...biscuitForBox];
-
-        const updatedBiscuits = movedBiscuits.filter(
-          (biscuit) => biscuit.step <= 3
-        );
+        const [updatedBiscuits, updatedBox] = pulse(biscuits, box, currentId);
 
         return {
           step: step + 1,
@@ -104,7 +90,7 @@ class App extends React.Component {
           box: updatedBox,
         };
       });
-    }, 2000);
+    }, this.state.speed * 1000);
 
     this.setState((prevState) => {
       return {
