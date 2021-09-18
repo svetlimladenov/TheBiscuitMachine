@@ -12,7 +12,6 @@ class App extends React.Component {
     super();
     this.state = {
       message: "Machine Not Started",
-      conveyor: ["extruder", "stamper", "oven", "box"],
       biscuits: [],
       isRunning: false,
       step: 0,

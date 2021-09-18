@@ -1,23 +1,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Bangers&display=swap");
 
+html,
+body {
+  background: #28baef;
+}
+
+h1,
+h5 {
+  text-align: center;
+  color: white;
+  letter-spacing: 3px;
+  font-family: "Bangers", cursive;
+}
+
 .conveyor-wrapper {
-  border-bottom: 4px solid black;
+  border-bottom: 4px solid #666666;
   display: flex;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
 }
 
-.conveyor-wrapper .element {
-  padding: 50px 70px;
-  border: 1px solid red;
-  font-size: 5em;
-}
-
 .biscuit {
   margin-top: 50px;
   position: absolute;
-  transition: left 2s linear;
   animation: rotate 2s infinite linear;
   width: 80px;
   height: 80px;
@@ -28,20 +34,39 @@
   vertical-align: middle;
 }
 
+.conveyor-wrapper .element {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.conveyor-wrapper > div {
+}
+
+.conveyor-wrapper > div > div {
+  margin: 0 auto;
+}
+
+.oven {
+  height: 150px;
+  width: 370px;
+  background-image: url("./assets/oven.png");
+}
+
+.extruder {
+  width: 100px;
+  height: 100px;
+  background-image: url("./assets/extruder.png");
+}
+
+.stamper {
+  width: 72px;
+  height: 100px;
+  background-image: url("./assets/stamper.png");
+}
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
   }
-}
-
-h1 {
-  text-align: center;
-  color: white;
-  letter-spacing: 3px;
-  font-family: "Bangers", cursive;
-}
-
-html,
-body {
-  background: #28baef;
 }

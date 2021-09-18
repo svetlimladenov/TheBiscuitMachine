@@ -1,18 +1,16 @@
 import "../App.css";
 import React from "react";
 import Biscuit from "./Biscuit";
+import MachineComponent from "./MachineComponent";
 
 function Conveyor(props) {
   const renderMachineComponents = () => {
-    const { conveyor } = props;
-    return conveyor.map((element, idx) => {
-      return (
-        <div key={idx}>
-          <span>{element}</span>
-          <div className={`${element} element`}></div>
-        </div>
-      );
-    });
+    return [
+      <MachineComponent name="extruder" />,
+      <MachineComponent name="stamper" />,
+      <MachineComponent name="oven" />,
+      <MachineComponent name="box" />,
+    ];
   };
 
   const renderBiscuits = () => {
