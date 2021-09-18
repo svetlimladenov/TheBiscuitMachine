@@ -1,18 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Bangers&display=swap");
+
 .conveyor-wrapper {
   border-bottom: 4px solid black;
   display: flex;
   justify-content: space-between;
   position: relative;
+  overflow: hidden;
 }
 
 .conveyor-wrapper .element {
-  padding: 30px 50px;
+  padding: 50px 70px;
   border: 1px solid red;
   font-size: 5em;
 }
 
-.conveyor-wrapper .biscuit {
-  top: 50px;
+.biscuit {
+  margin-top: 50px;
   position: absolute;
   transition: left 2s linear;
+  animation: rotate 2s infinite linear;
+  width: 80px;
+  height: 80px;
+  background-image: url("./assets/biscuit.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  letter-spacing: 3px;
+  font-family: "Bangers", cursive;
+}
+
+html,
+body {
+  background: #28baef;
 }

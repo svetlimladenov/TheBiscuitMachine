@@ -1,5 +1,6 @@
 import "../App.css";
 import React from "react";
+import Biscuit from "./Biscuit";
 
 function Conveyor(props) {
   const renderMachineComponents = () => {
@@ -17,11 +18,7 @@ function Conveyor(props) {
   const renderBiscuits = () => {
     const { biscuits } = props;
     return biscuits.map((biscuit) => {
-      return (
-        <div key={biscuit.id} className="biscuit" style={{ left: biscuit.y }}>
-          🍪
-        </div>
-      );
+      return <Biscuit key={biscuit.id} y={biscuit.y} />;
     });
   };
 
