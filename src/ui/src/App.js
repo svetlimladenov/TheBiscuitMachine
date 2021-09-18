@@ -2,9 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import MachineHub, { serverEvents } from "./signalR/machineHub";
 
-import Conveyor from "./conveyor/Conveyor";
-import Login from "./users/Login";
-import Register from "./users/Register";
+import Conveyor from "./components/Conveyor";
+import Login from "./components/Login";
+import Register from "./components/Register";
 
 class App extends React.Component {
   constructor() {
@@ -44,7 +44,9 @@ class App extends React.Component {
     });
   }
 
-  handleMachineStarted = () => {};
+  handleMachineStarted = () => {
+    this.setMessage("Machine started, waiting for the oven to be heated...");
+  };
 
   handleOvenHeated = () => {
     this.setMessage("Oven heated, starting the conveyor...");
@@ -56,12 +58,7 @@ class App extends React.Component {
     this.handleStop();
   };
 
-  setMessage = (message) => {
-    this.setState({ message: message });
-  };
-
   handleStart = () => {
-    console.log("starting ?");
     const userId = "12345-54212";
     this.state.hubConnection.invoke(serverEvents.start, userId);
   };
@@ -72,16 +69,6 @@ class App extends React.Component {
 
   handleStop = () => {
     clearInterval(this.state.intervalId);
-  };
-
-  deliverBiscuits = () => {
-    const box = 10;
-    clearInterval(this.state.intervalId);
-    this.state.hubConnection
-      .invoke(serverEvents.deliverBiscuits, box)
-      .then((result) => {
-        console.log("done");
-      });
   };
 
   handleStartConveyor = () => {
@@ -126,6 +113,20 @@ class App extends React.Component {
         intervalId: newIntervalId,
       };
     });
+  };
+
+  setMessage = (message) => {
+    this.setState({ message: message });
+  };
+
+  deliverBiscuits = () => {
+    const box = 10;
+    clearInterval(this.state.intervalId);
+    this.state.hubConnection
+      .invoke(serverEvents.deliverBiscuits, box)
+      .then((result) => {
+        console.log("done");
+      });
   };
 
   handleLoginSubmit = (data) => {
