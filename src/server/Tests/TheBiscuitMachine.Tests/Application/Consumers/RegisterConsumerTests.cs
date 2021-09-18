@@ -4,6 +4,7 @@ using MassTransit;
 using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Shouldly;
 using TheBiscuitMachine.Application.Common.Interfaces;
@@ -11,7 +12,9 @@ using TheBiscuitMachine.Application.Consumers;
 using TheBiscuitMachine.Application.Contracts;
 using TheBiscuitMachine.Data.Models;
 using TheBiscuitMachine.Infrastructure;
+using TheBiscuitMachine.Tests.Common;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace TheBiscuitMachine.Tests.Application.Consumers
 {
@@ -21,7 +24,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
         private readonly InMemoryTestHarness harness;
         private readonly TheBiscuitMachineContext context;
 
-        public RegisterConsumerTests()
+        public RegisterConsumerTests(ITestOutputHelper testOutputHelper)
         {
             context = DbContextFactory.Create();
 
@@ -31,6 +34,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
                     cfg.AddConsumer<RegisterConsumer>();
                     cfg.AddConsumerTestHarness<RegisterConsumer>();
                 })
+                .AddSingleton<ILoggerFactory>(provider => new TestOutputLoggerFactory(true, testOutputHelper))
                 .AddSingleton<IDbContext>(x => context)
                 .BuildServiceProvider(true);
 
