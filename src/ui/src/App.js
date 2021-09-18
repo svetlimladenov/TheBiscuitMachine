@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import * as signalR from "@microsoft/signalr";
-import { machineEndpoints } from "./shared/signalr-endpoints";
+import MachineHub, { serverEvents } from "./signalR/machineHub";
 
 import Conveyor from "./conveyor/Conveyor";
 import Login from "./users/Login";
@@ -26,38 +25,35 @@ class App extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
+    this.hubConnection.stop();
   }
 
   componentDidMount() {
-    const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/machinehub")
-      .build();
+    const hubConnection = MachineHub.createConnection(
+      "https://localhost:5001/machinehub"
+    );
+    MachineHub.subscribeToMachineStartup(this.handleMachineStarted);
+    MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
+    MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
 
     this.setState({ hubConnection }, () => {
-      this.state.hubConnection
+      hubConnection
         .start()
-        .then(() => console.log("Connection started!"))
-        .catch((err) => console.log("Error while establishing connection :("));
-
-      this.setupHubEvents();
+        .then((result) => console.log("Connected!"))
+        .catch((error) => console.error(error));
     });
   }
 
-  setupHubEvents = () => {
-    const { hubConnection } = this.state;
-    hubConnection.on("MachineStarted", () => {
-      this.setMessage("Machine Started, heating the oven...");
-    });
+  handleMachineStarted = () => {};
 
-    hubConnection.on("OvenHeated", () => {
-      this.setMessage("Oven heated, starting the conveyor...");
-      this.handleStartConveyor();
-    });
+  handleOvenHeated = () => {
+    this.setMessage("Oven heated, starting the conveyor...");
+    this.handleStartConveyor();
+  };
 
-    hubConnection.on("OvenOverheated", () => {
-      this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
-      this.handleStop();
-    });
+  handleOvenOverheated = () => {
+    this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
+    this.handleStop();
   };
 
   setMessage = (message) => {
@@ -67,7 +63,7 @@ class App extends React.Component {
   handleStart = () => {
     console.log("starting ?");
     const userId = "12345-54212";
-    this.state.hubConnection.invoke(machineEndpoints.start, userId);
+    this.state.hubConnection.invoke(serverEvents.start, userId);
   };
 
   handlePause = () => {
@@ -82,7 +78,7 @@ class App extends React.Component {
     const box = 10;
     clearInterval(this.state.intervalId);
     this.state.hubConnection
-      .invoke(machineEndpoints.deliverBiscuits, box)
+      .invoke(serverEvents.deliverBiscuits, box)
       .then((result) => {
         console.log("done");
       });
@@ -132,6 +128,12 @@ class App extends React.Component {
     });
   };
 
+  handleLoginSubmit = (data) => {
+    const json = JSON.stringify(data);
+    console.clear();
+    console.log(json);
+  };
+
   render() {
     return (
       <Router>
@@ -149,10 +151,9 @@ class App extends React.Component {
               </li>
             </ul>
           </nav>
-
           <Switch>
             <Route path="/login">
-              <Login />
+              <Login onSubmit={this.handleLoginSubmit} />
             </Route>
             <Route path="/register">
               <Register />
