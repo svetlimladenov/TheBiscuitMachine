@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Application\TheBiscuitMachine.Application\TheBiscuitMachine.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\TheBiscuitMachine.Infrastructure\TheBiscuitMachine.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Web\TheBiscuitMachine.Web\TheBiscuitMachine.Web.csproj" />
   </ItemGroup>
 
 </Project>
