@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Field from "./Field";
 
-const Login = ({ onSubmit }) => {
+export default function Login({ onSubmit }) {
   const usernameRef = useRef();
   const emailRef = useRef();
 
@@ -24,6 +24,4 @@ const Login = ({ onSubmit }) => {
       </div>
     </form>
   );
-};
-
-export default Login;
+}

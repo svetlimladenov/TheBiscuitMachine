@@ -118,6 +118,12 @@ class App extends React.Component {
     console.log(json);
   };
 
+  handleRegisterSubmit = (data) => {
+    const json = JSON.stringify(data);
+    console.clear();
+    console.log(json);
+  };
+
   render() {
     return (
       <Router>
@@ -140,7 +146,7 @@ class App extends React.Component {
               <Login onSubmit={this.handleLoginSubmit} />
             </Route>
             <Route path="/register">
-              <Register />
+              <Register onSubmit={this.handleRegisterSubmit} />
             </Route>
             <Route path="/conveyor">
               <Conveyor
