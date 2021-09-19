@@ -20,7 +20,7 @@ class App extends React.Component {
       intervalId: 0,
       box: [],
       boxSize: 5,
-      speed: 5,
+      speed: 2,
     };
   }
 

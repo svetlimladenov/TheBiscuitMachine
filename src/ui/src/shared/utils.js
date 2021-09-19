@@ -7,11 +7,11 @@ export default function pulse(biscuits, box, currentId) {
   movedBiscuits.push({ y: 0, step: 0, id: currentId });
 
   // filter the biscut for the box
-  const biscuitForBox = movedBiscuits.filter((biscuit) => biscuit.step === 4);
+  const biscuitForBox = movedBiscuits.filter((biscuit) => biscuit.step === 3);
 
   let updatedBox = [...box, ...biscuitForBox];
 
-  const updatedBiscuits = movedBiscuits.filter((biscuit) => biscuit.step <= 3);
+  const updatedBiscuits = movedBiscuits.filter((biscuit) => biscuit.step < 3);
 
   return [updatedBiscuits, updatedBox];
 }

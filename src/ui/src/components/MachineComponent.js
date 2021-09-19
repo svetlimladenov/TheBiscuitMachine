@@ -1,10 +1,11 @@
 import React from "react";
+import ovenSrc from "../assets/oven.png";
 
 export default function MachineComponent({ name }) {
   return (
-    <div className={`${name}-wrapper`}>
+    <div className="machine-component">
       <h5>{name}</h5>
-      <div className={`element ${name}`}></div>
+      <img src={ovenSrc} alt="" />
     </div>
   );
 }

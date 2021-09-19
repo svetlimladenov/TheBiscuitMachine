@@ -1,16 +1,22 @@
 import "../App.css";
 import React from "react";
 import Biscuit from "./Biscuit";
+import BiscuitBox from "./BiscuitBox";
 import MachineComponent from "./MachineComponent";
 
 function Conveyor(props) {
+  console.log(props);
   const renderMachineComponents = () => {
-    return [
-      <MachineComponent name="extruder" />,
-      <MachineComponent name="stamper" />,
-      <MachineComponent name="oven" />,
-      <MachineComponent name="box" />,
-    ];
+    return (
+      <React.Fragment>
+        <div className="belt">
+          <MachineComponent name="extruder" />
+          <MachineComponent name="stamper" />
+          <MachineComponent name="oven" />
+        </div>
+        <BiscuitBox box={props.box} />
+      </React.Fragment>
+    );
   };
 
   const renderBiscuits = () => {
@@ -30,12 +36,6 @@ function Conveyor(props) {
       <button onClick={props.handleStart}>Start</button>
       <button onClick={props.handlePause}>Pause</button>
       <button onClick={props.handeStop}>Stop</button>
-      <div>
-        <h3>Box</h3>
-        {props.box.map((biscuit, idx) => {
-          return <span key={idx}>🍪</span>;
-        })}
-      </div>
     </div>
   );
 }

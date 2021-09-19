@@ -23,31 +23,61 @@ h5 {
 
 .biscuit {
   margin-top: 50px;
-  position: absolute;
-  animation: rotate 2s infinite linear;
   width: 80px;
   height: 80px;
   background-image: url("./assets/biscuit.png");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  vertical-align: middle;
 }
 
-.conveyor-wrapper .element {
+.moving-biscuit {
+  position: absolute;
+  animation: rotate 2s infinite linear;
+}
+
+.static-biscuit {
+  margin-top: 0px;
+}
+
+.box > div {
+  display: flex;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.belt {
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.machine-component {
+  border: 1px solid yellow;
+  width: 33.3%;
+}
+
+.box {
+  border: 1px solid orange;
+  width: 20%;
+}
+
+img {
+  width: 100px;
+  height: 100px;
+}
+
+/* .conveyor-wrapper .element {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-}
+} */
 
-.conveyor-wrapper > div {
-}
-
-.conveyor-wrapper > div > div {
-  margin: 0 auto;
-}
-
-.oven {
+/* .oven {
   height: 150px;
   width: 370px;
   background-image: url("./assets/oven.png");
@@ -63,10 +93,4 @@ h5 {
   width: 72px;
   height: 100px;
   background-image: url("./assets/stamper.png");
-}
-
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
+} */
