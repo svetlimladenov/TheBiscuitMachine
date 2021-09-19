@@ -33,27 +33,27 @@ namespace TheBiscuitMachine.Application.Sagas
 
             Initially(
                 When(StartMachine)
-                    .PublishAsync(ctx => ctx.Init<MachineStarted>(new { ctx.Data.UserId }))
+                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStarted }))
                     .TransitionTo(OvenHeating)
                     .Schedule(OvenHeatedSchedule, ctx => ctx.Init<OvenHeated>(new { ctx.Data.UserId })));
 
             During(
                 OvenHeating,
                 When(OvenHeated)
-                    .PublishAsync(ctx => ctx.Init<NotifyOvenHeated>(new { ctx.Data.UserId }))
+                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = false, Event = DomainEvents.OvenHeated }))
                     .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId }))
                     .TransitionTo(Working));
 
             DuringAny(
                 When(StopMachine)
-                    .PublishAsync(ctx => ctx.Init<NotifyMachineStopped>(new { ctx.Data.UserId }))
+                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStopped }))
                     .Unschedule(OvenHeatedSchedule)
                     .Unschedule(OvenOverheatedSchedule)
                     .TransitionTo(Final));
 
             DuringAny(
                 When(OvenOverheated)
-                    .PublishAsync(ctx => ctx.Init<NotifyOvenOverheated>(new { ctx.Data.UserId }))
+                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.OvenOverheated }))
                     .TransitionTo(Final));
 
             SetCompletedWhenFinalized();

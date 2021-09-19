@@ -14,24 +14,9 @@ namespace TheBiscuitMachine.Web.Services
             this.hub = hub;
         }
 
-        public async Task NotifyMachineStarted(string userId)
+        public async Task Notify(string userId, string eventName)
         {
-            await this.hub.Clients.Group(userId).SendAsync("MachineStarted", userId);
-        }
-
-        public async Task NotifyMachineStopped(string userId)
-        {
-            await this.hub.Clients.Group(userId).SendAsync("MachineStopped");
-        }
-
-        public async Task NotifyOvenHeated(string userId)
-        {
-            await this.hub.Clients.Group(userId).SendAsync("OvenHeated");
-        }
-
-        public async Task NotifyOvenOverheated(string userId)
-        {
-            await this.hub.Clients.Group(userId).SendAsync("OvenOverheated");
+            await this.hub.Clients.Group(userId).SendAsync(eventName);
         }
     }
 }

@@ -1,7 +1,11 @@
 ﻿namespace TheBiscuitMachine.Application.Contracts
 {
-    public interface NotifyMachineStopped
+    public interface Notification
     {
         string UserId { get; }
+
+        string Event { get; }
+
+        bool SaveReport { get; }
     }
 }

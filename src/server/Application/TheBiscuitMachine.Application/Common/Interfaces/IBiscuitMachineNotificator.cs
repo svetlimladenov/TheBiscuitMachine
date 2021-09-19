@@ -4,12 +4,6 @@ namespace TheBiscuitMachine.Application.Common.Interfaces
 {
     public interface IBiscuitMachineNotificator
     {
-        Task NotifyMachineStarted(string userId);
-
-        Task NotifyOvenHeated(string userId);
-
-        Task NotifyOvenOverheated(string userId);
-
-        Task NotifyMachineStopped(string userId);
+        Task Notify(string userId, string eventName);
     }
 }
