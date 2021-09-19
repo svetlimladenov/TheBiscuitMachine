@@ -9,6 +9,8 @@ namespace TheBiscuitMachine.Data.Models
 
         public string Username { get; set; }
 
+        public string PasswordHash { get; set; }
+
         public string Email { get; set; }
 
         public string MachineId { get; set; }
