@@ -8,6 +8,7 @@ const events = {
 };
 
 const serverEvents = {
+  joinGroup: "JoinGroup",
   startBiscuitMachine: "StartBiscuitMachine",
   deliverBiscuits: "DeliverBiscuits",
 };
@@ -29,6 +30,9 @@ const MachineHub = {
   },
   subscibeToOvenOverheated(callback) {
     this.hubConnection.on(events.ovenOverheatedEvent, callback);
+  },
+  joinGroup(userId) {
+    this.hubConnection.invoke(serverEvents.joinGroup, userId);
   },
   startMachine(userId) {
     this.hubConnection.invoke(serverEvents.startBiscuitMachine, userId);

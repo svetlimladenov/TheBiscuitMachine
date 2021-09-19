@@ -17,6 +17,12 @@ namespace TheBiscuitMachine.Web.Hubs
             this.bus = bus;
         }
 
+        public async Task JoinGroup(string userId)
+        {
+            logger.LogError(userId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+        }
+
         public async Task StartBiscuitMachine(string userId)
         {
             await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId });
