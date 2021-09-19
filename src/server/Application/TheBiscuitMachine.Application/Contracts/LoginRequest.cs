@@ -2,6 +2,8 @@
 {
     public interface LoginRequest
     {
-        string Username { get;  }
+        string Username { get; }
+
+        string Password { get;  }
     }
 }

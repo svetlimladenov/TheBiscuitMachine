@@ -1,7 +1,9 @@
-﻿namespace TheBiscuitMachine.Application.Contracts
+﻿using TheBiscuitMachine.Application.Common.ValidationErrors;
+
+namespace TheBiscuitMachine.Application.Contracts
 {
-    public interface LoginResponse
+    public interface LoginResponse : IValidatableResponse
     {
-        bool Success { get; }
+        string UserId { get; }
     }
 }

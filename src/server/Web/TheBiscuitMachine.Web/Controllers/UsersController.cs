@@ -21,16 +21,22 @@ namespace TheBiscuitMachine.Web.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(string username)
+        public async Task<IActionResult> Login(LoginInputModel loginInput)
         {
-            var success = await this.loginRequestClient.GetResponse<LoginResponse>(new { Username = username });
-            return Ok(success.Message.Success);
+            var result = await this.loginRequestClient.GetResponse<LoginResponse>(new { loginInput.Username, loginInput.Password });
+
+            if (!result.Message.Success)
+            {
+                return BadRequest(result.Message.ValidationErrors);
+            }
+
+            return Ok(result.Message.UserId);
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterInputModel user)
+        public async Task<IActionResult> Register(RegisterInputModel registerInput)
         {
-            var result = await this.registerRequestClient.GetResponse<RegisterResponse>(new { user.Username, user.Email });
+            var result = await this.registerRequestClient.GetResponse<RegisterResponse>(new { registerInput.Username, registerInput.Password, registerInput.Email });
 
             if (!result.Message.Success)
             {
