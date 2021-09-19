@@ -1,13 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import api from "./shared/fetch";
 
 import MachineHub from "./signalR/machineHub";
 import pulse from "./shared/utils";
 
-import Conveyor from "./components/Conveyor";
-import Register from "./components/Register";
-import Login from "./components/Login";
+import Routing from "./components/Routing";
 
 class App extends React.Component {
   constructor() {
@@ -141,62 +139,31 @@ class App extends React.Component {
   render() {
     const isLoggedIn = this.state.user.isLoggedIn;
 
-    const renderLoginLinks = () => {
-      return (
-        <React.Fragment>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/register">Register</Link>
-          </li>
-        </React.Fragment>
-      );
-    };
-
-    const renderConveyorLink = () => (
-      <li>
-        <Link to="/conveyor">Conveyor</Link>
-      </li>
-    );
-
-    const renderLoginComponents = () => (
-      <React.Fragment>
-        <Route path="/login">
-          <Login onSubmit={this.handleLoginSubmit} />
-        </Route>
-        <Route path="/register">
-          <Register
-            onSubmit={this.handleRegisterSubmit}
-            error={this.state.register.error}
-          />
-        </Route>
-      </React.Fragment>
-    );
-
-    const renderLoggedInComponents = () => (
-      <Route path="/conveyor">
-        <Conveyor
-          {...this.state}
-          handleStart={this.handleStart}
-          handleStop={this.handlePause}
-          handlePause={this.handlePause}
-        />
-      </Route>
-    );
-
     return (
       <Router>
         <div>
           <nav>
             <ul>
-              {!isLoggedIn ? renderLoginLinks() : undefined}
-              {isLoggedIn ? renderConveyorLink() : undefined}
+              {!isLoggedIn ? Routing.renderLoginLinks() : undefined}
+              {isLoggedIn ? Routing.renderConveyorLink() : undefined}
             </ul>
           </nav>
           <Switch>
-            {!isLoggedIn ? renderLoginComponents() : undefined}
-            {isLoggedIn ? renderLoggedInComponents() : undefined}
+            {!isLoggedIn
+              ? Routing.renderLoginComponents(
+                  this.handleLoginSubmit,
+                  this.handleRegisterSubmit,
+                  this.state.register.error
+                )
+              : undefined}
+            {isLoggedIn
+              ? Routing.renderLoggedInComponents(
+                  this.state,
+                  this.handleStart,
+                  this.handleStop,
+                  this.handlePause
+                )
+              : undefined}
           </Switch>
         </div>
       </Router>
