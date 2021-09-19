@@ -12,10 +12,12 @@ namespace TheBiscuitMachine.Application.Consumers
     public class RegisterConsumer : BaseConsumer, IConsumer<RegisterRequest>
     {
         private readonly IDbContext context;
+        private readonly IBiscuitMachinePasswordHasher passwordHasher;
 
-        public RegisterConsumer(IDbContext context)
+        public RegisterConsumer(IDbContext context, IBiscuitMachinePasswordHasher passwordHasher)
         {
             this.context = context;
+            this.passwordHasher = passwordHasher;
         }
 
         public async Task Consume(ConsumeContext<RegisterRequest> context)
@@ -31,7 +33,8 @@ namespace TheBiscuitMachine.Application.Consumers
             var newUser = new User()
             {
                 Username = context.Message.Username,
-                Email = context.Message.Email
+                Email = context.Message.Email,
+                PasswordHash = this.passwordHasher.HashPassword(context.Message.Password)
             };
 
             newUser.AddMachine();

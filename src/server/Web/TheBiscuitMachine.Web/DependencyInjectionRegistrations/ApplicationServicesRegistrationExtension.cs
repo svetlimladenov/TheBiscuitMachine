@@ -9,6 +9,7 @@ namespace TheBiscuitMachine.Web.DependencyInjectionRegistrations
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IBiscuitMachineNotificator, BiscuitMachineNotificator>();
+            services.AddScoped<IBiscuitMachinePasswordHasher, BiscuitMachinePasswordHasher>();
             return services;
         }
     }
