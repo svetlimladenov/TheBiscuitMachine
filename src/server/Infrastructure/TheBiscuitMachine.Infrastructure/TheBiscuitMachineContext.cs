@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TheBiscuitMachine.Application.Common.Interfaces;
 using TheBiscuitMachine.Data.Models;
 
@@ -17,6 +17,8 @@ namespace TheBiscuitMachine.Infrastructure
         public DbSet<Machine> Machines { get; set; }
 
         public DbSet<BiscuitPackage> BiscuitPackages { get; set; }
+
+        public DbSet<MachineReport> MachineReports { get; set; }
 
         public Task<int> SaveChangesAsync()
         {
@@ -44,6 +46,11 @@ namespace TheBiscuitMachine.Infrastructure
 
             modelBuilder
                 .Entity<BiscuitPackage>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<MachineReport>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
         }
