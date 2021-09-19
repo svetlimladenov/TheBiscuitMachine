@@ -2,7 +2,7 @@ import "../App.css";
 import React from "react";
 import Biscuit from "./Biscuit";
 import BiscuitBox from "./BiscuitBox";
-import MachineComponent from "./MachineComponent";
+import MachineComponents from "./MachineComponent";
 
 import MachineHub from "../signalR/machine-hub";
 import pulse from "../shared/utils";
@@ -53,8 +53,16 @@ class Conveyor extends React.Component {
   };
 
   handleMachineStopped = () => {
-    this.setMessage("Machine Stopped");
-    clearInterval(this.state.pulseId);
+    this.setMessage("Machine stopping...");
+
+    setTimeout(() => {
+      this.setState({
+        biscuits: [],
+        message: "Machine stopped!",
+        isRunning: false,
+      });
+      clearInterval(this.state.pulseId);
+    }, this.state.speed * 1000);
   };
 
   handleOvenHeated = () => {
@@ -77,6 +85,7 @@ class Conveyor extends React.Component {
   };
 
   handlePauseButtonClick = () => {
+    console.log("pause");
     clearInterval(this.state.pulseId);
   };
 
@@ -87,11 +96,12 @@ class Conveyor extends React.Component {
         this.deliverBiscuits(this.props.user.id, 10);
       }
 
-      this.setState(({ step, biscuits, biscuitBox, currentId }) => {
+      this.setState(({ step, biscuits, biscuitBox, currentId, isRunning }) => {
         const [updatedBiscuits, updatedBox] = pulse(
           biscuits,
           biscuitBox,
-          currentId
+          currentId,
+          isRunning
         );
 
         return {
@@ -99,6 +109,7 @@ class Conveyor extends React.Component {
           currentId: currentId + 1,
           biscuits: updatedBiscuits,
           biscuitBox: updatedBox,
+          isRunning: true,
         };
       });
     }, this.state.speed * 1000);
@@ -125,9 +136,7 @@ class Conveyor extends React.Component {
       return (
         <React.Fragment>
           <div className="belt">
-            <MachineComponent name="extruder" />
-            <MachineComponent name="stamper" />
-            <MachineComponent name="oven" />
+            <MachineComponents />
           </div>
           <BiscuitBox biscuitBox={this.state.biscuitBox} />
         </React.Fragment>

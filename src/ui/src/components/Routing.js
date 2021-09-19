@@ -29,21 +29,27 @@ const Layout = {
   renderLoginComponents(handleLoginSubmit, handleRegisterSubmit, error) {
     return (
       <React.Fragment>
-        <Route path="/login">
+        <Route exact path="/login">
           <Login onSubmit={handleLoginSubmit} />
         </Route>
-        <Route path="/register">
+        <Route exact path="/register">
           <Register onSubmit={handleRegisterSubmit} error={error} />
+        </Route>
+        <Route exact path="/">
+          <Login onSubmit={handleLoginSubmit} />
         </Route>
       </React.Fragment>
     );
   },
   renderLoggedInComponents(user) {
-    console.log(user);
+    const conveyor = <Conveyor user={user} />;
     return (
-      <Route path="/conveyor">
-        <Conveyor user={user} />
-      </Route>
+      <React.Fragment>
+        <Route path="/conveyor">{conveyor}</Route>
+        <Route exact path="/">
+          {conveyor}
+        </Route>
+      </React.Fragment>
     );
   },
 };
