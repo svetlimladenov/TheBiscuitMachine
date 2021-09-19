@@ -1,9 +1,15 @@
 import React, { useRef } from "react";
 import Field from "./Field";
+import { useHistory } from "react-router-dom";
 
 export default function Login({ onSubmit }) {
+  const history = useHistory();
   const usernameRef = useRef();
   const passwordRef = useRef();
+
+  const changeRoute = () => {
+    history.push("/conveyor");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,7 +18,7 @@ export default function Login({ onSubmit }) {
       password: passwordRef.current.value,
     };
 
-    onSubmit(data);
+    onSubmit(data, changeRoute);
   };
 
   return (

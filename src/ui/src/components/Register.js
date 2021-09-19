@@ -1,8 +1,10 @@
 import React, { useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import Field from "./Field";
 
 export default function Login({ onSubmit, error }) {
   const [validationMessage, setValidationMessage] = useState(error);
+  const history = useHistory();
 
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -17,6 +19,10 @@ export default function Login({ onSubmit, error }) {
     return true;
   };
 
+  const changeRoute = () => {
+    history.push("/conveyor");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
@@ -27,8 +33,7 @@ export default function Login({ onSubmit, error }) {
     };
 
     if (validateInput(data)) {
-      console.log("valid");
-      onSubmit(data);
+      onSubmit(data, changeRoute);
     }
   };
 
