@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import api from "./shared/fetch";
+
 import MachineHub from "./signalR/machineHub";
 import pulse from "./shared/utils";
 
@@ -21,6 +23,13 @@ class App extends React.Component {
       biscuitBox: [],
       boxSize: 5,
       speed: 2,
+      register: {
+        error: "",
+      },
+      user: {
+        isLoggedIn: false,
+        id: "",
+      },
     };
   }
 
@@ -112,32 +121,46 @@ class App extends React.Component {
     MachineHub.deliverBiscuits(box);
   };
 
-  handleLoginSubmit = (data) => {
-    const json = JSON.stringify(data);
-    console.clear();
-    console.log(json);
+  setUser = ({ data }) => {
+    this.setState({
+      user: {
+        id: data,
+        isLoggedIn: true,
+      },
+    });
   };
 
-  handleRegisterSubmit = (data) => {
-    const json = JSON.stringify(data);
-    console.clear();
-    console.log(json);
+  handleLoginSubmit = (body) => {
+    api.post("/Users/Login", body).then(this.setUser);
+  };
+
+  handleRegisterSubmit = (body) => {
+    api.post("/Users/Register", body).then(this.setUser);
   };
 
   render() {
+    const isLoggedIn = this.state.user.isLoggedIn;
+    const renderLoginLinks = () => {
+      return (
+        <React.Fragment>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/register">Register</Link>
+          </li>
+        </React.Fragment>
+      );
+    };
+
     return (
       <Router>
         <div>
           <nav>
             <ul>
+              {!isLoggedIn ? renderLoginLinks() : undefined}
               <li>
                 <Link to="/conveyor">Conveyor</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/register">Register</Link>
               </li>
             </ul>
           </nav>
@@ -146,7 +169,10 @@ class App extends React.Component {
               <Login onSubmit={this.handleLoginSubmit} />
             </Route>
             <Route path="/register">
-              <Register onSubmit={this.handleRegisterSubmit} />
+              <Register
+                onSubmit={this.handleRegisterSubmit}
+                error={this.state.register.error}
+              />
             </Route>
             <Route path="/conveyor">
               <Conveyor
