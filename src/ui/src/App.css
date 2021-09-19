@@ -94,3 +94,20 @@ img {
   height: 100px;
   background-image: url("./assets/stamper.png");
 } */
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  margin: 0;
+}
+
+nav ul li {
+  padding: 1.5em 2em;
+}
+
+nav ul li a {
+  font-family: "Bangers", cursive;
+  color: white;
+  text-decoration: none;
+}
