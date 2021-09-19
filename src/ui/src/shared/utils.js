@@ -1,4 +1,4 @@
-export default function pulse(biscuits, box, currentId) {
+export default function pulse(biscuits, biscuitBox, currentId) {
   const movedBiscuits = biscuits.map((biscuit) => {
     return { y: biscuit.y + 33, step: biscuit.step + 1, id: biscuit.id };
   });
@@ -9,7 +9,7 @@ export default function pulse(biscuits, box, currentId) {
   // filter the biscut for the box
   const biscuitForBox = movedBiscuits.filter((biscuit) => biscuit.step === 3);
 
-  let updatedBox = [...box, ...biscuitForBox];
+  let updatedBox = [...biscuitBox, ...biscuitForBox];
 
   const updatedBiscuits = movedBiscuits.filter((biscuit) => biscuit.step < 3);
 

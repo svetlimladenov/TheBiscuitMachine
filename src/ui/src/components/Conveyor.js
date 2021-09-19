@@ -5,7 +5,6 @@ import BiscuitBox from "./BiscuitBox";
 import MachineComponent from "./MachineComponent";
 
 function Conveyor(props) {
-  console.log(props);
   const renderMachineComponents = () => {
     return (
       <React.Fragment>
@@ -14,7 +13,7 @@ function Conveyor(props) {
           <MachineComponent name="stamper" />
           <MachineComponent name="oven" />
         </div>
-        <BiscuitBox box={props.box} />
+        <BiscuitBox biscuitBox={props.biscuitBox} />
       </React.Fragment>
     );
   };

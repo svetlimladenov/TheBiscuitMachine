@@ -5,7 +5,6 @@ import pulse from "./shared/utils";
 
 import Conveyor from "./components/Conveyor";
 import Login from "./components/Login";
-import Register from "./components/Register";
 
 class App extends React.Component {
   constructor() {
@@ -17,15 +16,15 @@ class App extends React.Component {
       step: 0,
       currentId: 0,
       hubConnection: null,
-      intervalId: 0,
-      box: [],
+      pulseId: 0,
+      biscuitBox: [],
       boxSize: 5,
       speed: 2,
     };
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.state.pulseId);
     this.setState((prevState) => {
       prevState.hubConnection.stop();
     });
@@ -65,28 +64,32 @@ class App extends React.Component {
   };
 
   handlePause = () => {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.state.pulseId);
   };
 
   handleStop = () => {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.state.pulseId);
   };
 
   handleStartConveyor = () => {
-    const newIntervalId = setInterval(() => {
-      if (this.state.box.length === this.state.boxSize) {
-        this.setState({ box: [] });
+    const pulseId = setInterval(() => {
+      if (this.state.biscuitBox.length === this.state.boxSize) {
+        this.setState({ biscuitBox: [] });
         this.deliverBiscuits();
       }
 
-      this.setState(({ step, biscuits, box, currentId }) => {
-        const [updatedBiscuits, updatedBox] = pulse(biscuits, box, currentId);
+      this.setState(({ step, biscuits, biscuitBox, currentId }) => {
+        const [updatedBiscuits, updatedBox] = pulse(
+          biscuits,
+          biscuitBox,
+          currentId
+        );
 
         return {
           step: step + 1,
           currentId: currentId + 1,
           biscuits: updatedBiscuits,
-          box: updatedBox,
+          biscuitBox: updatedBox,
         };
       });
     }, this.state.speed * 1000);
@@ -94,7 +97,7 @@ class App extends React.Component {
     this.setState((prevState) => {
       return {
         ...prevState,
-        intervalId: newIntervalId,
+        pulseId: pulseId,
       };
     });
   };
@@ -126,17 +129,11 @@ class App extends React.Component {
               <li>
                 <Link to="/login">Login</Link>
               </li>
-              <li>
-                <Link to="/register">Register</Link>
-              </li>
             </ul>
           </nav>
           <Switch>
             <Route path="/login">
               <Login onSubmit={this.handleLoginSubmit} />
-            </Route>
-            <Route path="/register">
-              <Register />
             </Route>
             <Route path="/conveyor">
               <Conveyor
