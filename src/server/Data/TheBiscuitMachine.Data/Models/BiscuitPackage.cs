@@ -6,6 +6,10 @@
 
         public string UserId { get; set; }
 
+        public string PackageLabel { get; set; }
+
+        public int BiscuitsCount { get; set; }
+
         public User User { get; set; }
     }
 }
