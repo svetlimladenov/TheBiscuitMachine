@@ -38,15 +38,11 @@ const Layout = {
       </React.Fragment>
     );
   },
-  renderLoggedInComponents(state, handleStart, handleStop, handlePause) {
+  renderLoggedInComponents(user) {
+    console.log(user);
     return (
       <Route path="/conveyor">
-        <Conveyor
-          {...state}
-          handleStart={handleStart}
-          handleStop={handleStop}
-          handlePause={handlePause}
-        />
+        <Conveyor user={user} />
       </Route>
     );
   },
