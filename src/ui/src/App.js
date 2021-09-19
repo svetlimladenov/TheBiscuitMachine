@@ -139,32 +139,30 @@ class App extends React.Component {
   render() {
     const isLoggedIn = this.state.user.isLoggedIn;
 
+    const links = isLoggedIn
+      ? Routing.renderLoggedInLinks()
+      : Routing.renderLoginLinks();
+
+    const components = isLoggedIn
+      ? Routing.renderLoggedInComponents(
+          this.state,
+          this.handleStart,
+          this.handleStop,
+          this.handlePause
+        )
+      : Routing.renderLoginComponents(
+          this.handleLoginSubmit,
+          this.handleRegisterSubmit,
+          this.state.register.error
+        );
+
     return (
       <Router>
         <div>
           <nav>
-            <ul>
-              {!isLoggedIn ? Routing.renderLoginLinks() : undefined}
-              {isLoggedIn ? Routing.renderConveyorLink() : undefined}
-            </ul>
+            <ul>{links}</ul>
           </nav>
-          <Switch>
-            {!isLoggedIn
-              ? Routing.renderLoginComponents(
-                  this.handleLoginSubmit,
-                  this.handleRegisterSubmit,
-                  this.state.register.error
-                )
-              : undefined}
-            {isLoggedIn
-              ? Routing.renderLoggedInComponents(
-                  this.state,
-                  this.handleStart,
-                  this.handleStop,
-                  this.handlePause
-                )
-              : undefined}
-          </Switch>
+          <Switch>{components}</Switch>
         </div>
       </Router>
     );

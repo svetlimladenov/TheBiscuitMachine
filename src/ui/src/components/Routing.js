@@ -18,7 +18,7 @@ const Layout = {
       </React.Fragment>
     );
   },
-  renderConveyorLink() {
+  renderLoggedInLinks() {
     return (
       <li>
         <Link to="/conveyor">Conveyor</Link>
