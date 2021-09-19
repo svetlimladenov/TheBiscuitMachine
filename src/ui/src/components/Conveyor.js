@@ -4,7 +4,7 @@ import Biscuit from "./Biscuit";
 import BiscuitBox from "./BiscuitBox";
 import MachineComponent from "./MachineComponent";
 
-import MachineHub from "../signalR/machineHub";
+import MachineHub from "../signalR/machine-hub";
 import pulse from "../shared/utils";
 
 class Conveyor extends React.Component {
@@ -36,6 +36,7 @@ class Conveyor extends React.Component {
     MachineHub.subscribeToMachineStartup(this.handleMachineStarted);
     MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
     MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
+    MachineHub.subscribeToMachineStopped(this.handleMachineStopped);
 
     this.setState({ hubConnection }, () => {
       hubConnection
@@ -51,6 +52,11 @@ class Conveyor extends React.Component {
     this.setMessage("Machine started, waiting for the oven to be heated...");
   };
 
+  handleMachineStopped = () => {
+    this.setMessage("Machine Stopped");
+    clearInterval(this.state.pulseId);
+  };
+
   handleOvenHeated = () => {
     this.setMessage("Oven heated, starting the conveyor...");
     this.handleStartConveyor();
@@ -58,18 +64,19 @@ class Conveyor extends React.Component {
 
   handleOvenOverheated = () => {
     this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
-    this.handleStop();
+    this.handleStopButtonClick();
   };
 
-  handleStart = () => {
+  // Button click handlers
+  handleStartButtonClick = () => {
     MachineHub.startMachine(this.props.user.id);
   };
 
-  handlePause = () => {
-    clearInterval(this.state.pulseId);
+  handleStopButtonClick = () => {
+    MachineHub.stopMachine(this.props.user.id);
   };
 
-  handleStop = () => {
+  handlePauseButtonClick = () => {
     clearInterval(this.state.pulseId);
   };
 
@@ -77,7 +84,7 @@ class Conveyor extends React.Component {
     const pulseId = setInterval(() => {
       if (this.state.biscuitBox.length === this.state.boxSize) {
         this.setState({ biscuitBox: [] });
-        this.deliverBiscuits();
+        this.deliverBiscuits(this.props.user.id, 10);
       }
 
       this.setState(({ step, biscuits, biscuitBox, currentId }) => {
@@ -110,7 +117,7 @@ class Conveyor extends React.Component {
 
   deliverBiscuits = () => {
     const box = 10;
-    MachineHub.deliverBiscuits(box);
+    MachineHub.deliverBiscuits(this.props.user.id, box);
   };
 
   render() {
@@ -141,9 +148,9 @@ class Conveyor extends React.Component {
           {renderMachineComponents()}
           {renderBiscuits()}
         </div>
-        <button onClick={this.handleStart}>Start</button>
-        <button onClick={this.handlePause}>Pause</button>
-        <button onClick={this.handeStop}>Stop</button>
+        <button onClick={this.handleStartButtonClick}>Start</button>
+        <button onClick={this.handlePauseButtonClick}>Pause</button>
+        <button onClick={this.handleStopButtonClick}>Stop</button>
       </div>
     );
   }

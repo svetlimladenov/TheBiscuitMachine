@@ -19,6 +19,11 @@ namespace TheBiscuitMachine.Web.Services
             await this.hub.Clients.Group(userId).SendAsync("MachineStarted", userId);
         }
 
+        public async Task NotifyMachineStopped(string userId)
+        {
+            await this.hub.Clients.Group(userId).SendAsync("MachineStopped");
+        }
+
         public async Task NotifyOvenHeated(string userId)
         {
             await this.hub.Clients.Group(userId).SendAsync("OvenHeated");

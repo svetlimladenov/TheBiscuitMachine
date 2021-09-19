@@ -9,5 +9,7 @@ namespace TheBiscuitMachine.Application.Common.Interfaces
         Task NotifyOvenHeated(string userId);
 
         Task NotifyOvenOverheated(string userId);
+
+        Task NotifyMachineStopped(string userId);
     }
 }

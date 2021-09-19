@@ -29,6 +29,7 @@ namespace TheBiscuitMachine.Application.Sagas
             Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(1));
             Event(() => OvenOverheated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(100));
+            Event(() => StopMachine, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
 
             Initially(
                 When(StartMachine)
@@ -44,6 +45,13 @@ namespace TheBiscuitMachine.Application.Sagas
                     .TransitionTo(Working));
 
             DuringAny(
+                When(StopMachine)
+                    .PublishAsync(ctx => ctx.Init<NotifyMachineStopped>(new { ctx.Data.UserId }))
+                    .Unschedule(OvenHeatedSchedule)
+                    .Unschedule(OvenOverheatedSchedule)
+                    .TransitionTo(Final));
+
+            DuringAny(
                 When(OvenOverheated)
                     .PublishAsync(ctx => ctx.Init<NotifyOvenOverheated>(new { ctx.Data.UserId }))
                     .TransitionTo(Final));
@@ -56,6 +64,8 @@ namespace TheBiscuitMachine.Application.Sagas
         public State Working { get; private set; }
 
         public Event<StartBiscuitMachine> StartMachine { get; private set; }
+
+        public Event<StopBiscuitMachine> StopMachine { get; private set; }
 
         public Event<OvenHeated> OvenHeated { get; private set; }
 

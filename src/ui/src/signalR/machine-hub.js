@@ -3,6 +3,7 @@ import { defaults } from "../shared/fetch";
 
 const events = {
   machineStartedEvent: "MachineStarted",
+  machineStoppedEvent: "MachineStopped",
   ovenHeatedEvent: "OvenHeated",
   ovenOverheatedEvent: "OvenOverheated",
 };
@@ -10,6 +11,7 @@ const events = {
 const serverEvents = {
   joinGroup: "JoinGroup",
   startBiscuitMachine: "StartBiscuitMachine",
+  stopBiscuitMachine: "StopBiscuitMachine",
   deliverBiscuits: "DeliverBiscuits",
 };
 
@@ -25,6 +27,9 @@ const MachineHub = {
   subscribeToMachineStartup(callback) {
     this.hubConnection.on(events.machineStartedEvent, callback);
   },
+  subscribeToMachineStopped(callback) {
+    this.hubConnection.on(events.machineStoppedEvent, callback);
+  },
   subscribeToOvenHeated(callback) {
     this.hubConnection.on(events.ovenHeatedEvent, callback);
   },
@@ -37,8 +42,15 @@ const MachineHub = {
   startMachine(userId) {
     this.hubConnection.invoke(serverEvents.startBiscuitMachine, userId);
   },
-  deliverBiscuits(userId) {
-    this.hubConnection.invoke(serverEvents.deliverBiscuits, userId);
+  stopMachine(userId) {
+    this.hubConnection.invoke(serverEvents.stopBiscuitMachine, userId);
+  },
+  deliverBiscuits(userId, biscuitsCount) {
+    this.hubConnection.invoke(
+      serverEvents.deliverBiscuits,
+      userId,
+      biscuitsCount
+    );
   },
 };
 
