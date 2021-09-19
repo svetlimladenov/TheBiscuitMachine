@@ -121,7 +121,7 @@ class App extends React.Component {
     MachineHub.deliverBiscuits(box);
   };
 
-  setUser = ({ data }) => {
+  login = ({ data }) => {
     this.setState({
       user: {
         id: data,
@@ -131,15 +131,16 @@ class App extends React.Component {
   };
 
   handleLoginSubmit = (body) => {
-    api.post("/Users/Login", body).then(this.setUser);
+    api.post("/Users/Login", body).then(this.login);
   };
 
   handleRegisterSubmit = (body) => {
-    api.post("/Users/Register", body).then(this.setUser);
+    api.post("/Users/Register", body).then(this.login);
   };
 
   render() {
     const isLoggedIn = this.state.user.isLoggedIn;
+
     const renderLoginLinks = () => {
       return (
         <React.Fragment>
@@ -153,35 +154,49 @@ class App extends React.Component {
       );
     };
 
+    const renderConveyorLink = () => (
+      <li>
+        <Link to="/conveyor">Conveyor</Link>
+      </li>
+    );
+
+    const renderLoginComponents = () => (
+      <React.Fragment>
+        <Route path="/login">
+          <Login onSubmit={this.handleLoginSubmit} />
+        </Route>
+        <Route path="/register">
+          <Register
+            onSubmit={this.handleRegisterSubmit}
+            error={this.state.register.error}
+          />
+        </Route>
+      </React.Fragment>
+    );
+
+    const renderLoggedInComponents = () => (
+      <Route path="/conveyor">
+        <Conveyor
+          {...this.state}
+          handleStart={this.handleStart}
+          handleStop={this.handlePause}
+          handlePause={this.handlePause}
+        />
+      </Route>
+    );
+
     return (
       <Router>
         <div>
           <nav>
             <ul>
               {!isLoggedIn ? renderLoginLinks() : undefined}
-              <li>
-                <Link to="/conveyor">Conveyor</Link>
-              </li>
+              {isLoggedIn ? renderConveyorLink() : undefined}
             </ul>
           </nav>
           <Switch>
-            <Route path="/login">
-              <Login onSubmit={this.handleLoginSubmit} />
-            </Route>
-            <Route path="/register">
-              <Register
-                onSubmit={this.handleRegisterSubmit}
-                error={this.state.register.error}
-              />
-            </Route>
-            <Route path="/conveyor">
-              <Conveyor
-                {...this.state}
-                handleStart={this.handleStart}
-                handleStop={this.handlePause}
-                handlePause={this.handlePause}
-              />
-            </Route>
+            {!isLoggedIn ? renderLoginComponents() : undefined}
+            {isLoggedIn ? renderLoggedInComponents() : undefined}
           </Switch>
         </div>
       </Router>
