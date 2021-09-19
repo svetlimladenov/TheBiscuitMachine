@@ -4,6 +4,7 @@ import MachineHub from "./signalR/machineHub";
 import pulse from "./shared/utils";
 
 import Conveyor from "./components/Conveyor";
+import Register from "./components/Register";
 import Login from "./components/Login";
 
 class App extends React.Component {
@@ -129,11 +130,17 @@ class App extends React.Component {
               <li>
                 <Link to="/login">Login</Link>
               </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
             </ul>
           </nav>
           <Switch>
             <Route path="/login">
               <Login onSubmit={this.handleLoginSubmit} />
+            </Route>
+            <Route path="/register">
+              <Register />
             </Route>
             <Route path="/conveyor">
               <Conveyor
