@@ -13,6 +13,8 @@ namespace TheBiscuitMachine.Application.Common.Interfaces
 
         DbSet<BiscuitPackage> BiscuitPackages { get; set; }
 
+        DbSet<MachineReport> MachineReports { get; set; }
+
         Task<int> SaveChangesAsync();
     }
 }
