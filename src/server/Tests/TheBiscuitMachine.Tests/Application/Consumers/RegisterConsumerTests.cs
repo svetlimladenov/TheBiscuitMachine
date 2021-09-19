@@ -20,6 +20,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
 {
     public class RegisterConsumerTests : IAsyncLifetime
     {
+        private readonly Mock<IBiscuitMachinePasswordHasher> passwordHasherMock = new Mock<IBiscuitMachinePasswordHasher>();
         private readonly IServiceProvider serviceProvider;
         private readonly InMemoryTestHarness harness;
         private readonly TheBiscuitMachineContext context;
@@ -36,6 +37,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
                 })
                 .AddSingleton<ILoggerFactory>(provider => new TestOutputLoggerFactory(true, testOutputHelper))
                 .AddSingleton<IDbContext>(x => context)
+                .AddScoped(x => passwordHasherMock.Object)
                 .BuildServiceProvider(true);
 
             this.harness = this.serviceProvider.GetRequiredService<InMemoryTestHarness>();
@@ -47,6 +49,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             // Arrange
             const string username = "Yasuo";
             const string email = "yasuo@riot.com";
+            const string password = "password";
             string machineName = $"{username}'s Biscuit Machine";
 
             var bus = this.serviceProvider.GetRequiredService<IBus>();
@@ -54,7 +57,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             IRequestClient<RegisterRequest> client = bus.CreateRequestClient<RegisterRequest>();
 
             // Act
-            var response = await client.GetResponse<RegisterResponse>(new { Username = username, Email = email });
+            var response = await client.GetResponse<RegisterResponse>(new { Username = username, Email = email, Password = password });
 
             // Assert
             response.Message.Success.ShouldBeTrue();
@@ -70,15 +73,16 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             // Arrange
             const string username = "Yasuo";
             const string email = "yasuo@riot.com";
+            const string password = "password";
+            const string passwordHash = "verystronghash";
 
-            AddUser(username, email);
+            AddUser(username, email, passwordHash);
 
             var bus = this.serviceProvider.GetRequiredService<IBus>();
-
             IRequestClient<RegisterRequest> client = bus.CreateRequestClient<RegisterRequest>();
 
             // Act
-            var response = await client.GetResponse<RegisterResponse>(new { Username = username, Email = email });
+            var response = await client.GetResponse<RegisterResponse>(new { Username = username, Email = email, Password = password });
 
             // Assert
             response.Message.Success.ShouldBeFalse();
@@ -87,9 +91,9 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             Assert.True(await harness.Consumed.Any<RegisterResponse>());
         }
 
-        private void AddUser(string username, string email)
+        private void AddUser(string username, string email, string passwordHash)
         {
-            context.Users.Add(new User() { Username = username, Email = email });
+            context.Users.Add(new User() { Username = username, Email = email, PasswordHash = passwordHash });
             context.SaveChanges();
         }
 
