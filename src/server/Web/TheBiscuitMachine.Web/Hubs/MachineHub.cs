@@ -33,9 +33,9 @@ namespace TheBiscuitMachine.Web.Hubs
             await this.bus.Publish<StopBiscuitMachine>(new { UserId = userId });
         }
 
-        public void DeliverBiscuits(string userId, int biscuitsCount)
+        public async Task DeliverBiscuits(string userId, int biscuitsCount)
         {
-            this.logger.LogError("Delivering biscuits" + biscuitsCount);
+            await this.bus.Publish<SaveBiscuits>(new { UserId = userId, BiscuitsCount = biscuitsCount });
         }
     }
 }

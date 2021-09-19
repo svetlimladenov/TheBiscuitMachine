@@ -5,6 +5,8 @@ namespace TheBiscuitMachine.Data.Models
 {
     public class User
     {
+        private readonly List<BiscuitPackage> biscuitPackages = new List<BiscuitPackage>();
+
         public string Id { get; set; }
 
         public string Username { get; set; }
@@ -17,7 +19,7 @@ namespace TheBiscuitMachine.Data.Models
 
         public Machine Machine { get; set; }
 
-        public List<BiscuitPackage> BiscuitPackages { get; set; }
+        public List<BiscuitPackage> BiscuitPackages => biscuitPackages;
 
         public Machine AddMachine()
         {
@@ -32,6 +34,21 @@ namespace TheBiscuitMachine.Data.Models
             this.MachineId = machine.Id;
 
             return Machine;
+        }
+
+        public BiscuitPackage AddBiscuitPackage(int count)
+        {
+            var package = new BiscuitPackage()
+            {
+                User = this,
+                UserId = Id,
+                BiscuitsCount = count,
+                PackageLabel = $"{this.Username}'s Biscuits"
+            };
+
+            this.biscuitPackages.Add(package);
+
+            return package;
         }
     }
 }
