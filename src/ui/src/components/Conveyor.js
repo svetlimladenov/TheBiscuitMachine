@@ -6,6 +6,7 @@ import MachineComponents from "./MachineComponent";
 
 import MachineHub from "../signalR/machine-hub";
 import pulse from "../shared/utils";
+import Controls from "./Controls";
 
 class Conveyor extends React.Component {
   constructor(props) {
@@ -173,6 +174,13 @@ class Conveyor extends React.Component {
       });
     };
 
+    const buttonHandlers = {
+      handleStartButtonClick: this.handleStartButtonClick,
+      handlePauseButtonClick: this.handlePauseButtonClick,
+      handleStopButtonClick: this.handleStopButtonClick,
+      handleToggleHeatingElement: this.handleToggleHeatingElement,
+    };
+
     return (
       <div>
         <h1>{this.state.message}</h1>
@@ -180,12 +188,10 @@ class Conveyor extends React.Component {
           {renderMachineComponents()}
           {renderBiscuits()}
         </div>
-        <button onClick={this.handleStartButtonClick}>Start</button>
-        <button onClick={this.handlePauseButtonClick}>Pause</button>
-        <button onClick={this.handleStopButtonClick}>Stop</button>
-        <button onClick={this.handleToggleHeatingElement}>
-          {this.state.heatingElementOn ? "On" : "Off"}
-        </button>
+        <Controls
+          {...buttonHandlers}
+          heatingElementOn={this.state.heatingElementOn}
+        />
       </div>
     );
   }
