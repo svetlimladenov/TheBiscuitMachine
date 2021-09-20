@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "./normalize.css";
+import "./App.css";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 import api from "./shared/fetch";
 
@@ -38,12 +40,10 @@ export default function App() {
 
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>{links}</ul>
-        </nav>
-        <Switch>{components}</Switch>
-      </div>
+      <nav>
+        <ul>{links}</ul>
+      </nav>
+      <Switch>{components}</Switch>
     </Router>
   );
 }
