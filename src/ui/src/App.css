@@ -13,6 +13,10 @@ h5 {
   font-family: "Bangers", cursive;
 }
 
+.machine-component-name {
+  font-size: 1.3em;
+}
+
 .conveyor-wrapper {
   border-bottom: 4px solid #ffa60b;
   display: flex;

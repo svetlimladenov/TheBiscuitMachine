@@ -13,7 +13,7 @@ export default function MachineComponents() {
   return elements.map((element, idx) => {
     return (
       <div className="machine-component">
-        <h5>{element.name}</h5>
+        <h5 className="machine-component-name">{element.name}</h5>
         <div
           className="image-wrapper"
           style={{ maxWidth: `${element.maxWidth}px` }}
