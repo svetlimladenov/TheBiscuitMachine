@@ -67,7 +67,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             Assert.True(await harness.Consumed.Any<Notification>(), "The message was not consumed");
             var report = await context.MachineReports.FirstOrDefaultAsync();
             report.Event.ShouldBe(eventName);
-            notificatorMock.Verify(x => x.Notify(userId, eventName), Times.Once);
+            notificatorMock.Verify(x => x.Notify(userId, eventName, It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             Assert.True(await harness.Consumed.Any<Notification>(), "The message was not consumed");
             var report = await context.MachineReports.FirstOrDefaultAsync();
             report.ShouldBeNull();
-            notificatorMock.Verify(x => x.Notify(userId, eventName), Times.Once);
+            notificatorMock.Verify(x => x.Notify(userId, eventName, It.IsAny<string>()), Times.Once);
         }
 
         private void AddMachine(string userId)

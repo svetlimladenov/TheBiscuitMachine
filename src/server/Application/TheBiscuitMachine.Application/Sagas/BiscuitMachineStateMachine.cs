@@ -27,14 +27,19 @@ namespace TheBiscuitMachine.Application.Sagas
             });
 
             Event(() => OvenHeated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
-            Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(1));
+            Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(10));
             Event(() => OvenOverheated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
-            Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(100));
+            Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(20));
             Event(() => StopMachine, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
+            Event(() => ToggleHeatingElement, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
 
             Initially(
                 When(StartMachine)
                     .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStarted, ctx.Instance.ActiveConnectionId }))
+                    .Then(ctx =>
+                    {
+                        ctx.Instance.HeatingElementOn = true;
+                    })
                     .TransitionTo(OvenHeating)
                     .Schedule(OvenHeatedSchedule, ctx => ctx.Init<OvenHeated>(new { ctx.Data.UserId })));
 
@@ -44,6 +49,15 @@ namespace TheBiscuitMachine.Application.Sagas
                     .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = false, Event = DomainEvents.OvenHeated }))
                     .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId }))
                     .TransitionTo(Working));
+
+            During(
+                Working,
+                When(ToggleHeatingElement)
+                    .IfElse(
+                        ctx => ctx.Instance.HeatingElementOn,
+                        x => x.Unschedule(OvenOverheatedSchedule),
+                        x => x.Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId })))
+                    .Then(ctx => ctx.Instance.HeatingElementOn = !ctx.Instance.HeatingElementOn));
 
             DuringAny(
                 When(StopMachine)
@@ -75,5 +89,7 @@ namespace TheBiscuitMachine.Application.Sagas
         public Event<OvenOverheated> OvenOverheated { get; private set; }
 
         public Schedule<BiscuitMachineSaga, OvenOverheated> OvenOverheatedSchedule { get; private set; }
+
+        public Event<ToggleHeatingElement> ToggleHeatingElement { get; private set; }
     }
 }

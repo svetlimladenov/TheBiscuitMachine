@@ -6,6 +6,7 @@ const events = {
   machineStoppedEvent: "MachineStopped",
   ovenHeatedEvent: "OvenHeated",
   ovenOverheatedEvent: "OvenOverheated",
+  heatingElementToggled: "HeatingElementToggled",
 };
 
 const serverEvents = {
@@ -13,6 +14,7 @@ const serverEvents = {
   startBiscuitMachine: "StartBiscuitMachine",
   stopBiscuitMachine: "StopBiscuitMachine",
   deliverBiscuits: "DeliverBiscuits",
+  toggleHeatingElement: "ToggleHeatingElement",
 };
 
 const MachineHub = {
@@ -36,6 +38,9 @@ const MachineHub = {
   subscibeToOvenOverheated(callback) {
     this.hubConnection.on(events.ovenOverheatedEvent, callback);
   },
+  subscribeToHeatingElementToggled(callback) {
+    this.hubConnection.on(events.heatingElementToggled, callback);
+  },
   joinGroup(userId) {
     this.hubConnection.invoke(serverEvents.joinGroup, userId);
   },
@@ -44,6 +49,9 @@ const MachineHub = {
   },
   stopMachine(userId) {
     this.hubConnection.invoke(serverEvents.stopBiscuitMachine, userId);
+  },
+  toggleHeatingElement(userId) {
+    this.hubConnection.invoke(serverEvents.toggleHeatingElement, userId);
   },
   deliverBiscuits(userId, biscuitsCount) {
     this.hubConnection.invoke(

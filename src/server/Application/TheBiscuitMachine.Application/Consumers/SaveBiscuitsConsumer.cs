@@ -15,6 +15,7 @@ namespace TheBiscuitMachine.Application.Consumers
             this.context = dbContext;
         }
 
+        // Consider receiving this event from the state machine
         public async Task Consume(ConsumeContext<SaveBiscuits> context)
         {
             var user = await this.context.Users.FindAsync(context.Message.UserId);

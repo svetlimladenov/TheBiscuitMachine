@@ -37,5 +37,11 @@ namespace TheBiscuitMachine.Web.Hubs
         {
             await this.bus.Publish<SaveBiscuits>(new { UserId = userId, BiscuitsCount = biscuitsCount });
         }
+
+        public async Task ToggleHeatingElement(string userId)
+        {
+            await this.bus.Publish<ToggleHeatingElement>(new { UserId = userId });
+            await this.Clients.Group(userId).SendAsync(DomainEvents.HeatingElementToggled);
+        }
     }
 }

@@ -17,10 +17,12 @@ class Conveyor extends React.Component {
       step: 0,
       currentId: 0,
       hubConnection: null,
+      activeConnectionId: null,
       pulseId: 0,
       biscuitBox: [],
       boxSize: 5,
       speed: 2,
+      heatingElementOn: false,
     };
   }
 
@@ -37,6 +39,9 @@ class Conveyor extends React.Component {
     MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
     MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
     MachineHub.subscribeToMachineStopped(this.handleMachineStopped);
+    MachineHub.subscribeToHeatingElementToggled(
+      this.handleHeatingElementToggled
+    );
 
     this.setState({ hubConnection }, () => {
       hubConnection
@@ -48,7 +53,8 @@ class Conveyor extends React.Component {
     });
   }
 
-  handleMachineStarted = () => {
+  handleMachineStarted = (activeConnectionId) => {
+    this.setState({ activeConnectionId, heatingElementOn: true });
     this.setMessage("Machine started, waiting for the oven to be heated...");
   };
 
@@ -56,13 +62,13 @@ class Conveyor extends React.Component {
     this.setMessage("Machine stopping...");
 
     setTimeout(() => {
+      clearInterval(this.state.pulseId);
       this.setState({
         biscuits: [],
         message: "Machine stopped!",
         isRunning: false,
       });
-      clearInterval(this.state.pulseId);
-    }, this.state.speed * 1000);
+    }, 1000);
   };
 
   handleOvenHeated = () => {
@@ -72,7 +78,15 @@ class Conveyor extends React.Component {
 
   handleOvenOverheated = () => {
     this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
-    this.handleStopButtonClick();
+    this.handleMachineStopped();
+  };
+
+  handleHeatingElementToggled = () => {
+    this.setState((prevState) => {
+      return {
+        heatingElementOn: !prevState.heatingElementOn,
+      };
+    });
   };
 
   // Button click handlers
@@ -85,8 +99,11 @@ class Conveyor extends React.Component {
   };
 
   handlePauseButtonClick = () => {
-    console.log("pause");
     clearInterval(this.state.pulseId);
+  };
+
+  handleToggleHeatingElement = () => {
+    MachineHub.toggleHeatingElement(this.props.user.id);
   };
 
   handleStartConveyor = () => {
@@ -127,8 +144,14 @@ class Conveyor extends React.Component {
   };
 
   deliverBiscuits = () => {
-    const box = 10;
-    MachineHub.deliverBiscuits(this.props.user.id, box);
+    if (
+      this.state.activeConnectionId === this.state.hubConnection.connectionId
+    ) {
+      MachineHub.deliverBiscuits(this.props.user.id, 5);
+      console.log("DELIVERR");
+    } else {
+      console.log("DO NOT DELIVER!");
+    }
   };
 
   render() {
@@ -160,6 +183,9 @@ class Conveyor extends React.Component {
         <button onClick={this.handleStartButtonClick}>Start</button>
         <button onClick={this.handlePauseButtonClick}>Pause</button>
         <button onClick={this.handleStopButtonClick}>Stop</button>
+        <button onClick={this.handleToggleHeatingElement}>
+          {this.state.heatingElementOn ? "On" : "Off"}
+        </button>
       </div>
     );
   }

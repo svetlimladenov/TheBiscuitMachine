@@ -13,6 +13,8 @@ namespace TheBiscuitMachine.Application.Sagas
 
         public string ActiveConnectionId { get; set; }
 
+        public bool HeatingElementOn { get; set; }
+
         public Guid? ScheduleTokenId { get; set; }
     }
 }

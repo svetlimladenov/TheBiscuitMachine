@@ -9,5 +9,7 @@
         public const string OvenHeated = "OvenHeated";
 
         public const string OvenOverheated = "OvenOverheated";
+
+        public const string HeatingElementToggled = "HeatingElementToggled";
     }
 }
