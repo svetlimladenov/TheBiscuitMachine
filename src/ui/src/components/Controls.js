@@ -8,13 +8,13 @@ export default function Controls({
   heatingElementOn,
 }) {
   return (
-    <div>
+    <div className="controls-wrapper">
       <button onClick={handleStartButtonClick}>Start</button>
       <button onClick={handlePauseButtonClick}>Pause</button>
       <button onClick={handleStopButtonClick}>Stop</button>
-      Heating element:
+
       <button onClick={handleToggleHeatingElement}>
-        {heatingElementOn ? "On" : "Off"}
+        Heating Element {heatingElementOn ? "On" : "Off"}
       </button>
     </div>
   );
