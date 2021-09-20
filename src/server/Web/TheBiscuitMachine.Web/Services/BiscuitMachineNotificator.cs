@@ -14,9 +14,9 @@ namespace TheBiscuitMachine.Web.Services
             this.hub = hub;
         }
 
-        public async Task Notify(string userId, string eventName)
+        public async Task Notify(string userId, string eventName, string activeConnectionId)
         {
-            await this.hub.Clients.Group(userId).SendAsync(eventName);
+            await this.hub.Clients.Group(userId).SendAsync(eventName, activeConnectionId);
         }
     }
 }

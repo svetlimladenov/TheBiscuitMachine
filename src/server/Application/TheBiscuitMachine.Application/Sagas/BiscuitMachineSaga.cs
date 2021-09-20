@@ -11,6 +11,8 @@ namespace TheBiscuitMachine.Application.Sagas
 
         public string CurrentState { get; set; }
 
+        public string ActiveConnectionId { get; set; }
+
         public Guid? ScheduleTokenId { get; set; }
     }
 }

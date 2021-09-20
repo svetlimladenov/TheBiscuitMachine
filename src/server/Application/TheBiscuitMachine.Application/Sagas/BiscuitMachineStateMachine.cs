@@ -21,7 +21,8 @@ namespace TheBiscuitMachine.Application.Sagas
                 {
                     CurrentState = Initial.Name,
                     CorrelationId = (Guid)ctx.CorrelationId,
-                    UserId = ctx.Message.UserId
+                    UserId = ctx.Message.UserId,
+                    ActiveConnectionId = ctx.Message.ConnectionId
                 });
             });
 
@@ -33,7 +34,7 @@ namespace TheBiscuitMachine.Application.Sagas
 
             Initially(
                 When(StartMachine)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStarted }))
+                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStarted, ctx.Instance.ActiveConnectionId }))
                     .TransitionTo(OvenHeating)
                     .Schedule(OvenHeatedSchedule, ctx => ctx.Init<OvenHeated>(new { ctx.Data.UserId })));
 

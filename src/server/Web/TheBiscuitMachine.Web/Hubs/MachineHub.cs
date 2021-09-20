@@ -19,18 +19,18 @@ namespace TheBiscuitMachine.Web.Hubs
 
         public async Task JoinGroup(string userId)
         {
-            logger.LogError(userId);
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
         }
 
         public async Task StartBiscuitMachine(string userId)
         {
-            await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId });
+            logger.LogError(Context.ConnectionId);
+            await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId, Context.ConnectionId });
         }
 
         public async Task StopBiscuitMachine(string userId)
         {
-            await this.bus.Publish<StopBiscuitMachine>(new { UserId = userId });
+            await this.bus.Publish<StopBiscuitMachine>(new { UserId = userId, Context.ConnectionId });
         }
 
         public async Task DeliverBiscuits(string userId, int biscuitsCount)

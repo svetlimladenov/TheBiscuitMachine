@@ -7,5 +7,7 @@
         string Event { get; }
 
         bool SaveReport { get; }
+
+        string ActiveConnectionId { get; }
     }
 }
