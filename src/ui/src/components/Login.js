@@ -22,12 +22,14 @@ export default function Login({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Field ref={usernameRef} label="Username: " type="text" />
-      <Field ref={passwordRef} label="Password: " type="password" />
-      <div>
-        <button type="submit">Login</button>
-      </div>
-    </form>
+    <div className="form-wrapper">
+      <form onSubmit={handleSubmit}>
+        <Field ref={usernameRef} label="Username: " type="text" />
+        <Field ref={passwordRef} label="Password: " type="password" />
+        <div>
+          <button type="submit">Login</button>
+        </div>
+      </form>
+    </div>
   );
 }

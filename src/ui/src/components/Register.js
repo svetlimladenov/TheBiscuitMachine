@@ -38,7 +38,7 @@ export default function Login({ onSubmit, error }) {
   };
 
   return (
-    <div>
+    <div className="form-wrapper">
       <h3>{error ? error : validationMessage}</h3>
       <form onSubmit={handleSubmit}>
         <Field ref={usernameRef} label="Username: " type="text" />

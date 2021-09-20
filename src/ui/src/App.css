@@ -2,7 +2,12 @@
 
 html,
 body {
+  height: 100%;
   background: #161517;
+}
+
+#root {
+  height: 100%;
 }
 
 h1,
@@ -127,8 +132,13 @@ nav ul li {
   padding: 1.5em 2em;
 }
 
+ul {
+  padding-left: 0;
+}
+
 nav ul li a,
-button {
+button,
+label {
   font-family: "Bangers", cursive;
   color: #ffa60b;
   font-size: 2em;
@@ -146,10 +156,65 @@ button {
   font-size: 1.5em;
   color: white;
   padding: 10px 20px;
-  background-color: #000000;
+  background-color: #140f0f36;
   border: 1px solid #ffa60b;
 }
 
 .heating-element {
   font-size: 1.5em;
+}
+
+/* LoginForm */
+
+.form-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.form-wrapper input[type="text"],
+input[type="password"],
+input[type="email"] {
+  margin: 5px 0;
+  outline: none;
+  border: none;
+  padding: 5px;
+  min-width: 200px;
+  margin-left: 20px;
+  background-color: #140f0f36;
+  box-shadow: 0 4px 2px -2px #ffa60b;
+  color: white;
+}
+
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 4px 2px -2px # inset !important;
+} */
+
+.form-wrapper form {
+  margin: 0 auto;
+}
+
+.form-wrapper label {
+  font-size: 1.4em;
+}
+
+.form-wrapper button {
+  font-size: 1.4em;
+  background-color: #ffa60b;
+  color: black;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  min-width: 200px;
+  border-radius: 8px;
+  transition: all 400ms ease-in-out;
+}
+
+.form-wrapper button:hover {
+  transform: translateY(-5px) scale(0.9);
 }
