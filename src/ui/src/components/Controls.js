@@ -6,11 +6,14 @@ export default function Controls({
   handleStopButtonClick,
   handleToggleHeatingElement,
   heatingElementOn,
+  isPaused,
 }) {
   return (
     <div className="controls-wrapper">
       <button onClick={handleStartButtonClick}>Start</button>
-      <button onClick={handlePauseButtonClick}>Pause</button>
+      <button onClick={handlePauseButtonClick}>
+        {isPaused ? "Resume" : "Pause"}
+      </button>
       <button onClick={handleStopButtonClick}>Stop</button>
 
       <button onClick={handleToggleHeatingElement}>

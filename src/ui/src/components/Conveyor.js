@@ -22,7 +22,8 @@ class Conveyor extends React.Component {
       pulseId: 0,
       biscuitBox: [],
       boxSize: 5,
-      speed: 2,
+      speed: 1,
+      isPaused: false,
       heatingElementOn: false,
     };
   }
@@ -105,6 +106,11 @@ class Conveyor extends React.Component {
 
   handlePauseButtonClick = () => {
     clearInterval(this.state.pulseId);
+    this.setState((prevState) => {
+      return {
+        isPaused: !prevState.isPaused,
+      };
+    });
   };
 
   handleToggleHeatingElement = () => {
@@ -194,6 +200,7 @@ class Conveyor extends React.Component {
         </div>
         <Controls
           {...buttonHandlers}
+          isPaused={this.state.isPaused}
           heatingElementOn={this.state.heatingElementOn}
         />
       </div>
