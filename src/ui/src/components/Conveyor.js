@@ -1,18 +1,22 @@
-import "../App.css";
 import React from "react";
 import Biscuit from "./Biscuit";
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
+import Controls from "./Controls";
+import InfoMessage from "./InfoMessage";
+import User from "./User";
+import Logs from "./Logs";
 
 import MachineHub from "../signalR/machine-hub";
 import pulse from "../shared/utils";
-import Controls from "./Controls";
+import messages from "../shared/messages";
 
 class Conveyor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: "Machine Not Started",
+      logs: [messages.notStarted],
+      infoMessage: messages.notStarted,
       biscuits: [],
       isRunning: false,
       step: 0,
@@ -58,7 +62,7 @@ class Conveyor extends React.Component {
 
   handleMachineStarted = (activeConnectionId) => {
     this.setState({ activeConnectionId, heatingElementOn: true });
-    this.setMessage("Machine started, waiting for the oven to be heated...");
+    this.addLog(messages.waitingForOvenToBeHeated);
   };
 
   handleMachineStopped = () => {
@@ -66,24 +70,23 @@ class Conveyor extends React.Component {
       clearInterval(this.state.pulseId);
       this.setState({
         biscuits: [],
-        message: "Machine stopped!",
         isRunning: false,
       });
     }, 1000);
   };
 
   handleOvenHeated = () => {
-    this.setMessage("Oven heated, starting the conveyor...");
+    this.addLog(messages.ovenHeated);
     this.handleStartConveyor();
   };
 
   handleOvenOverheated = () => {
-    this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
+    this.addLog(messages.ovenOverheated);
     this.handleMachineStopped();
   };
 
   handleOvenCold = () => {
-    this.setMessage("OVEN TOO COLD, stopping the conveyor...");
+    this.addLog(messages.ovenTooCold);
     this.handleMachineStopped();
   };
 
@@ -153,8 +156,12 @@ class Conveyor extends React.Component {
     });
   };
 
-  setMessage = (message) => {
-    this.setState({ message: message });
+  addLog = (message) => {
+    this.setState((prevState) => {
+      return {
+        logs: [...prevState.logs, message],
+      };
+    });
   };
 
   deliverBiscuits = () => {
@@ -162,9 +169,6 @@ class Conveyor extends React.Component {
       this.state.activeConnectionId === this.state.hubConnection.connectionId
     ) {
       MachineHub.deliverBiscuits(this.props.user.id, 5);
-      console.log("DELIVERR");
-    } else {
-      console.log("DO NOT DELIVER!");
     }
   };
 
@@ -196,16 +200,18 @@ class Conveyor extends React.Component {
 
     return (
       <div>
-        <h1>{this.state.message}</h1>
+        <InfoMessage {...this.state.infoMessage} />
         <div className="conveyor-wrapper">
           {renderMachineComponents()}
           {renderBiscuits()}
         </div>
+        <Logs logs={this.state.logs} />
         <Controls
           {...buttonHandlers}
           isPaused={this.state.isPaused}
           heatingElementOn={this.state.heatingElementOn}
         />
+        <User userId={this.props.user.id} />
       </div>
     );
   }
