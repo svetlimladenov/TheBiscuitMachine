@@ -105,7 +105,6 @@ class Conveyor extends React.Component {
   };
 
   handlePauseButtonClick = () => {
-    clearInterval(this.state.pulseId);
     this.setState((prevState) => {
       return {
         isPaused: !prevState.isPaused,
@@ -119,6 +118,10 @@ class Conveyor extends React.Component {
 
   handleStartConveyor = () => {
     const pulseId = setInterval(() => {
+      if (this.state.isPaused) {
+        return;
+      }
+
       if (this.state.biscuitBox.length === this.state.boxSize) {
         this.setState({ biscuitBox: [] });
         this.deliverBiscuits(this.props.user.id, 10);
