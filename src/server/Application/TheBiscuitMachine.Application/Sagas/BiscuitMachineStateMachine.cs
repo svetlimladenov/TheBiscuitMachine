@@ -33,6 +33,9 @@ namespace TheBiscuitMachine.Application.Sagas
             Event(() => StopMachine, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Event(() => ToggleHeatingElement, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
 
+            Event(() => OvenCold, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
+            Schedule(() => OvenColdSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(20));
+
             Initially(
                 When(StartMachine)
                     .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStarted, ctx.Instance.ActiveConnectionId }))
@@ -55,8 +58,12 @@ namespace TheBiscuitMachine.Application.Sagas
                 When(ToggleHeatingElement)
                     .IfElse(
                         ctx => ctx.Instance.HeatingElementOn,
-                        x => x.Unschedule(OvenOverheatedSchedule),
-                        x => x.Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId })))
+                        x => x
+                            .Unschedule(OvenOverheatedSchedule)
+                            .Schedule(OvenColdSchedule, ctx => ctx.Init<OvenCold>(new { ctx.Data.UserId })),
+                        x => x
+                            .Unschedule(OvenColdSchedule)
+                            .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId })))
                     .Then(ctx => ctx.Instance.HeatingElementOn = !ctx.Instance.HeatingElementOn));
 
             DuringAny(
@@ -69,6 +76,11 @@ namespace TheBiscuitMachine.Application.Sagas
             DuringAny(
                 When(OvenOverheated)
                     .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.OvenOverheated }))
+                    .TransitionTo(Final));
+
+            DuringAny(
+                When(OvenCold)
+                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.OvenCold }))
                     .TransitionTo(Final));
 
             SetCompletedWhenFinalized();
@@ -91,5 +103,9 @@ namespace TheBiscuitMachine.Application.Sagas
         public Schedule<BiscuitMachineSaga, OvenOverheated> OvenOverheatedSchedule { get; private set; }
 
         public Event<ToggleHeatingElement> ToggleHeatingElement { get; private set; }
+
+        public Event<OvenCold> OvenCold { get; private set; }
+
+        public Schedule<BiscuitMachineSaga, OvenCold> OvenColdSchedule { get; private set; }
     }
 }

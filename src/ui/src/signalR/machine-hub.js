@@ -5,6 +5,7 @@ const events = {
   machineStartedEvent: "MachineStarted",
   machineStoppedEvent: "MachineStopped",
   ovenHeatedEvent: "OvenHeated",
+  ovenColdEvent: "OvenCold",
   ovenOverheatedEvent: "OvenOverheated",
   heatingElementToggled: "HeatingElementToggled",
 };
@@ -37,6 +38,9 @@ const MachineHub = {
   },
   subscibeToOvenOverheated(callback) {
     this.hubConnection.on(events.ovenOverheatedEvent, callback);
+  },
+  subscribeToOvenCold(callback) {
+    this.hubConnection.on(events.ovenColdEvent, callback);
   },
   subscribeToHeatingElementToggled(callback) {
     this.hubConnection.on(events.heatingElementToggled, callback);

@@ -39,6 +39,7 @@ class Conveyor extends React.Component {
     MachineHub.subscribeToMachineStartup(this.handleMachineStarted);
     MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
     MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
+    MachineHub.subscribeToOvenCold(this.handleOvenCold);
     MachineHub.subscribeToMachineStopped(this.handleMachineStopped);
     MachineHub.subscribeToHeatingElementToggled(
       this.handleHeatingElementToggled
@@ -60,8 +61,6 @@ class Conveyor extends React.Component {
   };
 
   handleMachineStopped = () => {
-    this.setMessage("Machine stopping...");
-
     setTimeout(() => {
       clearInterval(this.state.pulseId);
       this.setState({
@@ -79,6 +78,11 @@ class Conveyor extends React.Component {
 
   handleOvenOverheated = () => {
     this.setMessage("OVEN OVERHEATED, stopping the conveyor...");
+    this.handleMachineStopped();
+  };
+
+  handleOvenCold = () => {
+    this.setMessage("OVEN TOO COLD, stopping the conveyor...");
     this.handleMachineStopped();
   };
 

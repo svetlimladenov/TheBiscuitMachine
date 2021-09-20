@@ -11,5 +11,7 @@
         public const string OvenOverheated = "OvenOverheated";
 
         public const string HeatingElementToggled = "HeatingElementToggled";
+
+        public const string OvenCold = "OvenCold";
     }
 }
