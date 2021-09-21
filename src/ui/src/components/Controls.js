@@ -17,7 +17,14 @@ export default function Controls({
       <button onClick={handleStopButtonClick}>Stop</button>
 
       <button onClick={handleToggleHeatingElement}>
-        Heating Element {heatingElementOn ? "On" : "Off"}
+        Heating Element{" "}
+        <span
+          className={
+            heatingElementOn ? "heating-element-on" : "heating-element-off"
+          }
+        >
+          {heatingElementOn ? "On" : "Off"}
+        </span>
       </button>
     </div>
   );

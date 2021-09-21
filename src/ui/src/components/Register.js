@@ -50,7 +50,7 @@ export default function Login({ onSubmit, error }) {
         />
         <Field ref={emailRef} label="Email: " type="email" />
         <div>
-          <button type="submit">Login</button>
+          <button type="submit">Register</button>
         </div>
       </form>
     </div>

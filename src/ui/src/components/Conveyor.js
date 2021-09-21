@@ -8,7 +8,7 @@ import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 
 import MachineHub from "../signalR/machine-hub";
-import pulse from "../shared/utils";
+import pulse from "../shared/pulse";
 import messages from "../shared/messages";
 
 class Conveyor extends React.Component {

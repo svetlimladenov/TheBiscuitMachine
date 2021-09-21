@@ -2,6 +2,8 @@
 
 :root {
   --main-color: #ffa60b;
+  --hover-color: #ff500b;
+  --cold-color: #78adce;
 }
 
 html,
@@ -147,13 +149,19 @@ ul {
   padding-left: 0;
 }
 
-/* Navigation Component */
-
 nav ul li a {
   color: var(--main-color);
   font-size: 2em;
   text-decoration: none;
+  transition: all 400ms ease-in-out;
 }
+
+nav ul li a:hover {
+  color: var(--hover-color);
+  transform: translateY(-5px) scale(0.9);
+}
+
+/* Navigation Component */
 
 /* Controls-Component */
 
@@ -171,15 +179,29 @@ nav ul li a {
   background-color: #140f0f36;
   border: 1px solid var(--main-color);
   cursor: pointer;
+  transition: all 400ms ease-in-out;
 }
 
-.heating-element {
-  font-size: 1.5em;
+.controls-wrapper button:hover {
+  color: var(--hover-color);
+  transform: translateY(-5px) scale(0.9);
+}
+
+.controls-wrapper span {
+  transition: color 400ms ease-in-out;
+}
+
+.heating-element-on {
+  color: var(--hover-color);
+}
+
+.heating-element-off {
+  color: var(--cold-color);
 }
 
 /* Controls-Component */
 
-/* LoginForm */
+/* Login/Register Form */
 
 .form-wrapper {
   max-width: 500px;
@@ -228,7 +250,7 @@ input[type="email"] {
   transform: translateY(-5px) scale(0.9);
 }
 
-/* LoginForm */
+/* Login/Register Form */
 
 /* Logs */
 
