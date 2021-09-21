@@ -31,7 +31,7 @@ namespace TheBiscuitMachine.Web
 
             services.AddLoggerFactory(Configuration);
 
-            services.AddSignalR();
+            services.AddSignalR().AddNewtonsoftJsonProtocol();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
