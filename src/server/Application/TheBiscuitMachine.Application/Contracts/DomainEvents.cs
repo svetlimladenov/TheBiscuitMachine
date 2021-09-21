@@ -13,5 +13,9 @@
         public const string HeatingElementToggled = "HeatingElementToggled";
 
         public const string OvenCold = "OvenCold";
+
+        public const string Paused = "Paused";
+
+        public const string Resumed = "Resumed";
     }
 }

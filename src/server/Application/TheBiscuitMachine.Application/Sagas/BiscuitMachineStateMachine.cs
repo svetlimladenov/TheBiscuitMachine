@@ -52,6 +52,7 @@ namespace TheBiscuitMachine.Application.Sagas
             {
                 s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OvenColdDuration; };
             });
+            Event(() => TogglePause, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
 
             Initially(
                 When(StartMachine)
@@ -78,8 +79,7 @@ namespace TheBiscuitMachine.Application.Sagas
                     .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId }))
                     .TransitionTo(Working));
 
-            During(
-                Working,
+            DuringAny(
                 When(ToggleHeatingElement)
                     .IfElse(
                         ctx => ctx.Instance.HeatingElementOn,
@@ -90,6 +90,18 @@ namespace TheBiscuitMachine.Application.Sagas
                             .Unschedule(OvenColdSchedule)
                             .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId })))
                     .Then(ctx => ctx.Instance.HeatingElementOn = !ctx.Instance.HeatingElementOn));
+
+            During(
+                Working,
+                When(TogglePause)
+                    .PublishSimpleNotification(true, DomainEvents.Paused)
+                    .TransitionTo(Paused));
+
+            During(
+                Paused,
+                When(TogglePause)
+                    .PublishSimpleNotification(true, DomainEvents.Resumed)
+                    .TransitionTo(Working));
 
             DuringAny(
                 When(StopMachine)
@@ -134,5 +146,7 @@ namespace TheBiscuitMachine.Application.Sagas
         public Event<OvenCold> OvenCold { get; private set; }
 
         public Schedule<BiscuitMachineSaga, OvenCold> OvenColdSchedule { get; private set; }
+
+        public Event<TogglePause> TogglePause { get; private set; }
     }
 }

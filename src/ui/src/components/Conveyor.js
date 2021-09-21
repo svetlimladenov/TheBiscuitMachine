@@ -50,6 +50,9 @@ class Conveyor extends React.Component {
       this.handleHeatingElementToggled
     );
 
+    MachineHub.subscribeToPaused(this.handleMachinePaused);
+    MachineHub.subscribeToResumed(this.handleMachineResumed);
+
     this.setState({ hubConnection }, () => {
       hubConnection
         .start()
@@ -101,6 +104,14 @@ class Conveyor extends React.Component {
     });
   };
 
+  handleMachinePaused = () => {
+    this.setState({ isPaused: true });
+  };
+
+  handleMachineResumed = () => {
+    this.setState({ isPaused: false });
+  };
+
   // Button click handlers
   handleStartButtonClick = () => {
     MachineHub.startMachine(this.props.user.id);
@@ -110,12 +121,8 @@ class Conveyor extends React.Component {
     MachineHub.stopMachine(this.props.user.id);
   };
 
-  handlePauseButtonClick = () => {
-    this.setState((prevState) => {
-      return {
-        isPaused: !prevState.isPaused,
-      };
-    });
+  handlePauseToggleButtonClick = () => {
+    MachineHub.togglePause(this.props.user.id);
   };
 
   handleToggleHeatingElement = () => {
@@ -180,7 +187,7 @@ class Conveyor extends React.Component {
   render() {
     const buttonHandlers = {
       handleStartButtonClick: this.handleStartButtonClick,
-      handlePauseButtonClick: this.handlePauseButtonClick,
+      handlePauseButtonClick: this.handlePauseToggleButtonClick,
       handleStopButtonClick: this.handleStopButtonClick,
       handleToggleHeatingElement: this.handleToggleHeatingElement,
     };

@@ -8,6 +8,8 @@ const events = {
   ovenColdEvent: "OvenCold",
   ovenOverheatedEvent: "OvenOverheated",
   heatingElementToggled: "HeatingElementToggled",
+  paused: "Paused",
+  resumed: "Resumed",
 };
 
 const serverEvents = {
@@ -16,6 +18,7 @@ const serverEvents = {
   stopBiscuitMachine: "StopBiscuitMachine",
   deliverBiscuits: "DeliverBiscuits",
   toggleHeatingElement: "ToggleHeatingElement",
+  togglePause: "TogglePause",
 };
 
 const MachineHub = {
@@ -45,6 +48,12 @@ const MachineHub = {
   subscribeToHeatingElementToggled(callback) {
     this.hubConnection.on(events.heatingElementToggled, callback);
   },
+  subscribeToPaused(callback) {
+    this.hubConnection.on(events.paused, callback);
+  },
+  subscribeToResumed(callback) {
+    this.hubConnection.on(events.resumed, callback);
+  },
   joinGroup(userId) {
     this.hubConnection.invoke(serverEvents.joinGroup, userId);
   },
@@ -63,6 +72,9 @@ const MachineHub = {
       userId,
       biscuitsCount
     );
+  },
+  togglePause(userId) {
+    this.hubConnection.invoke(serverEvents.togglePause, userId);
   },
 };
 

@@ -24,7 +24,6 @@ namespace TheBiscuitMachine.Web.Hubs
 
         public async Task StartBiscuitMachine(string userId)
         {
-            logger.LogError(Context.ConnectionId);
             await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId, Context.ConnectionId });
         }
 
@@ -42,6 +41,11 @@ namespace TheBiscuitMachine.Web.Hubs
         {
             await this.bus.Publish<ToggleHeatingElement>(new { UserId = userId });
             await this.Clients.Group(userId).SendAsync(DomainEvents.HeatingElementToggled);
+        }
+
+        public async Task TogglePause(string userId)
+        {
+            await this.bus.Publish<TogglePause>(new { UserId = userId });
         }
     }
 }
