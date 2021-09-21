@@ -13,6 +13,14 @@ namespace TheBiscuitMachine.Data.Models
 
         public string UserId { get; set; }
 
+        public int Pulse { get; set; }
+
+        public long OvenHeatingDurationTicks { get; set; }
+
+        public long OvenOverheatingDurationTicks { get; set; }
+
+        public long OvenColdDurationTicks { get; set; }
+
         public User User { get; set; }
 
         public List<MachineReport> Reports => machineReports;
