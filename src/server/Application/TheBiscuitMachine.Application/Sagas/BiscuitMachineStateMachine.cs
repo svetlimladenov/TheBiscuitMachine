@@ -55,7 +55,15 @@ namespace TheBiscuitMachine.Application.Sagas
 
             Initially(
                 When(StartMachine)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStarted, ctx.Instance.ActiveConnectionId }))
+                    .PublishAsync(ctx => ctx.Init<Notification>(new 
+                    {
+                        ctx.Data.UserId, SaveReport = true, 
+                        Event = DomainEvents.MachineStarted, 
+                        Data = new
+                        {
+                            ActiveConnectionId = ctx.Data.ConnectionId,
+                        }
+                    }))
                     .Then(ctx =>
                     {
                         ctx.Instance.HeatingElementOn = true;

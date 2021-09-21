@@ -8,6 +8,6 @@
 
         bool SaveReport { get; }
 
-        string ActiveConnectionId { get; }
+        object Data { get; }
     }
 }

@@ -28,7 +28,7 @@ namespace TheBiscuitMachine.Application.Consumers
                 await SaveReport(report);
             }
 
-            await biscuitMachineNotificator.Notify(context.Message.UserId, context.Message.Event, context.Message.ActiveConnectionId);
+            await biscuitMachineNotificator.Notify(context.Message.UserId, context.Message.Event, context.Message.Data);
         }
 
         private async Task SaveReport(MachineReport report)

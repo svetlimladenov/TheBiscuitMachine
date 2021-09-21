@@ -1,5 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.Json;
+using System.Threading.Tasks;
+using MassTransit.Serialization;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TheBiscuitMachine.Application.Common.Interfaces;
 using TheBiscuitMachine.Web.Hubs;
 
@@ -14,9 +18,9 @@ namespace TheBiscuitMachine.Web.Services
             this.hub = hub;
         }
 
-        public async Task Notify(string userId, string eventName, string activeConnectionId)
+        public async Task Notify(string userId, string eventName, object data)
         {
-            await this.hub.Clients.Group(userId).SendAsync(eventName, activeConnectionId);
+            await this.hub.Clients.Group(userId).SendAsync(eventName, data);
         }
     }
 }

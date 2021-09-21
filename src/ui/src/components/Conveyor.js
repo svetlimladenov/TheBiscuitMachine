@@ -61,7 +61,7 @@ class Conveyor extends React.Component {
   }
 
   // Web Socket event handlers
-  handleMachineStarted = (activeConnectionId) => {
+  handleMachineStarted = ({ activeConnectionId }) => {
     this.setState({ activeConnectionId, heatingElementOn: true });
     this.addLog(messages.waitingForOvenToBeHeated);
   };
