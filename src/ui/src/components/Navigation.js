@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Conveyor from "./Conveyor";
 import Register from "./Register";
 import Login from "./Login";
+import LandlingPage from "./LandingPage";
 
 export default function Navigation({
   user,
@@ -19,12 +20,10 @@ export default function Navigation({
   };
 
   const renderLoggedInComponents = (user) => {
-    const conveyor = <Conveyor user={user} />;
     return (
       <React.Fragment>
-        <Route path="/conveyor">{conveyor}</Route>
-        <Route exact path="/">
-          {conveyor}
+        <Route path="/conveyor">
+          <Conveyor user={user} />
         </Route>
       </React.Fragment>
     );
@@ -52,9 +51,7 @@ export default function Navigation({
         <Route exact path="/register">
           <Register onSubmit={handleRegisterSubmit} error={error} />
         </Route>
-        <Route exact path="/">
-          <Login onSubmit={handleLoginSubmit} />
-        </Route>
+        <Route exact path="/" component={LandlingPage} />
       </React.Fragment>
     );
   };
