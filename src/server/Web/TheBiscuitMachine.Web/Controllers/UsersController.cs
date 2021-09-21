@@ -49,7 +49,7 @@ namespace TheBiscuitMachine.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(string id)
         {
-            return Ok();
+            return Ok(new { Id = id, Username = "string" });
         }
     }
 }
