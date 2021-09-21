@@ -40,7 +40,7 @@ namespace TheBiscuitMachine.Application.Consumers
                 PasswordHash = this.passwordHasher.HashPassword(context.Message.Password)
             };
 
-            newUser.AddMachine(this.biscuitMachineConfigurator);
+            newUser.SetMachine(this.biscuitMachineConfigurator);
             var userId = await SaveUser(newUser);
 
             await context.RespondAsync<RegisterResponse>(new { Success = true, UserId = userId });

@@ -22,7 +22,7 @@ namespace TheBiscuitMachine.Data.Models
 
         public List<BiscuitPackage> BiscuitPackages => biscuitPackages;
 
-        public Machine AddMachine(IBiscuitMachineConfigurator biscuitMachineConfigurator)
+        public Machine SetMachine(IBiscuitMachineConfigurator biscuitMachineConfigurator)
         {
             var defaults = biscuitMachineConfigurator.GetDefaultMachineConfig();
 
