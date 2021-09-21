@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./normalize.css";
 import "./App.css";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
-import api from "./shared/fetch";
 
-import Routing from "./components/Routing";
+import Navigation from "./components/Navigation";
+
+import api from "./shared/fetch";
 
 export default function App() {
   const [user, setUser] = useState({ isLoggedIn: false, id: "" });
@@ -30,20 +30,11 @@ export default function App() {
     });
   };
 
-  const links = user.isLoggedIn
-    ? Routing.renderLoggedInLinks()
-    : Routing.renderLoginLinks();
-
-  const components = user.isLoggedIn
-    ? Routing.renderLoggedInComponents(user)
-    : Routing.renderLoginComponents(handleLoginSubmit, handleRegisterSubmit);
-
   return (
-    <Router>
-      <nav>
-        <ul>{links}</ul>
-      </nav>
-      <Switch>{components}</Switch>
-    </Router>
+    <Navigation
+      user={user}
+      handleLoginSubmit={handleLoginSubmit}
+      handleRegisterSubmit={handleRegisterSubmit}
+    />
   );
 }
