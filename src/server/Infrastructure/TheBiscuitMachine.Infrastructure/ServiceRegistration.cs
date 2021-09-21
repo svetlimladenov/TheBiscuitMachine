@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TheBiscuitMachine.Application.Common.Interfaces;
+using TheBiscuitMachine.Application.Sagas;
 
 namespace TheBiscuitMachine.Infrastructure
 {
@@ -15,6 +16,8 @@ namespace TheBiscuitMachine.Infrastructure
                      b => b.MigrationsAssembly(typeof(TheBiscuitMachineContext).Assembly.FullName)));
 
             services.AddScoped<IDbContext>(provider => provider.GetService<TheBiscuitMachineContext>());
+
+            services.AddSingleton<IBiscuitMachineConfigurator, BiscuitMachineDatabaseConfigurator>();
 
             return services;
         }

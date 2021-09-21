@@ -7,7 +7,7 @@ namespace TheBiscuitMachine.Application.Sagas
 {
     public class BiscuitMachineStateMachine : MassTransitStateMachine<BiscuitMachineSaga>
     {
-        public BiscuitMachineStateMachine()
+        public BiscuitMachineStateMachine(IBiscuitMachineConfigurator configurator)
         {
             InstanceState(x => x.CurrentState);
 
@@ -17,24 +17,40 @@ namespace TheBiscuitMachine.Application.Sagas
 
                 x.SelectId(ctx => NewId.NextGuid());
 
-                x.SetSagaFactory(ctx => new BiscuitMachineSaga()
+                x.SetSagaFactory(ctx =>
                 {
-                    CurrentState = Initial.Name,
-                    CorrelationId = (Guid)ctx.CorrelationId,
-                    UserId = ctx.Message.UserId,
-                    ActiveConnectionId = ctx.Message.ConnectionId
+                    var configuration = configurator.GetUserMachineConfig(ctx.Message.UserId);
+                    return new BiscuitMachineSaga()
+                    {
+                        CurrentState = Initial.Name,
+                        CorrelationId = (Guid)ctx.CorrelationId,
+                        UserId = ctx.Message.UserId,
+                        ActiveConnectionId = ctx.Message.ConnectionId,
+                        MachineConfiguration = configuration
+                    };
                 });
             });
 
             Event(() => OvenHeated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
-            Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(10));
+            Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s =>
+            {
+                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.HeatingTime; };
+            });
+
             Event(() => OvenOverheated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
-            Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(20));
+            Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s =>
+            {
+                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OverheatingTime; };
+            });
+
             Event(() => StopMachine, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Event(() => ToggleHeatingElement, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
 
             Event(() => OvenCold, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
-            Schedule(() => OvenColdSchedule, instance => instance.ScheduleTokenId, s => s.Delay = TimeSpan.FromSeconds(20));
+            Schedule(() => OvenColdSchedule, instance => instance.ScheduleTokenId, s =>
+            {
+                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OvenColdTime; };
+            });
 
             Initially(
                 When(StartMachine)

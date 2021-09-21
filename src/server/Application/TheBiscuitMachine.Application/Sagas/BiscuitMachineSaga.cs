@@ -1,5 +1,6 @@
 ﻿using System;
 using Automatonymous;
+using TheBiscuitMachine.Application.Contracts;
 
 namespace TheBiscuitMachine.Application.Sagas
 {
@@ -16,5 +17,7 @@ namespace TheBiscuitMachine.Application.Sagas
         public bool HeatingElementOn { get; set; }
 
         public Guid? ScheduleTokenId { get; set; }
+
+        public MachineConfiguration MachineConfiguration { get; set; }
     }
 }
