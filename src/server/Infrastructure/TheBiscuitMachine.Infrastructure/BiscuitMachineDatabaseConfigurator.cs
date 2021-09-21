@@ -22,8 +22,16 @@ namespace TheBiscuitMachine.Infrastructure
             using (var scope = scopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<IDbContext>();
-                var machine = context.Machines.FirstOrDefault(x => x.UserId == userId);
-                machineConfiguration = new MachineConfiguration(2, TimeSpan.FromSeconds(100), TimeSpan.FromSeconds(20), TimeSpan.FromSeconds(20));
+                machineConfiguration = context.Machines
+                    .Where(x => x.UserId == userId)
+                    .Select(x => new MachineConfiguration()
+                    {
+                        Pulse = x.Pulse,
+                        OvenHeatingDuration = TimeSpan.FromTicks(x.OvenHeatingDurationTicks),
+                        OvenOverheatingDuration = TimeSpan.FromTicks(x.OvenOverheatingDurationTicks),
+                        OvenColdDuration = TimeSpan.FromTicks(x.OvenColdDurationTicks)
+                    })
+                    .FirstOrDefault();
             }
 
             return machineConfiguration;
