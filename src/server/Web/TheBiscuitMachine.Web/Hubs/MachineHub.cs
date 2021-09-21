@@ -40,7 +40,6 @@ namespace TheBiscuitMachine.Web.Hubs
         public async Task ToggleHeatingElement(string userId)
         {
             await this.bus.Publish<ToggleHeatingElement>(new { UserId = userId });
-            await this.Clients.Group(userId).SendAsync(DomainEvents.HeatingElementToggled);
         }
 
         public async Task TogglePause(string userId)

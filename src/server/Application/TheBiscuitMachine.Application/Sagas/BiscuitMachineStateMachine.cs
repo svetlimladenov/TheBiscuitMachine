@@ -89,6 +89,7 @@ namespace TheBiscuitMachine.Application.Sagas
                         x => x
                             .Unschedule(OvenColdSchedule)
                             .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId })))
+                    .PublishSimpleNotification(true, DomainEvents.HeatingElementToggled)
                     .Then(ctx => ctx.Instance.HeatingElementOn = !ctx.Instance.HeatingElementOn));
 
             During(
