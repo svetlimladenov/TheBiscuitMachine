@@ -2,6 +2,7 @@
 using Automatonymous;
 using MassTransit;
 using TheBiscuitMachine.Application.Contracts;
+using TheBiscuitMachine.Data.Common;
 
 namespace TheBiscuitMachine.Application.Sagas
 {

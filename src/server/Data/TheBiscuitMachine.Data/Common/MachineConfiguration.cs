@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TheBiscuitMachine.Application.Contracts
+namespace TheBiscuitMachine.Data.Common
 {
     public class MachineConfiguration
     {

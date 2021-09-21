@@ -5,6 +5,7 @@ using TheBiscuitMachine.Application.Common.Consumer;
 using TheBiscuitMachine.Application.Common.Interfaces;
 using TheBiscuitMachine.Application.Common.ValidationErrors;
 using TheBiscuitMachine.Application.Contracts;
+using TheBiscuitMachine.Data.Common;
 using TheBiscuitMachine.Data.Models;
 
 namespace TheBiscuitMachine.Application.Consumers
@@ -13,11 +14,13 @@ namespace TheBiscuitMachine.Application.Consumers
     {
         private readonly IDbContext context;
         private readonly IBiscuitMachinePasswordHasher passwordHasher;
+        private readonly IBiscuitMachineConfigurator biscuitMachineConfigurator;
 
-        public RegisterConsumer(IDbContext context, IBiscuitMachinePasswordHasher passwordHasher)
+        public RegisterConsumer(IDbContext context, IBiscuitMachinePasswordHasher passwordHasher, IBiscuitMachineConfigurator biscuitMachineConfigurator)
         {
             this.context = context;
             this.passwordHasher = passwordHasher;
+            this.biscuitMachineConfigurator = biscuitMachineConfigurator;
         }
 
         public async Task Consume(ConsumeContext<RegisterRequest> context)
@@ -37,7 +40,7 @@ namespace TheBiscuitMachine.Application.Consumers
                 PasswordHash = this.passwordHasher.HashPassword(context.Message.Password)
             };
 
-            newUser.AddMachine();
+            newUser.AddMachine(this.biscuitMachineConfigurator);
             var userId = await SaveUser(newUser);
 
             await context.RespondAsync<RegisterResponse>(new { Success = true, UserId = userId });
