@@ -1,10 +1,10 @@
 # The Biscuit Machine
 
-The Biscuit Machine is an open source software project, used to monitor and control biscuit machines (using a [conveyor type system]("https://en.wikipedia.org/wiki/Conveyor_system"))
+The Biscuit Machine is an open source software project, used to monitor and control biscuit machines (using a [conveyor type system](https://en.wikipedia.org/wiki/Conveyor_system))
 
 ## Installation
 
-The easiest way to get up and running is via [Docker]("https://www.docker.com/").
+The easiest way to get up and running is via [Docker](https://www.docker.com/).
 
 ```bash
 cd src
