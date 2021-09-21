@@ -55,10 +55,10 @@ namespace TheBiscuitMachine.Application.Sagas
 
             Initially(
                 When(StartMachine)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new 
+                    .PublishAsync(ctx => ctx.Init<Notification>(new
                     {
-                        ctx.Data.UserId, SaveReport = true, 
-                        Event = DomainEvents.MachineStarted, 
+                        ctx.Data.UserId, SaveReport = true,
+                        Event = DomainEvents.MachineStarted,
                         Data = new
                         {
                             ActiveConnectionId = ctx.Data.ConnectionId,
