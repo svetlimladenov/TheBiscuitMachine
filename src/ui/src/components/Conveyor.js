@@ -6,6 +6,7 @@ import Controls from "./Controls";
 import InfoMessage from "./InfoMessage";
 import User from "./User";
 import Logs from "./Logs";
+import MovingBiscuits from "./MovingBiscuits";
 
 import MachineHub from "../signalR/machine-hub";
 import pulse from "../shared/utils";
@@ -173,24 +174,6 @@ class Conveyor extends React.Component {
   };
 
   render() {
-    const renderMachineComponents = () => {
-      return (
-        <React.Fragment>
-          <div className="belt">
-            <MachineComponents />
-          </div>
-          <BiscuitBox biscuitBox={this.state.biscuitBox} />
-        </React.Fragment>
-      );
-    };
-
-    const renderBiscuits = () => {
-      const { biscuits, speed } = this.state;
-      return biscuits.map((biscuit) => {
-        return <Biscuit key={biscuit.id} y={biscuit.y} speed={speed} />;
-      });
-    };
-
     const buttonHandlers = {
       handleStartButtonClick: this.handleStartButtonClick,
       handlePauseButtonClick: this.handlePauseButtonClick,
@@ -202,15 +185,21 @@ class Conveyor extends React.Component {
       <div>
         <InfoMessage {...this.state.infoMessage} />
         <div className="conveyor-wrapper">
-          {renderMachineComponents()}
-          {renderBiscuits()}
+          <div className="belt">
+            <MachineComponents />
+          </div>
+          <BiscuitBox biscuitBox={this.state.biscuitBox} />
+          <MovingBiscuits
+            biscuits={this.state.biscuits}
+            speed={this.state.speed}
+          />
         </div>
-        <Logs logs={this.state.logs} />
         <Controls
           {...buttonHandlers}
           isPaused={this.state.isPaused}
           heatingElementOn={this.state.heatingElementOn}
         />
+        <Logs logs={this.state.logs} />
         <User userId={this.props.user.id} />
       </div>
     );

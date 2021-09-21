@@ -12,7 +12,7 @@ export default function MachineComponents() {
 
   return elements.map((element, idx) => {
     return (
-      <div className="machine-component">
+      <div className="machine-component" key={idx}>
         <h5 className="machine-component-name">{element.name}</h5>
         <div
           className="image-wrapper"
