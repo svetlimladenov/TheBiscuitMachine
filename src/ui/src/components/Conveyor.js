@@ -1,5 +1,4 @@
 import React from "react";
-import Biscuit from "./Biscuit";
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
 import Controls from "./Controls";
@@ -61,6 +60,7 @@ class Conveyor extends React.Component {
     });
   }
 
+  // Web Socket event handlers
   handleMachineStarted = (activeConnectionId) => {
     this.setState({ activeConnectionId, heatingElementOn: true });
     this.addLog(messages.waitingForOvenToBeHeated);
@@ -157,20 +157,22 @@ class Conveyor extends React.Component {
     });
   };
 
-  addLog = (message) => {
-    this.setState((prevState) => {
-      return {
-        logs: [...prevState.logs, message],
-      };
-    });
-  };
-
   deliverBiscuits = () => {
     if (
       this.state.activeConnectionId === this.state.hubConnection.connectionId
     ) {
       MachineHub.deliverBiscuits(this.props.user.id, 5);
     }
+  };
+
+  // Utils
+  addLog = (message) => {
+    this.setState((prevState) => {
+      return {
+        infoMessage: message,
+        logs: [...prevState.logs, message],
+      };
+    });
   };
 
   render() {
@@ -185,9 +187,7 @@ class Conveyor extends React.Component {
       <div>
         <InfoMessage {...this.state.infoMessage} />
         <div className="conveyor-wrapper">
-          <div className="belt">
-            <MachineComponents />
-          </div>
+          <MachineComponents />
           <BiscuitBox biscuitBox={this.state.biscuitBox} />
           <MovingBiscuits
             biscuits={this.state.biscuits}

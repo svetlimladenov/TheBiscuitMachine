@@ -10,17 +10,21 @@ export default function MachineComponents() {
     { name: "oven", src: ovenSrc, maxWidth: 500 },
   ];
 
-  return elements.map((element, idx) => {
-    return (
-      <div className="machine-component" key={idx}>
-        <h5 className="machine-component-name">{element.name}</h5>
-        <div
-          className="image-wrapper"
-          style={{ maxWidth: `${element.maxWidth}px` }}
-        >
-          <img src={element.src} alt={element.name} />
-        </div>
-      </div>
-    );
-  });
+  return (
+    <div className="belt">
+      {elements.map((element, idx) => {
+        return (
+          <div className="machine-component" key={idx}>
+            <h5 className="machine-component-name">{element.name}</h5>
+            <div
+              className="image-wrapper"
+              style={{ maxWidth: `${element.maxWidth}px` }}
+            >
+              <img src={element.src} alt={element.name} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
