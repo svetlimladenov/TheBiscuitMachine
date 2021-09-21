@@ -23,10 +23,10 @@ class Conveyor extends React.Component {
       currentId: 0,
       hubConnection: null,
       activeConnectionId: null,
-      pulseId: 0,
+      pulseId: null,
       biscuitBox: [],
       boxSize: 5,
-      speed: 1,
+      speed: 3,
       isPaused: false,
       heatingElementOn: false,
     };
@@ -71,7 +71,9 @@ class Conveyor extends React.Component {
       clearInterval(this.state.pulseId);
       this.setState({
         biscuits: [],
+        infoMessage: messages.machineStopped,
         isRunning: false,
+        pulseId: null,
       });
     }, 1000);
   };
