@@ -74,7 +74,7 @@ namespace TheBiscuitMachine.Application.Sagas
             During(
                 OvenHeating,
                 When(OvenHeated)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = false, Event = DomainEvents.OvenHeated }))
+                    .PublishSimpleNotification(false, DomainEvents.OvenHeated)
                     .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId }))
                     .TransitionTo(Working));
 
@@ -93,19 +93,19 @@ namespace TheBiscuitMachine.Application.Sagas
 
             DuringAny(
                 When(StopMachine)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.MachineStopped }))
+                    .PublishSimpleNotification(true, DomainEvents.MachineStopped)
                     .Unschedule(OvenHeatedSchedule)
                     .Unschedule(OvenOverheatedSchedule)
                     .TransitionTo(Final));
 
             DuringAny(
                 When(OvenOverheated)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.OvenOverheated }))
+                    .PublishSimpleNotification(true, DomainEvents.OvenOverheated)
                     .TransitionTo(Final));
 
             DuringAny(
                 When(OvenCold)
-                    .PublishAsync(ctx => ctx.Init<Notification>(new { ctx.Data.UserId, SaveReport = true, Event = DomainEvents.OvenCold }))
+                    .PublishSimpleNotification(true, DomainEvents.OvenCold)
                     .TransitionTo(Final));
 
             SetCompletedWhenFinalized();
@@ -114,6 +114,8 @@ namespace TheBiscuitMachine.Application.Sagas
         public State OvenHeating { get; private set; }
 
         public State Working { get; private set; }
+
+        public State Paused { get; private set; }
 
         public Event<StartBiscuitMachine> StartMachine { get; private set; }
 
