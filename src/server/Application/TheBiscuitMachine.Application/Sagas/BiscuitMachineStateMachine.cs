@@ -34,13 +34,13 @@ namespace TheBiscuitMachine.Application.Sagas
             Event(() => OvenHeated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s =>
             {
-                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.HeatingTime; };
+                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OvenHeatingDuration; };
             });
 
             Event(() => OvenOverheated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Schedule(() => OvenOverheatedSchedule, instance => instance.ScheduleTokenId, s =>
             {
-                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OverheatingTime; };
+                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OvenOverheatingDuration; };
             });
 
             Event(() => StopMachine, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
@@ -49,7 +49,7 @@ namespace TheBiscuitMachine.Application.Sagas
             Event(() => OvenCold, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Schedule(() => OvenColdSchedule, instance => instance.ScheduleTokenId, s =>
             {
-                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OvenColdTime; };
+                s.DelayProvider = (ctx) => { return ctx.Instance.MachineConfiguration.OvenColdDuration; };
             });
 
             Initially(
