@@ -49,6 +49,12 @@ export default function User({
       >
         Oven too cold time:
       </NumberControl>
+      <div className="save-specs">
+        <span>
+          You need to restart the machine for the changes to take effect
+        </span>
+        <button>Save</button>
+      </div>
     </div>
   );
 }
