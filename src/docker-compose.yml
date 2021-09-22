@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+    api:
+      container_name: biscuit-api
+      build:
+        context: .
+        dockerfile: server/Web/TheBiscuitMachine.Web/Dockerfile
+      ports:
+        - "8080:80"
+    
