@@ -32,6 +32,22 @@ namespace TheBiscuitMachine.Application.Sagas
                 });
             });
 
+            Event(() => GetMachineState, x =>
+            {
+                x.CorrelateBy(i => i.UserId, m => m.Message.UserId);
+
+                x.OnMissingInstance(m => m.ExecuteAsync(async context =>
+                {
+                    if (context.RequestId.HasValue)
+                    {
+                        await context.RespondAsync<MachineState>(new
+                        {
+                            State = StateMachineConstants.StateMachineNotFound
+                        });
+                    }
+                }));
+            });
+
             Event(() => OvenHeated, x => x.CorrelateBy(i => i.UserId, m => m.Message.UserId));
             Schedule(() => OvenHeatedSchedule, instance => instance.ScheduleTokenId, s =>
             {
@@ -72,10 +88,14 @@ namespace TheBiscuitMachine.Application.Sagas
                     .TransitionTo(OvenHeating)
                     .Schedule(OvenHeatedSchedule, ctx => ctx.Init<OvenHeated>(new { ctx.Data.UserId })));
 
+            DuringAny(
+                When(GetMachineState)
+                    .RespondAsync(ctx => ctx.Init<MachineState>(new { State = ctx.Instance.CurrentState })));
+
             During(
                 OvenHeating,
                 When(OvenHeated)
-                    .PublishSimpleNotification(false, DomainEvents.OvenHeated)
+                    .PublishSimpleNotification(saveReport: false, DomainEvents.OvenHeated)
                     .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId }))
                     .TransitionTo(Working));
 
@@ -89,36 +109,36 @@ namespace TheBiscuitMachine.Application.Sagas
                         x => x
                             .Unschedule(OvenColdSchedule)
                             .Schedule(OvenOverheatedSchedule, ctx => ctx.Init<OvenOverheated>(new { ctx.Data.UserId })))
-                    .PublishSimpleNotification(true, DomainEvents.HeatingElementToggled)
+                    .PublishSimpleNotification(saveReport: true, DomainEvents.HeatingElementToggled)
                     .Then(ctx => ctx.Instance.HeatingElementOn = !ctx.Instance.HeatingElementOn));
 
             During(
                 Working,
                 When(TogglePause)
-                    .PublishSimpleNotification(true, DomainEvents.Paused)
+                    .PublishSimpleNotification(saveReport: true, DomainEvents.Paused)
                     .TransitionTo(Paused));
 
             During(
                 Paused,
                 When(TogglePause)
-                    .PublishSimpleNotification(true, DomainEvents.Resumed)
+                    .PublishSimpleNotification(saveReport: true, DomainEvents.Resumed)
                     .TransitionTo(Working));
 
             DuringAny(
                 When(StopMachine)
-                    .PublishSimpleNotification(true, DomainEvents.MachineStopped)
+                    .PublishSimpleNotification(saveReport: true, DomainEvents.MachineStopped)
                     .Unschedule(OvenHeatedSchedule)
                     .Unschedule(OvenOverheatedSchedule)
                     .TransitionTo(Final));
 
             DuringAny(
                 When(OvenOverheated)
-                    .PublishSimpleNotification(true, DomainEvents.OvenOverheated)
+                    .PublishSimpleNotification(saveReport: true, DomainEvents.OvenOverheated)
                     .TransitionTo(Final));
 
             DuringAny(
                 When(OvenCold)
-                    .PublishSimpleNotification(true, DomainEvents.OvenCold)
+                    .PublishSimpleNotification(saveReport: true, DomainEvents.OvenCold)
                     .TransitionTo(Final));
 
             SetCompletedWhenFinalized();
@@ -149,5 +169,7 @@ namespace TheBiscuitMachine.Application.Sagas
         public Schedule<BiscuitMachineSaga, OvenCold> OvenColdSchedule { get; private set; }
 
         public Event<TogglePause> TogglePause { get; private set; }
+
+        public Event<GetMachineState> GetMachineState { get; private set; }
     }
 }

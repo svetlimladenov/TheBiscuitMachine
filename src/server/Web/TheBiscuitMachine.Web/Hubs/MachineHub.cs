@@ -20,6 +20,16 @@ namespace TheBiscuitMachine.Web.Hubs
         public async Task JoinGroup(string userId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+
+            var requestClient = this.bus.CreateRequestClient<GetMachineState>();
+
+            var response = await requestClient.GetResponse<MachineState>(new { UserId = userId });
+
+            logger.LogError("STATE - " + response.Message.State);
+            if (response.Message.State != StateMachineConstants.StateMachineNotFound)
+            {
+                // It means that we have an actual machine running, and we have to sync our new connection
+            }
         }
 
         public async Task StartBiscuitMachine(string userId)
