@@ -1,7 +1,11 @@
 export default function Logs({ logs }) {
   const renderLogs = () => {
-    return logs.map((log) => {
-      return <span>{log.text}</span>;
+    return logs.map((log, idx) => {
+      return (
+        <div key={idx}>
+          <span>{log.text}</span>
+        </div>
+      );
     });
   };
 
