@@ -10,12 +10,13 @@ import MovingBiscuits from "./MovingBiscuits";
 import MachineHub, { states } from "../signalR/machine-hub";
 import pulse from "../shared/pulse";
 import messages from "../shared/messages";
+import { now, addLogs } from "../shared/utils";
 
 class Conveyor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      logs: [messages.notStarted],
+      logs: [{ message: messages.notStarted, timestamp: now() }],
       infoMessage: messages.notStarted,
       biscuits: [],
       isRunning: false,
@@ -66,18 +67,37 @@ class Conveyor extends React.Component {
 
   // Web Socket event handlers
   handleOvenHeating = ({ activeConnectionId, pulse }) => {
-    this.setState({ activeConnectionId, heatingElementOn: true, pulse });
-    this.addLog(messages.waitingForOvenToBeHeated);
+    this.setState((prevState) => {
+      const { infoMessage, logs } = addLogs(
+        prevState.logs,
+        messages.waitingForOvenToBeHeated
+      );
+
+      return {
+        activeConnectionId,
+        heatingElementOn: true,
+        pulse,
+        infoMessage,
+        logs,
+      };
+    });
   };
 
   handleMachineStopped = () => {
     setTimeout(() => {
       clearInterval(this.state.pulseId);
-      this.setState({
-        biscuits: [],
-        infoMessage: messages.machineStopped,
-        isRunning: false,
-        pulseId: null,
+      this.setState((prevState) => {
+        const { infoMessage, logs } = addLogs(
+          prevState.logs,
+          messages.machineStopped
+        );
+        return {
+          biscuits: [],
+          infoMessage,
+          logs,
+          isRunning: false,
+          pulseId: null,
+        };
       });
     }, 1000);
   };
@@ -192,10 +212,7 @@ class Conveyor extends React.Component {
   // Utils
   addLog = (message) => {
     this.setState((prevState) => {
-      return {
-        infoMessage: message,
-        logs: [...prevState.logs, message],
-      };
+      return addLogs(prevState.logs, message);
     });
   };
 

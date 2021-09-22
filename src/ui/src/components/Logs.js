@@ -1,9 +1,11 @@
 export default function Logs({ logs }) {
   const renderLogs = () => {
-    return logs.map((log, idx) => {
+    return logs.map(({ message, timestamp }, idx) => {
       return (
         <div key={idx}>
-          <span>{log.text}</span>
+          <span>
+            {timestamp} : {message.text}
+          </span>
         </div>
       );
     });
@@ -11,7 +13,7 @@ export default function Logs({ logs }) {
 
   return (
     <div className="logs">
-      <h2>All messages:</h2>
+      <h2>Logs :</h2>
       {renderLogs()}
     </div>
   );
