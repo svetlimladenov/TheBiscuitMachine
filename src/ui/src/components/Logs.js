@@ -1,4 +1,4 @@
-export default function Logs({ logs }) {
+export default function Logs({ logs, clearLogs }) {
   const renderLogs = () => {
     return logs.map(({ message, timestamp }, idx) => {
       return (
@@ -14,6 +14,9 @@ export default function Logs({ logs }) {
   return (
     <div className="logs">
       <h2>Logs :</h2>
+      <button className="clear-logs" onClick={clearLogs}>
+        Clear logs
+      </button>
       {renderLogs()}
     </div>
   );

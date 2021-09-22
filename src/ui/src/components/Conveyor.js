@@ -3,7 +3,7 @@ import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
 import Controls from "./Controls";
 import InfoMessage from "./InfoMessage";
-import User from "./User";
+import User from "./MachineSpecifications";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 
@@ -26,7 +26,7 @@ class Conveyor extends React.Component {
       pulseId: null,
       biscuitBox: [],
       boxSize: 5,
-      pulse: 1,
+      pulse: null,
       ovenHeatingDuration: null,
       ovenOverheatingDuration: null,
       ovenColdDuration: null,
@@ -228,6 +228,10 @@ class Conveyor extends React.Component {
     });
   };
 
+  clearLogs = () => {
+    this.setState({ logs: [] });
+  };
+
   render() {
     const buttonHandlers = {
       handleStartButtonClick: this.handleStartButtonClick,
@@ -253,7 +257,7 @@ class Conveyor extends React.Component {
           heatingElementOn={this.state.heatingElementOn}
         />
         <div className="logs-and-users-wrapper">
-          <Logs logs={this.state.logs} />
+          <Logs logs={this.state.logs} clearLogs={this.clearLogs} />
           <User
             ovenHeatingDuration={this.state.ovenHeatingDuration}
             ovenOverheatingDuration={this.state.ovenOverheatingDuration}

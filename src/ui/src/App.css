@@ -265,8 +265,33 @@ input[type="email"] {
   justify-content: space-around;
 }
 
+.logs-and-users-wrapper h2 {
+  padding-bottom: 5px;
+  box-shadow: 0 3px 2px -2px var(--main-color);
+}
+
+.clear-logs {
+  background-color: #140f0f36;
+  border: 1px solid var(--main-color);
+  cursor: pointer;
+  color: white;
+  padding: 10px 10px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  transition: all 400ms ease-in-out;
+}
+
+.clear-logs:hover {
+  color: var(--hover-color);
+  transform: translateY(-5px) scale(0.9);
+}
+
 /* Logs */
 
+/* Machine Specifications */
 .number-control {
   color: white;
   display: flex;
@@ -288,4 +313,27 @@ input[type="email"] {
 
 .number-control label {
   margin-right: 10px;
+}
+
+.save-specs {
+  color: white;
+}
+
+.save-specs button {
+  display: block;
+  font-size: 1.2em;
+  color: white;
+  padding: 10px 20px;
+  background-color: #140f0f36;
+  border: 1px solid var(--main-color);
+  cursor: pointer;
+  transition: all 400ms ease-in-out;
+  margin: 0 auto;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.save-specs button:hover {
+  color: var(--hover-color);
+  transform: translateY(-5px) scale(0.9);
 }
