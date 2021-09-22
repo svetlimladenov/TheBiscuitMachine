@@ -201,11 +201,11 @@ class Conveyor extends React.Component {
     });
   };
 
-  deliverBiscuits = () => {
+  deliverBiscuits = (biscuitsCount) => {
     if (
       this.state.activeConnectionId === this.state.hubConnection.connectionId
     ) {
-      MachineHub.deliverBiscuits(this.props.user.id, 5);
+      MachineHub.deliverBiscuits(this.props.user.id, biscuitsCount);
     }
   };
 
