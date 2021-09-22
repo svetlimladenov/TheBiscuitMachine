@@ -10,6 +10,7 @@ const events = {
   heatingElementToggled: "HeatingElementToggled",
   paused: "Paused",
   resumed: "Resumed",
+  machineAlreadyWorking: "MachineAlreadyWorking",
 };
 
 const serverEvents = {
@@ -54,6 +55,9 @@ const MachineHub = {
   subscribeToResumed(callback) {
     this.hubConnection.on(events.resumed, callback);
   },
+  subscribeToMachineAlreadyWorking(callback) {
+    this.hubConnection.on(events.machineAlreadyWorking, callback);
+  },
   joinGroup(userId) {
     this.hubConnection.invoke(serverEvents.joinGroup, userId);
   },
@@ -79,3 +83,11 @@ const MachineHub = {
 };
 
 export default MachineHub;
+
+const states = {
+  ovenHeating: "OvenHeating",
+  working: "Working",
+  paused: "Paused",
+};
+
+export { states };

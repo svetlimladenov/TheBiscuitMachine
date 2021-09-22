@@ -7,7 +7,7 @@ import User from "./User";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 
-import MachineHub from "../signalR/machine-hub";
+import MachineHub, { states } from "../signalR/machine-hub";
 import pulse from "../shared/pulse";
 import messages from "../shared/messages";
 
@@ -26,7 +26,7 @@ class Conveyor extends React.Component {
       pulseId: null,
       biscuitBox: [],
       boxSize: 5,
-      speed: 3,
+      speed: 1,
       isPaused: false,
       heatingElementOn: false,
     };
@@ -49,9 +49,11 @@ class Conveyor extends React.Component {
     MachineHub.subscribeToHeatingElementToggled(
       this.handleHeatingElementToggled
     );
-
     MachineHub.subscribeToPaused(this.handleMachinePaused);
     MachineHub.subscribeToResumed(this.handleMachineResumed);
+    MachineHub.subscribeToMachineAlreadyWorking(
+      this.handleMachineAlreadyWorking
+    );
 
     this.setState({ hubConnection }, () => {
       hubConnection
@@ -110,6 +112,21 @@ class Conveyor extends React.Component {
 
   handleMachineResumed = () => {
     this.setState({ isPaused: false });
+
+    if (this.state.pulseId === null) {
+      this.handleStartConveyor();
+    }
+  };
+
+  handleMachineAlreadyWorking = (state, heatingElementOn) => {
+    this.setState({ heatingElementOn });
+    if (state === states.working) {
+      this.handleStartConveyor();
+    } else if (state === states.paused) {
+      this.handleMachinePaused();
+    } else if (state === states.ovenHeating) {
+      this.handleMachineStarted();
+    }
   };
 
   // Button click handlers

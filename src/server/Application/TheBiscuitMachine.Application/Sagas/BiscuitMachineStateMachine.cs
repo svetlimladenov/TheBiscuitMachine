@@ -90,7 +90,11 @@ namespace TheBiscuitMachine.Application.Sagas
 
             DuringAny(
                 When(GetMachineState)
-                    .RespondAsync(ctx => ctx.Init<MachineState>(new { State = ctx.Instance.CurrentState })));
+                    .RespondAsync(ctx => ctx.Init<MachineState>(new
+                    {
+                        State = ctx.Instance.CurrentState,
+                        ctx.Instance.HeatingElementOn
+                    })));
 
             During(
                 OvenHeating,

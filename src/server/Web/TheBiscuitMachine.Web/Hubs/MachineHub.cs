@@ -21,14 +21,19 @@ namespace TheBiscuitMachine.Web.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
 
+            await SynchronizeNewClient(userId);
+        }
+
+        public async Task SynchronizeNewClient(string userId)
+        {
             var requestClient = this.bus.CreateRequestClient<GetMachineState>();
 
             var response = await requestClient.GetResponse<MachineState>(new { UserId = userId });
 
-            logger.LogError("STATE - " + response.Message.State);
+            // It means that we have an actual machine running, and we have to sync our new connection
             if (response.Message.State != StateMachineConstants.StateMachineNotFound)
             {
-                // It means that we have an actual machine running, and we have to sync our new connection
+                await Clients.Caller.SendAsync(DomainEvents.MachineAlreadyWorking, response.Message.State, response.Message.HeatingElementOn);
             }
         }
 

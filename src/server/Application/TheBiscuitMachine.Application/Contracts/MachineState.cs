@@ -3,5 +3,7 @@
     public interface MachineState
     {
         string State { get; }
+
+        bool HeatingElementOn { get; }
     }
 }

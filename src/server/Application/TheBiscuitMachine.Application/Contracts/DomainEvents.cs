@@ -17,5 +17,7 @@
         public const string Paused = "Paused";
 
         public const string Resumed = "Resumed";
+
+        public const string MachineAlreadyWorking = "MachineAlreadyWorking";
     }
 }
