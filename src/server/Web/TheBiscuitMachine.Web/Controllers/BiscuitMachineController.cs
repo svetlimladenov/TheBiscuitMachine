@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using TheBiscuitMachine.Application.Contracts;
+using TheBiscuitMachine.Web.Models;
 
 namespace TheBiscuitMachine.Web.Controllers
 {
@@ -10,10 +12,12 @@ namespace TheBiscuitMachine.Web.Controllers
     public class BiscuitMachineController : ControllerBase
     {
         private readonly IBus mediator;
+        private readonly IRequestClient<EditBiscuitMachine> editMachineRequestClient;
 
-        public BiscuitMachineController(IBus mediator)
+        public BiscuitMachineController(IBus bus, IRequestClient<EditBiscuitMachine> editMachineRequestClient)
         {
-            this.mediator = mediator;
+            this.mediator = bus;
+            this.editMachineRequestClient = editMachineRequestClient;
         }
 
         /// <summary>
@@ -28,6 +32,20 @@ namespace TheBiscuitMachine.Web.Controllers
             await this.mediator.Publish<StartBiscuitMachine>(new { UserId = userId });
 
             return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditUserMachine(EditUserMachineInputModel editInput)
+        {
+            var result = await this.editMachineRequestClient.GetResponse<EditBiscuitMachineResponse>(new
+            {
+                editInput.Pulse,
+                editInput.OvenHeatingDuration,
+                editInput.OvenOverheatingDuration,
+                editInput.OvenColdDuration
+            });
+
+            return Ok(result.Message.UserId);
         }
     }
 }
