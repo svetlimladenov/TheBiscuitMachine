@@ -41,7 +41,7 @@ class Conveyor extends React.Component {
 
   componentDidMount() {
     const hubConnection = MachineHub.createConnection("/machinehub");
-    MachineHub.subscribeToMachineStartup(this.handleOvenHeating);
+    MachineHub.subscribeToMachineStartup(this.handleMachineStarted);
     MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
     MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
     MachineHub.subscribeToOvenCold(this.handleOvenCold);
@@ -66,7 +66,7 @@ class Conveyor extends React.Component {
   }
 
   // Web Socket event handlers
-  handleOvenHeating = ({ activeConnectionId, pulse }) => {
+  handleMachineStarted = ({ activeConnectionId, pulse }) => {
     this.setState((prevState) => {
       const { infoMessage, logs } = addLogs(
         prevState.logs,
@@ -144,7 +144,7 @@ class Conveyor extends React.Component {
     } else if (state === states.paused) {
       this.handleMachinePaused();
     } else if (state === states.ovenHeating) {
-      this.handleOvenHeating();
+      this.handleMachineStarted();
     }
   };
 
@@ -240,8 +240,10 @@ class Conveyor extends React.Component {
           isPaused={this.state.isPaused}
           heatingElementOn={this.state.heatingElementOn}
         />
-        <Logs logs={this.state.logs} />
-        <User userId={this.props.user.id} />
+        <div className="logs-and-users-wrapper">
+          <Logs logs={this.state.logs} />
+          <User userId={this.props.user.id} />
+        </div>
       </div>
     );
   }
