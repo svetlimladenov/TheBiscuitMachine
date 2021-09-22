@@ -2,7 +2,11 @@ import { useState } from "react";
 
 import NumberControl from "./NumberControl";
 
-export default function User({ userId }) {
+export default function User({
+  ovenHeatingDuration,
+  ovenOverheatingDuration,
+  ovenColdDuration,
+}) {
   const [pulse, setPulse] = useState(1);
   const [heatingTime, setHeatingTime] = useState(1);
   const [overHeatingTime, setOverHeatingTime] = useState(1);

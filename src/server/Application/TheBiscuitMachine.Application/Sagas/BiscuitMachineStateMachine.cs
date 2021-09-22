@@ -79,7 +79,10 @@ namespace TheBiscuitMachine.Application.Sagas
                         Data = new
                         {
                             ActiveConnectionId = ctx.Data.ConnectionId,
-                            ctx.Instance.MachineConfiguration.Pulse
+                            ctx.Instance.MachineConfiguration.Pulse,
+                            ctx.Instance.MachineConfiguration.OvenHeatingDuration,
+                            ctx.Instance.MachineConfiguration.OvenOverheatingDuration,
+                            ctx.Instance.MachineConfiguration.OvenColdDuration
                         }
                     }))
                     .Then(ctx =>

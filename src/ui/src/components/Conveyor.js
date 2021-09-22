@@ -27,6 +27,9 @@ class Conveyor extends React.Component {
       biscuitBox: [],
       boxSize: 5,
       pulse: 1,
+      ovenHeatingDuration: null,
+      ovenOverheatingDuration: null,
+      ovenColdDuration: null,
       isPaused: false,
       heatingElementOn: false,
     };
@@ -66,7 +69,13 @@ class Conveyor extends React.Component {
   }
 
   // Web Socket event handlers
-  handleMachineStarted = ({ activeConnectionId, pulse }) => {
+  handleMachineStarted = ({
+    activeConnectionId,
+    pulse,
+    ovenHeatingDuration,
+    ovenOverheatingDuration,
+    ovenColdDuration,
+  }) => {
     this.setState((prevState) => {
       const { infoMessage, logs } = addLogs(
         prevState.logs,
@@ -79,6 +88,9 @@ class Conveyor extends React.Component {
         pulse,
         infoMessage,
         logs,
+        ovenHeatingDuration,
+        ovenOverheatingDuration,
+        ovenColdDuration,
       };
     });
   };
@@ -242,7 +254,11 @@ class Conveyor extends React.Component {
         />
         <div className="logs-and-users-wrapper">
           <Logs logs={this.state.logs} />
-          <User userId={this.props.user.id} />
+          <User
+            ovenHeatingDuration={this.state.ovenHeatingDuration}
+            ovenOverheatingDuration={this.state.ovenOverheatingDuration}
+            ovenColdDuration={this.state.ovenColdDuration}
+          />
         </div>
       </div>
     );
