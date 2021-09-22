@@ -19,14 +19,13 @@ class Conveyor extends React.Component {
       infoMessage: messages.notStarted,
       biscuits: [],
       isRunning: false,
-      step: 0,
       currentId: 0,
       hubConnection: null,
       activeConnectionId: null,
       pulseId: null,
       biscuitBox: [],
       boxSize: 5,
-      speed: 1,
+      pulse: 1,
       isPaused: false,
       heatingElementOn: false,
     };
@@ -41,7 +40,7 @@ class Conveyor extends React.Component {
 
   componentDidMount() {
     const hubConnection = MachineHub.createConnection("/machinehub");
-    MachineHub.subscribeToMachineStartup(this.handleMachineStarted);
+    MachineHub.subscribeToMachineStartup(this.handleOvenHeating);
     MachineHub.subscribeToOvenHeated(this.handleOvenHeated);
     MachineHub.subscibeToOvenOverheated(this.handleOvenOverheated);
     MachineHub.subscribeToOvenCold(this.handleOvenCold);
@@ -66,8 +65,8 @@ class Conveyor extends React.Component {
   }
 
   // Web Socket event handlers
-  handleMachineStarted = ({ activeConnectionId }) => {
-    this.setState({ activeConnectionId, heatingElementOn: true });
+  handleOvenHeating = ({ activeConnectionId, pulse }) => {
+    this.setState({ activeConnectionId, heatingElementOn: true, pulse });
     this.addLog(messages.waitingForOvenToBeHeated);
   };
 
@@ -118,14 +117,14 @@ class Conveyor extends React.Component {
     }
   };
 
-  handleMachineAlreadyWorking = (state, heatingElementOn) => {
-    this.setState({ heatingElementOn });
+  handleMachineAlreadyWorking = (state, heatingElementOn, pulse) => {
+    this.setState({ heatingElementOn, pulse });
     if (state === states.working) {
       this.handleStartConveyor();
     } else if (state === states.paused) {
       this.handleMachinePaused();
     } else if (state === states.ovenHeating) {
-      this.handleMachineStarted();
+      this.handleOvenHeating();
     }
   };
 
@@ -157,7 +156,7 @@ class Conveyor extends React.Component {
         this.deliverBiscuits(this.props.user.id, 10);
       }
 
-      this.setState(({ step, biscuits, biscuitBox, currentId, isRunning }) => {
+      this.setState(({ biscuits, biscuitBox, currentId, isRunning }) => {
         const [updatedBiscuits, updatedBox] = pulse(
           biscuits,
           biscuitBox,
@@ -166,14 +165,13 @@ class Conveyor extends React.Component {
         );
 
         return {
-          step: step + 1,
           currentId: currentId + 1,
           biscuits: updatedBiscuits,
           biscuitBox: updatedBox,
           isRunning: true,
         };
       });
-    }, this.state.speed * 1000);
+    }, this.state.pulse * 1000);
 
     this.setState((prevState) => {
       return {
@@ -217,7 +215,7 @@ class Conveyor extends React.Component {
           <BiscuitBox biscuitBox={this.state.biscuitBox} />
           <MovingBiscuits
             biscuits={this.state.biscuits}
-            speed={this.state.speed}
+            speed={this.state.pulse}
           />
         </div>
         <Controls

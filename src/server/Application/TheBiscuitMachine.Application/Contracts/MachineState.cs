@@ -4,6 +4,8 @@
     {
         string State { get; }
 
+        int Pulse { get; }
+
         bool HeatingElementOn { get; }
     }
 }

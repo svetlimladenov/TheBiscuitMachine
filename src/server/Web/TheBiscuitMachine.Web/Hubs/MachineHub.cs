@@ -33,7 +33,11 @@ namespace TheBiscuitMachine.Web.Hubs
             // It means that we have an actual machine running, and we have to sync our new connection
             if (response.Message.State != StateMachineConstants.StateMachineNotFound)
             {
-                await Clients.Caller.SendAsync(DomainEvents.MachineAlreadyWorking, response.Message.State, response.Message.HeatingElementOn);
+                await Clients.Caller.SendAsync(
+                    DomainEvents.MachineAlreadyWorking,
+                    response.Message.State,
+                    response.Message.HeatingElementOn,
+                    response.Message.Pulse);
             }
         }
 

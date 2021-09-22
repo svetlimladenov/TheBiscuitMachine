@@ -79,6 +79,7 @@ namespace TheBiscuitMachine.Application.Sagas
                         Data = new
                         {
                             ActiveConnectionId = ctx.Data.ConnectionId,
+                            ctx.Instance.MachineConfiguration.Pulse
                         }
                     }))
                     .Then(ctx =>
@@ -93,7 +94,8 @@ namespace TheBiscuitMachine.Application.Sagas
                     .RespondAsync(ctx => ctx.Init<MachineState>(new
                     {
                         State = ctx.Instance.CurrentState,
-                        ctx.Instance.HeatingElementOn
+                        ctx.Instance.HeatingElementOn,
+                        ctx.Instance.MachineConfiguration.Pulse
                     })));
 
             During(
