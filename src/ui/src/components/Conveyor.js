@@ -3,7 +3,7 @@ import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
 import Controls from "./Controls";
 import InfoMessage from "./InfoMessage";
-import User from "./MachineSpecifications";
+import MachineSpecifications from "./MachineSpecifications";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 
@@ -258,7 +258,8 @@ class Conveyor extends React.Component {
         />
         <div className="logs-and-users-wrapper">
           <Logs logs={this.state.logs} clearLogs={this.clearLogs} />
-          <User
+          <MachineSpecifications
+            userId={this.props.user.id}
             ovenHeatingDuration={this.state.ovenHeatingDuration}
             ovenOverheatingDuration={this.state.ovenOverheatingDuration}
             ovenColdDuration={this.state.ovenColdDuration}

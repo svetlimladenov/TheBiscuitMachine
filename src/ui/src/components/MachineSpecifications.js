@@ -1,16 +1,17 @@
 import { useState } from "react";
-
+import api from "../shared/fetch";
 import NumberControl from "./NumberControl";
 
-export default function User({
+export default function MachineSpecifications({
+  userId,
   ovenHeatingDuration,
   ovenOverheatingDuration,
-  ovenColdDuration,
+  ovenColdDurationASAASDFASDFASD,
 }) {
   const [pulse, setPulse] = useState(1);
-  const [heatingTime, setHeatingTime] = useState(1);
-  const [overHeatingTime, setOverHeatingTime] = useState(1);
-  const [ovenColdTime, setOvenColdTime] = useState(1);
+  const [heatingDuration, setHeatingDuration] = useState(1);
+  const [overHeatingDuration, setOverHeatingDuration] = useState(1);
+  const [ovenColdDuration, setOvenColdDuration] = useState(1);
 
   const incrementDecrement = (state, hook) => {
     return {
@@ -25,6 +26,20 @@ export default function User({
     };
   };
 
+  const saveMachineSpecifications = () => {
+    const body = {
+      userId: userId,
+      pulse: pulse,
+      ovenHeatingDuration: "00:20:00",
+      ovenOverheatingDuration: "00:20:00",
+      ovenColdDuration: "00:20:00",
+    };
+
+    api.put("/Machine", body).then((response) => {
+      console.log(response);
+    });
+  };
+
   return (
     <div>
       <h2>Machine Specification</h2>
@@ -32,20 +47,20 @@ export default function User({
         Pulse:
       </NumberControl>
       <NumberControl
-        number={heatingTime}
-        {...incrementDecrement(heatingTime, setHeatingTime)}
+        number={heatingDuration}
+        {...incrementDecrement(heatingDuration, setHeatingDuration)}
       >
         Heating time:
       </NumberControl>
       <NumberControl
-        number={overHeatingTime}
-        {...incrementDecrement(overHeatingTime, setOverHeatingTime)}
+        number={overHeatingDuration}
+        {...incrementDecrement(overHeatingDuration, setOverHeatingDuration)}
       >
         Overheating time:
       </NumberControl>
       <NumberControl
-        number={ovenColdTime}
-        {...incrementDecrement(ovenColdTime, setOvenColdTime)}
+        number={ovenColdDuration}
+        {...incrementDecrement(ovenColdDuration, setOvenColdDuration)}
       >
         Oven too cold time:
       </NumberControl>
@@ -53,7 +68,7 @@ export default function User({
         <span>
           You need to restart the machine for the changes to take effect
         </span>
-        <button>Save</button>
+        <button onClick={saveMachineSpecifications}>Save</button>
       </div>
     </div>
   );

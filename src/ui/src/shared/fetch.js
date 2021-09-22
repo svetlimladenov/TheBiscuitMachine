@@ -26,6 +26,7 @@ const fetch = (method, url, data) => {
 const api = {
   get: (...args) => fetch("GET", ...args),
   post: (...args) => fetch("POST", ...args),
+  put: (...args) => fetch("PUT", ...args),
 };
 
 export default api;
