@@ -22,7 +22,7 @@ namespace TheBiscuitMachine.Application.Consumers
         {
             var machine = await dbContext.Machines.FirstOrDefaultAsync(x => x.UserId == context.Message.UserId);
 
-            if (machine == null) 
+            if (machine == null)
             {
                 await context.RespondAsync<EditBiscuitMachineResponse>(CreateValidationErrorResponse(ValidationErrors.MachineNotFound));
                 return;

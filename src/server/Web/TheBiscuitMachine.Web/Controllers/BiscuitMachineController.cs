@@ -18,7 +18,7 @@ namespace TheBiscuitMachine.Web.Controllers
         private readonly IRequestClient<GetMachineSpecifications> getMachineSpecificationsClient;
 
         public BiscuitMachineController(
-            IBus bus, 
+            IBus bus,
             IRequestClient<EditBiscuitMachine> editMachineRequestClient,
             IRequestClient<GetMachineSpecifications> getMachineSpecificationsClient)
         {
@@ -44,14 +44,14 @@ namespace TheBiscuitMachine.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMachineSpecifications(string userId)
         {
-            var result = await this.getMachineSpecificationsClient.GetResponse<MachineSpecificationsResponse>(new {UserId = userId });
+            var result = await this.getMachineSpecificationsClient.GetResponse<MachineSpecificationsResponse>(new { UserId = userId });
 
             if (!result.Message.Success)
             {
                 return BadRequest(result.Message.ValidationErrors);
             }
 
-            var outputModel = new MachineSpecificationsOutputModel() 
+            var outputModel = new MachineSpecificationsOutputModel()
             {
                 Pulse = result.Message.Pulse,
                 OvenHeatingDuration = result.Message.OvenHeatingDuration,
