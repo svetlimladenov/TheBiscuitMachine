@@ -292,6 +292,7 @@ input[type="email"] {
 /* Logs */
 
 /* Machine Specifications */
+
 .number-control {
   color: white;
   display: flex;
@@ -336,4 +337,15 @@ input[type="email"] {
 .save-specs button:hover {
   color: var(--hover-color);
   transform: translateY(-5px) scale(0.9);
+}
+
+.time-input {
+  color: white;
+  display: flex;
+  font-size: 1.4em;
+  padding: 5px;
+}
+
+.time-input label {
+  margin-right: 10px;
 }
