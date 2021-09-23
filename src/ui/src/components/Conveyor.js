@@ -117,6 +117,9 @@ class Conveyor extends React.Component {
   handleOvenHeated = () => {
     this.addLog(messages.ovenHeated);
     this.handleStartConveyor();
+    setTimeout(() => {
+      this.addLog(messages.machineWorking);
+    }, this.state.pulse * 1000);
   };
 
   handleOvenOverheated = () => {

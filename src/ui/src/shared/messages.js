@@ -15,6 +15,10 @@ const messages = {
     text: "Oven heated, starting the conveyor...",
     color: "white",
   },
+  machineWorking: {
+    text: "Machine working!",
+    color: "white",
+  },
   ovenOverheated: {
     text: "Oven overheated, stopping the conveyor...",
     color: "red",
