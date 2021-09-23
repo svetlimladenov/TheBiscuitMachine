@@ -33,6 +33,7 @@ namespace TheBiscuitMachine.Application
                 x.AddRequestClient<LoginRequest>();
                 x.AddRequestClient<RegisterRequest>();
                 x.AddRequestClient<EditBiscuitMachine>();
+                x.AddRequestClient<GetMachineSpecifications>();
             });
 
             services.AddMassTransitHostedService();

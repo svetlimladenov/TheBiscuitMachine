@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TheBiscuitMachine.Application.Contracts;
 using TheBiscuitMachine.Web.Models;
 
@@ -11,13 +12,19 @@ namespace TheBiscuitMachine.Web.Controllers
     [Route("Machine")]
     public class BiscuitMachineController : ControllerBase
     {
-        private readonly IBus mediator;
+        private readonly IBus bus;
         private readonly IRequestClient<EditBiscuitMachine> editMachineRequestClient;
 
-        public BiscuitMachineController(IBus bus, IRequestClient<EditBiscuitMachine> editMachineRequestClient)
+        private readonly IRequestClient<GetMachineSpecifications> getMachineSpecificationsClient;
+
+        public BiscuitMachineController(
+            IBus bus, 
+            IRequestClient<EditBiscuitMachine> editMachineRequestClient,
+            IRequestClient<GetMachineSpecifications> getMachineSpecificationsClient)
         {
-            this.mediator = bus;
+            this.bus = bus;
             this.editMachineRequestClient = editMachineRequestClient;
+            this.getMachineSpecificationsClient = getMachineSpecificationsClient;
         }
 
         /// <summary>
@@ -29,9 +36,30 @@ namespace TheBiscuitMachine.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Start(string userId)
         {
-            await this.mediator.Publish<StartBiscuitMachine>(new { UserId = userId });
+            await this.bus.Publish<StartBiscuitMachine>(new { UserId = userId });
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMachineSpecifications(string userId)
+        {
+            var result = await this.getMachineSpecificationsClient.GetResponse<MachineSpecificationsResponse>(new {UserId = userId });
+
+            if (!result.Message.Success)
+            {
+                return BadRequest(result.Message.ValidationErrors);
+            }
+
+            var outputModel = new MachineSpecificationsOutputModel() 
+            {
+                Pulse = result.Message.Pulse,
+                OvenHeatingDuration = result.Message.OvenHeatingDuration,
+                OvenOverheatingDuration = result.Message.OvenOverheatingDuration,
+                OvenColdDuration = result.Message.OvenColdDuration
+            };
+
+            return Ok(outputModel);
         }
 
         [HttpPut]
