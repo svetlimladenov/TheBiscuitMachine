@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const defaults = {
-  signalRUrl: "https://localhost:5001",
-  apiUrl: "https://localhost:5001",
+  signalRUrl: process.env.REACT_APP_SIGNALR_URL || "https://localhost:5001",
+  apiUrl: process.env.REACT_APP_API_URL || "https://localhost:5001",
 };
 
 const networkError = {
