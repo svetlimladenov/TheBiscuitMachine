@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MassTransit;
 using MassTransit.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shouldly;
@@ -17,21 +18,21 @@ using Xunit.Abstractions;
 
 namespace TheBiscuitMachine.Tests.Application.Consumers
 {
-    public class GetMachineSpecificationsConsumerTests : IAsyncLifetime
+    public class EditBiscuitMachineConsumerTests : IAsyncLifetime
     {
         private readonly IServiceProvider serviceProvider;
         private readonly InMemoryTestHarness harness;
         private readonly TheBiscuitMachineContext context;
 
-        public GetMachineSpecificationsConsumerTests(ITestOutputHelper testOutputHelper)
+        public EditBiscuitMachineConsumerTests(ITestOutputHelper testOutputHelper)
         {
             context = DbContextFactory.Create();
 
             this.serviceProvider = new ServiceCollection()
                 .AddMassTransitInMemoryTestHarness(cfg =>
                 {
-                    cfg.AddConsumer<GetMachineSpecificationsConsumer>();
-                    cfg.AddConsumerTestHarness<GetMachineSpecificationsConsumer>();
+                    cfg.AddConsumer<EditBiscuitMachineConsumer>();
+                    cfg.AddConsumerTestHarness<EditBiscuitMachineConsumer>();
                 })
                 .AddSingleton<ILoggerFactory>(provider => new TestOutputLoggerFactory(true, testOutputHelper))
                 .AddSingleton<IDbContext>(x => context)
@@ -41,7 +42,7 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
         }
 
         [Fact]
-        public async Task ShouldReturnCorrectMachineSpecs()
+        public async Task ShouldCorrectlyEditTheMachine()
         {
             // Arrange
             const string userId = "13245";
@@ -50,34 +51,47 @@ namespace TheBiscuitMachine.Tests.Application.Consumers
             TimeSpan overheatingDuration = new TimeSpan(0, 0, 20);
             TimeSpan ovenColdDurations = new TimeSpan(0, 1, 20);
 
+            TimeSpan newHeatingDuration = new TimeSpan(0, 1, 50);
+            TimeSpan newOverheatingDuration = new TimeSpan(24, 0, 0);
+            TimeSpan newOvenColdDuration = new TimeSpan(0, 2, 0);
+
             AddMachine(userId, pulse, heatingDuration, overheatingDuration, ovenColdDurations);
 
             var bus = this.serviceProvider.GetRequiredService<IBus>();
 
-            IRequestClient<GetMachineSpecifications> client = bus.CreateRequestClient<GetMachineSpecifications>();
+            IRequestClient<EditBiscuitMachine> client = bus.CreateRequestClient<EditBiscuitMachine>();
 
             // Act
-            var response = await client.GetResponse<MachineSpecificationsResponse>(new { UserId = userId });
+            var response = await client.GetResponse<EditBiscuitMachineResponse>(new
+            {
+                UserId = userId,
+                Pulse = pulse,
+                OvenHeatingDuration = newHeatingDuration.ToString(),
+                OvenOverheatingDuration = newOverheatingDuration.ToString(),
+                OvenColdDuration = newOvenColdDuration.ToString()
+            });
 
             // Assert
-            response.Message.OvenHeatingDuration.ShouldBe(heatingDuration.ToString());
-            response.Message.OvenOverheatingDuration.ShouldBe(overheatingDuration.ToString());
-            response.Message.OvenColdDuration.ShouldBe(ovenColdDurations.ToString());
             response.Message.Success.ShouldBeTrue();
-            Assert.True(await harness.Consumed.Any<MachineSpecificationsResponse>());
+            var dbMachine = await context.Machines.FirstOrDefaultAsync();
+            dbMachine.Pulse.ShouldBe(pulse);
+            dbMachine.OvenHeatingDurationTicks.ShouldBe(newHeatingDuration.Ticks);
+            dbMachine.OvenOverheatingDurationTicks.ShouldBe(newOverheatingDuration.Ticks);
+            dbMachine.OvenColdDurationTicks.ShouldBe(newOvenColdDuration.Ticks);
+            Assert.True(await harness.Consumed.Any<EditBiscuitMachineResponse>());
         }
 
         [Fact]
-        public async Task ShouldReturnValidationError_When_TheMachineDoesNotExist()
+        public async Task ShouldReturnValidationError_When_YouTryToEditNonExistingMachine()
         {
             const string userId = "13245";
 
             var bus = this.serviceProvider.GetRequiredService<IBus>();
 
-            IRequestClient<GetMachineSpecifications> client = bus.CreateRequestClient<GetMachineSpecifications>();
+            IRequestClient<EditBiscuitMachine> client = bus.CreateRequestClient<EditBiscuitMachine>();
 
             // Act
-            var response = await client.GetResponse<MachineSpecificationsResponse>(new { UserId = userId });
+            var response = await client.GetResponse<EditBiscuitMachineResponse>(new { UserId = userId });
 
             response.Message.Success.ShouldBeFalse();
             response.Message.ValidationErrors[0].Message.ShouldBe(ValidationErrors.MachineNotFound.Message);
