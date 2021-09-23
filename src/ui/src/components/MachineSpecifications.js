@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../shared/fetch";
 import NumberControl from "./NumberControl";
+import TimeInput from "./TimeInput";
 
 export default function MachineSpecifications({ userId }) {
   const [pulse, setPulse] = useState(1);
@@ -8,6 +9,10 @@ export default function MachineSpecifications({ userId }) {
   const [ovenOverheatingDuration, setOvenOvereatingDuration] =
     useState("00:00:00");
   const [ovenColdDuration, setOvenColdDuration] = useState("00:00:00");
+
+  const heatinRef = useRef();
+  const overheatingRef = useRef();
+  const ovenColdRef = useRef();
 
   useEffect(() => {
     api.get(`/Machine?userId=${userId}`).then(({ data }) => {
@@ -35,9 +40,9 @@ export default function MachineSpecifications({ userId }) {
     const body = {
       userId: userId,
       pulse: pulse,
-      ovenHeatingDuration,
-      ovenOverheatingDuration,
-      ovenColdDuration,
+      ovenHeatingDuration: heatinRef.current.value,
+      ovenOverheatingDuration: overheatingRef.current.value,
+      ovenColdDuration: ovenColdRef.current.value,
     };
 
     api.put("/Machine", body).then((response) => {
@@ -51,27 +56,21 @@ export default function MachineSpecifications({ userId }) {
       <NumberControl number={pulse} {...incrementDecrement(pulse, setPulse)}>
         Pulse:
       </NumberControl>
-      <NumberControl
-        number={ovenHeatingDuration}
-        {...incrementDecrement(ovenHeatingDuration, setOvenHeatingDuration)}
-      >
-        Heating time:
-      </NumberControl>
-      <NumberControl
-        number={ovenOverheatingDuration}
-        {...incrementDecrement(
-          ovenOverheatingDuration,
-          setOvenOvereatingDuration
-        )}
-      >
-        Overheating time:
-      </NumberControl>
-      <NumberControl
-        number={ovenColdDuration}
-        {...incrementDecrement(ovenColdDuration, setOvenColdDuration)}
-      >
-        Oven too cold time:
-      </NumberControl>
+      <TimeInput
+        ref={heatinRef}
+        label={"Heating time:"}
+        time={ovenHeatingDuration}
+      />
+      <TimeInput
+        ref={overheatingRef}
+        label={"Overheating time:"}
+        time={ovenOverheatingDuration}
+      />
+      <TimeInput
+        ref={ovenColdRef}
+        label={"Oven Cold time :"}
+        time={ovenColdDuration}
+      />
       <div className="save-specs">
         <span>
           You need to restart the machine for the changes to take effect
