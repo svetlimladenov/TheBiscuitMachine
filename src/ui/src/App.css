@@ -38,6 +38,10 @@ h5 {
   padding-bottom: 50px;
 }
 
+.biscuit-line {
+  margin-top: 130px;
+}
+
 /* Biscuit Component */
 
 .biscuit {
@@ -251,6 +255,16 @@ input[type="email"] {
   transform: translateY(-5px) scale(0.9);
 }
 
+.validation-errors-wrapper {
+  margin: 0 auto;
+}
+
+.validation-error {
+  color: white;
+  font-size: 0.8em;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
 /* Login/Register Form */
 
 /* Logs */
@@ -317,6 +331,7 @@ input[type="email"] {
 }
 
 .save-specs {
+  margin-top: 30px;
   color: white;
 }
 
@@ -331,7 +346,6 @@ input[type="email"] {
   transition: all 400ms ease-in-out;
   margin: 0 auto;
   border-radius: 8px;
-  margin-top: 10px;
 }
 
 .save-specs button:hover {
@@ -348,4 +362,14 @@ input[type="email"] {
 
 .time-input label {
   margin-right: 10px;
+}
+
+.saved-text {
+  margin-top: 10px;
+  color: var(--main-color);
+  text-align: center;
+  transition: all 400ms ease-in-out;
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
 }

@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
 import Field from "./Field";
 import { useHistory } from "react-router-dom";
+import { renderValidationErrors } from "../shared/utils";
 
-export default function Login({ onSubmit }) {
+export default function Login({ onSubmit, errors }) {
   const history = useHistory();
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -23,6 +24,9 @@ export default function Login({ onSubmit }) {
 
   return (
     <div className="form-wrapper">
+      <div className="validation-errors-wrapper">
+        {renderValidationErrors(errors)}
+      </div>
       <form onSubmit={handleSubmit}>
         <Field ref={usernameRef} label="Username: " type="text" />
         <Field ref={passwordRef} label="Password: " type="password" />

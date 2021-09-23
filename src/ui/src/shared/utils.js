@@ -10,4 +10,20 @@ function addLogs(logs, message) {
   };
 }
 
-export { now, addLogs };
+function renderValidationErrors(errors) {
+  return Object.keys(errors).map((key, idx) => {
+    return (
+      <div key={key}>
+        {errors[key].map((innerError, idx) => {
+          return (
+            <p className="validation-error" key={idx}>
+              {innerError}
+            </p>
+          );
+        })}
+      </div>
+    );
+  });
+}
+
+export { now, addLogs, renderValidationErrors };

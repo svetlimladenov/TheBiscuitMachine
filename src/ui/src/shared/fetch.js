@@ -5,6 +5,10 @@ export const defaults = {
   apiUrl: "https://localhost:5001",
 };
 
+const networkError = {
+  Network: ["Error establishing connection to the server"],
+};
+
 const fetch = (method, url, data) => {
   return new Promise((resolve, reject) => {
     axios({
@@ -16,8 +20,12 @@ const fetch = (method, url, data) => {
         resolve(res);
       },
       (error) => {
-        const validationErrors = error.response.data.errors;
-        reject(validationErrors);
+        if (error.response) {
+          const validationErrors = error.response.data.errors;
+          reject(validationErrors);
+        } else {
+          reject(networkError);
+        }
       }
     );
   });

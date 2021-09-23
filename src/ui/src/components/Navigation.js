@@ -9,7 +9,8 @@ export default function Navigation({
   user,
   handleLoginSubmit,
   handleRegisterSubmit,
-  error,
+  loginErrors,
+  registerErrors,
 }) {
   const renderLoggedInLinks = () => {
     return (
@@ -46,10 +47,18 @@ export default function Navigation({
     return (
       <React.Fragment>
         <Route exact path="/login">
-          <Login onSubmit={handleLoginSubmit} />
+          <Login
+            key={loginErrors}
+            errors={loginErrors}
+            onSubmit={handleLoginSubmit}
+          />
         </Route>
         <Route exact path="/register">
-          <Register onSubmit={handleRegisterSubmit} error={error} />
+          <Register
+            onSubmit={handleRegisterSubmit}
+            key={registerErrors}
+            errors={registerErrors}
+          />
         </Route>
         <Route exact path="/" component={LandlingPage} />
       </React.Fragment>
