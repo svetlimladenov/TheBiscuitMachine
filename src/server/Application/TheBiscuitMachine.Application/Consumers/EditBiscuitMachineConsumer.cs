@@ -31,7 +31,7 @@ namespace TheBiscuitMachine.Application.Consumers
             machine.Pulse = context.Message.Pulse;
             machine.OvenHeatingDurationTicks = TimeSpan.Parse(context.Message.OvenHeatingDuration).Ticks;
             machine.OvenOverheatingDurationTicks = TimeSpan.Parse(context.Message.OvenOverheatingDuration).Ticks;
-            machine.OvenOverheatingDurationTicks = TimeSpan.Parse(context.Message.OvenColdDuration).Ticks;
+            machine.OvenColdDurationTicks = TimeSpan.Parse(context.Message.OvenColdDuration).Ticks;
 
             await dbContext.SaveChangesAsync();
 
