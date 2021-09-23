@@ -44,11 +44,5 @@ namespace TheBiscuitMachine.Web.Controllers
 
             return CreatedAtAction(nameof(GetUser), new { id = result.Message.UserId }, result.Message.UserId);
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(string id)
-        {
-            return Ok(new { Id = id, Username = "string" });
-        }
     }
 }
