@@ -5,11 +5,13 @@ export default function NumberControl({
   handleDecrement,
 }) {
   return (
-    <div className="number-control">
+    <div className="number-control horizontal-row">
       <label>{children}</label>
-      <button onClick={handleDecrement}>-</button>
-      <div className="number">{number}</div>
-      <button onClick={handleIncrement}>+</button>
+      <div style={{ display: "flex" }}>
+        <button onClick={handleDecrement}>-</button>
+        <div className="number">{number}</div>
+        <button onClick={handleIncrement}>+</button>
+      </div>
     </div>
   );
 }

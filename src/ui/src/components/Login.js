@@ -30,7 +30,7 @@ export default function Login({ onSubmit, errors }) {
       <form onSubmit={handleSubmit}>
         <Field ref={usernameRef} label="Username: " type="text" />
         <Field ref={passwordRef} label="Password: " type="password" />
-        <div>
+        <div className="submit-button">
           <button type="submit">Login</button>
         </div>
       </form>

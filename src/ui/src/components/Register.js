@@ -37,11 +37,11 @@ export default function Login({ onSubmit, errors }) {
         <Field ref={passwordRef} label="Password: " type="password" />
         <Field
           ref={configrmPasswordRef}
-          label="Confirm Password"
+          label="Confirm Password: "
           type="password"
         />
         <Field ref={emailRef} label="Email: " type="email" />
-        <div>
+        <div className="submit-button">
           <button type="submit">Register</button>
         </div>
       </form>

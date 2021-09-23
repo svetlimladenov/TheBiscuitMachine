@@ -3,7 +3,7 @@ import TimeField from "react-simple-timefield";
 
 const TimeInput = React.forwardRef(({ label, time }, ref) => {
   return (
-    <div className="time-input">
+    <div className="time-input horizontal-row">
       <label>{label}</label>
       <TimeField
         showSeconds
