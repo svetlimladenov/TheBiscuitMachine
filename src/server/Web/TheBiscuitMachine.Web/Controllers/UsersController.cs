@@ -44,5 +44,12 @@ namespace TheBiscuitMachine.Web.Controllers
 
             return CreatedAtAction(nameof(GetUser), new { id = result.Message.UserId }, result.Message.UserId);
         }
+
+        // Currently not needed, but is present so we can use it for the Register 'location' response header
+        [HttpGet]
+        public Task<IActionResult> GetUser(string userId)
+        {
+            throw new NotImplementedByDesignException();
+        }
     }
 }
