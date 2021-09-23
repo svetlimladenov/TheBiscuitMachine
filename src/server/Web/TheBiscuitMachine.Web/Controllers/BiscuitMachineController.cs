@@ -67,6 +67,7 @@ namespace TheBiscuitMachine.Web.Controllers
         {
             var result = await this.editMachineRequestClient.GetResponse<EditBiscuitMachineResponse>(new
             {
+                editInput.UserId,
                 editInput.Pulse,
                 editInput.OvenHeatingDuration,
                 editInput.OvenOverheatingDuration,

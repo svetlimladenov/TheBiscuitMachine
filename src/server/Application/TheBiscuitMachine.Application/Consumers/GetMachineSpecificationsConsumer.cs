@@ -32,14 +32,13 @@ namespace TheBiscuitMachine.Application.Consumers
                 })
                 .FirstOrDefaultAsync();
 
-            if (machine == null) 
+            if (machine == null)
             {
                 await context.RespondAsync<MachineSpecificationsResponse>(CreateValidationErrorResponse(ValidationErrors.MachineNotFound));
                 return;
             }
 
-
-            await context.RespondAsync<MachineSpecificationsResponse>(new 
+            await context.RespondAsync<MachineSpecificationsResponse>(new
             {
                 machine.Pulse,
                 machine.OvenHeatingDuration,
