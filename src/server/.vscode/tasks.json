@@ -37,6 +37,16 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "start api",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "run",
+                "--project=.\\Web\\TheBiscuitMachine.Web\\TheBiscuitMachine.Web.csproj"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
