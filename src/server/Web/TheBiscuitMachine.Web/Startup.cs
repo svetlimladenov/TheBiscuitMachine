@@ -9,6 +9,7 @@ using TheBiscuitMachine.Application;
 using TheBiscuitMachine.Infrastructure;
 using TheBiscuitMachine.Web.DependencyInjectionRegistrations;
 using TheBiscuitMachine.Web.Hubs;
+using TheBiscuitMachine.Web.Infrastructure;
 using TheBiscuitMachine.Web.Middlewares;
 
 namespace TheBiscuitMachine.Web
@@ -52,11 +53,7 @@ namespace TheBiscuitMachine.Web
             }
             else
             {
-                using (var serviceScope = app.ApplicationServices.CreateScope())
-                {
-                    var dbContext = serviceScope.ServiceProvider.GetRequiredService<TheBiscuitMachineContext>();
-                    dbContext.Database.Migrate();
-                }
+                app.MigrateDatabase();
             }
 
             app.UseHttpsRedirection();
