@@ -58,13 +58,16 @@ class Conveyor extends React.Component {
       this.handleMachineAlreadyWorking
     );
 
-    this.setState({ hubConnection }, () => {
+    this.setState(() => {
       hubConnection
         .start()
         .then((result) => {
           MachineHub.joinGroup(this.props.user.id);
         })
         .catch((error) => console.error(error));
+      return {
+        hubConnection,
+      };
     });
   }
 
@@ -185,7 +188,7 @@ class Conveyor extends React.Component {
 
       if (this.state.biscuitBox.length === this.state.boxSize) {
         this.setState({ biscuitBox: [] });
-        this.deliverBiscuits(this.props.user.id, 10);
+        this.deliverBiscuits(10);
       }
 
       this.setState(({ biscuits, biscuitBox, currentId, isRunning }) => {
