@@ -9,6 +9,7 @@ export default function MachineSpecifications({ userId }) {
   const [ovenOverheatingDuration, setOvenOvereatingDuration] =
     useState("00:00:00");
   const [ovenColdDuration, setOvenColdDuration] = useState("00:00:00");
+  const [savedText, setSavedText] = useState(false);
 
   const heatinRef = useRef();
   const overheatingRef = useRef();
@@ -46,7 +47,10 @@ export default function MachineSpecifications({ userId }) {
     };
 
     api.put("/Machine", body).then((response) => {
-      console.log(response);
+      setSavedText(true);
+      setTimeout(() => {
+        setSavedText(false);
+      }, 2000);
     });
   };
 
@@ -72,9 +76,17 @@ export default function MachineSpecifications({ userId }) {
         time={ovenColdDuration}
       />
       <div className="save-specs">
-        <span>
+        <span className="save-info">
           You need to restart the machine for the changes to take effect
         </span>
+        {
+          <span
+            className="saved-text"
+            style={{ opacity: savedText ? "100%" : "0%" }}
+          >
+            Saved
+          </span>
+        }
         <button onClick={saveMachineSpecifications}>Save</button>
       </div>
     </div>
