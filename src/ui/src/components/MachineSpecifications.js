@@ -1,17 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../shared/fetch";
 import NumberControl from "./NumberControl";
 
-export default function MachineSpecifications({
-  userId,
-  ovenHeatingDuration,
-  ovenOverheatingDuration,
-  ovenColdDurationASAASDFASDFASD,
-}) {
+export default function MachineSpecifications({ userId }) {
   const [pulse, setPulse] = useState(1);
-  const [heatingDuration, setHeatingDuration] = useState(1);
-  const [overHeatingDuration, setOverHeatingDuration] = useState(1);
-  const [ovenColdDuration, setOvenColdDuration] = useState(1);
+  const [ovenHeatingDuration, setOvenHeatingDuration] = useState("00:00:00");
+  const [ovenOverheatingDuration, setOvenOvereatingDuration] =
+    useState("00:00:00");
+  const [ovenColdDuration, setOvenColdDuration] = useState("00:00:00");
+
+  useEffect(() => {
+    api.get(`/Machine?userId=${userId}`).then(({ data }) => {
+      setPulse(data.pulse);
+      setOvenHeatingDuration(data.ovenHeatingDuration);
+      setOvenOvereatingDuration(data.ovenOverheatingDuration);
+      setOvenColdDuration(data.ovenColdDuration);
+    });
+  }, [userId]);
 
   const incrementDecrement = (state, hook) => {
     return {
@@ -30,9 +35,9 @@ export default function MachineSpecifications({
     const body = {
       userId: userId,
       pulse: pulse,
-      ovenHeatingDuration: "00:20:00",
-      ovenOverheatingDuration: "00:20:00",
-      ovenColdDuration: "00:20:00",
+      ovenHeatingDuration,
+      ovenOverheatingDuration,
+      ovenColdDuration,
     };
 
     api.put("/Machine", body).then((response) => {
@@ -47,14 +52,17 @@ export default function MachineSpecifications({
         Pulse:
       </NumberControl>
       <NumberControl
-        number={heatingDuration}
-        {...incrementDecrement(heatingDuration, setHeatingDuration)}
+        number={ovenHeatingDuration}
+        {...incrementDecrement(ovenHeatingDuration, setOvenHeatingDuration)}
       >
         Heating time:
       </NumberControl>
       <NumberControl
-        number={overHeatingDuration}
-        {...incrementDecrement(overHeatingDuration, setOverHeatingDuration)}
+        number={ovenOverheatingDuration}
+        {...incrementDecrement(
+          ovenOverheatingDuration,
+          setOvenOvereatingDuration
+        )}
       >
         Overheating time:
       </NumberControl>

@@ -58,16 +58,13 @@ class Conveyor extends React.Component {
       this.handleMachineAlreadyWorking
     );
 
-    this.setState(() => {
+    this.setState({ hubConnection }, () => {
       hubConnection
         .start()
         .then((result) => {
           MachineHub.joinGroup(this.props.user.id);
         })
         .catch((error) => console.error(error));
-      return {
-        hubConnection,
-      };
     });
   }
 
@@ -261,12 +258,7 @@ class Conveyor extends React.Component {
         />
         <div className="logs-and-users-wrapper">
           <Logs logs={this.state.logs} clearLogs={this.clearLogs} />
-          <MachineSpecifications
-            userId={this.props.user.id}
-            ovenHeatingDuration={this.state.ovenHeatingDuration}
-            ovenOverheatingDuration={this.state.ovenOverheatingDuration}
-            ovenColdDuration={this.state.ovenColdDuration}
-          />
+          <MachineSpecifications userId={this.props.user.id} />
         </div>
       </div>
     );
