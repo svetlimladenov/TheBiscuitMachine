@@ -246,10 +246,12 @@ class Conveyor extends React.Component {
         <div className="conveyor-wrapper">
           <MachineComponents />
           <BiscuitBox biscuitBox={this.state.biscuitBox} />
-          <MovingBiscuits
-            biscuits={this.state.biscuits}
-            speed={this.state.pulse}
-          />
+          <div className="biscuit-line">
+            <MovingBiscuits
+              biscuits={this.state.biscuits}
+              speed={this.state.pulse}
+            />
+          </div>
         </div>
         <Controls
           {...buttonHandlers}
