@@ -41,7 +41,6 @@ h5 {
   justify-content: space-between;
   position: relative;
   overflow: hidden;
-  padding-bottom: 50px;
 }
 
 .biscuit-line {
@@ -51,7 +50,7 @@ h5 {
 /* Biscuit Component */
 
 .biscuit {
-  margin-top: 50px;
+  margin-top: 130px;
   width: 80px;
   height: 80px;
   background-image: url("./assets/biscuit.png");
@@ -66,7 +65,7 @@ h5 {
 }
 
 .static-biscuit {
-  margin-top: 0px;
+  margin-top: 190px;
 }
 
 .image-wrapper {

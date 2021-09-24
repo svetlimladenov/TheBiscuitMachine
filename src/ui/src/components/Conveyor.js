@@ -32,6 +32,7 @@ class Conveyor extends React.Component {
       ovenColdDuration: null,
       isPaused: false,
       heatingElementOn: false,
+      shouldScale: false,
     };
   }
 
@@ -110,6 +111,7 @@ class Conveyor extends React.Component {
           infoMessage,
           logs,
           isRunning: false,
+          isPaused: false,
           pulseId: null,
         };
       });
@@ -193,21 +195,24 @@ class Conveyor extends React.Component {
         this.deliverBiscuits(10);
       }
 
-      this.setState(({ biscuits, biscuitBox, currentId, isRunning }) => {
-        const [updatedBiscuits, updatedBox] = pulse(
-          biscuits,
-          biscuitBox,
-          currentId,
-          isRunning
-        );
+      this.setState(
+        ({ biscuits, biscuitBox, currentId, isRunning, shouldScale }) => {
+          const [updatedBiscuits, updatedBox] = pulse(
+            biscuits,
+            biscuitBox,
+            currentId,
+            isRunning
+          );
 
-        return {
-          currentId: currentId + 1,
-          biscuits: updatedBiscuits,
-          biscuitBox: updatedBox,
-          isRunning: true,
-        };
-      });
+          return {
+            currentId: currentId + 1,
+            biscuits: updatedBiscuits,
+            biscuitBox: updatedBox,
+            isRunning: true,
+            shouldScale: !shouldScale,
+          };
+        }
+      );
     }, this.state.pulse * 1000);
 
     this.setState((prevState) => {
@@ -260,7 +265,10 @@ class Conveyor extends React.Component {
       <div>
         <InfoMessage {...this.state.infoMessage} />
         <div className="conveyor-wrapper">
-          <MachineComponents />
+          <MachineComponents
+            scale={this.state.shouldScale}
+            speed={this.state.pulse}
+          />
           <BiscuitBox biscuitBox={this.state.biscuitBox} />
           <div className="biscuit-line">
             <MovingBiscuits
