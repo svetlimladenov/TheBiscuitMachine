@@ -232,6 +232,7 @@ input[type="email"] {
   background-color: #140f0f36;
   box-shadow: 0 4px 2px -2px var(--main-color);
   color: white;
+  font-family: "Lucida Casual", "Comic Sans MS";
 }
 
 .form-wrapper form {
@@ -266,7 +267,7 @@ input[type="email"] {
 .validation-error {
   color: white;
   font-size: 0.8em;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-family: "Lucida Casual", "Comic Sans MS";
 }
 
 .input-field {
