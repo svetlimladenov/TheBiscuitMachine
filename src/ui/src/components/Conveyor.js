@@ -66,6 +66,8 @@ class Conveyor extends React.Component {
         })
         .catch((error) => console.error(error));
     });
+
+    this.handleTabClosed();
   }
 
   // Web Socket event handlers
@@ -213,6 +215,17 @@ class Conveyor extends React.Component {
         ...prevState,
         pulseId: pulseId,
       };
+    });
+  };
+
+  handleTabClosed = () => {
+    window.addEventListener("beforeunload", (ev) => {
+      ev.preventDefault();
+      if (
+        this.state.activeConnectionId === this.state.hubConnection.connectionId
+      ) {
+        return this.handleStopButtonClick();
+      }
     });
   };
 
