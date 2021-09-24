@@ -32,6 +32,7 @@ As mentioned above, we are still not production ready, so here are some limitati
 - In memory saga repository is used for the saga, again for the sake of simplicitly, but there are multiple options for persistant repositories that can be easily implemented.
 - The UI may not be really responsive on different devices :/
 - The UI state management may not be really good, and can be drastically improved with a flux pattern.
+- You should login every time you hit the refresh button in the browser.
 
 ## Manual setup
 
@@ -54,8 +55,10 @@ dotnet run
 
 ### UI
 
+- Configure the .env api url
 - Run the following commands
 
 ```bash
 cd src\ui
 yarn start
+```
