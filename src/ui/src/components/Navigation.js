@@ -47,18 +47,10 @@ export default function Navigation({
     return (
       <React.Fragment>
         <Route exact path="/login">
-          <Login
-            key={loginErrors}
-            errors={loginErrors}
-            onSubmit={handleLoginSubmit}
-          />
+          <Login errors={loginErrors} onSubmit={handleLoginSubmit} />
         </Route>
         <Route exact path="/register">
-          <Register
-            onSubmit={handleRegisterSubmit}
-            key={registerErrors}
-            errors={registerErrors}
-          />
+          <Register onSubmit={handleRegisterSubmit} errors={registerErrors} />
         </Route>
         <Route exact path="/" component={LandlingPage} />
       </React.Fragment>

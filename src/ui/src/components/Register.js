@@ -11,6 +11,8 @@ export default function Login({ onSubmit, errors }) {
   const configrmPasswordRef = useRef();
   const emailRef = useRef();
 
+  const [localErrors, setLocalErrors] = useState([]);
+
   const changeRoute = () => {
     history.push("/conveyor");
   };
@@ -24,13 +26,38 @@ export default function Login({ onSubmit, errors }) {
       email: emailRef.current.value,
     };
 
-    onSubmit(data, changeRoute);
+    if (validateData(data)) {
+      onSubmit(data, changeRoute);
+    }
   };
+
+  const validateData = (data) => {
+    let isValid = true;
+    if (data.password.length < 3) {
+      setLocalErrors({
+        ...localErrors,
+        Password: [
+          "The field ConfirmPassword must be a string or array type with a minimum length of '6'.",
+        ],
+      });
+      isValid = false;
+    } else {
+      setLocalErrors({});
+    }
+    return isValid;
+  };
+
+  let allErrors = {};
+  if (Object.keys(localErrors).length > 0) {
+    allErrors = localErrors;
+  } else {
+    allErrors = errors;
+  }
 
   return (
     <div className="form-wrapper">
       <div className="validation-errors-wrapper">
-        {renderValidationErrors(errors)}
+        {renderValidationErrors(allErrors)}
       </div>
       <form onSubmit={handleSubmit}>
         <Field ref={usernameRef} label="Username: " type="text" />
