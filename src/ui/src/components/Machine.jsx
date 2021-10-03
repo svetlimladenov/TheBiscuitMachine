@@ -18,7 +18,6 @@ export default function Machine({ user }) {
 
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
-  const [pulse, setPulse] = useState(2);
   const [shouldScale, setShouldScale] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -29,6 +28,7 @@ export default function Machine({ user }) {
   const [activeConnectionId, setActiveConnectionId] = useState();
 
   const [machineSpecs, setMachineSpecs] = useState({
+    pulse: 2,
     heatingElementOn: false,
     ovenHeatingDuration: "00:00:00",
     ovenOverheatingDuration: "00:00:00",
@@ -42,12 +42,12 @@ export default function Machine({ user }) {
     ovenOverheatingDuration,
     ovenColdDuration,
   }) => {
-    // this will cause 8 renders :/, should I merge the states in an object ?
-    setPulse(pulse);
+    // this will cause 3 renders :/
     addLog(messages.waitingForOvenToBeHeated);
     setActiveConnectionId(activeConnectionId);
 
     setMachineSpecs({
+      pulse,
       heatingElementOn: true,
       ovenHeatingDuration,
       ovenOverheatingDuration,
@@ -55,9 +55,18 @@ export default function Machine({ user }) {
     });
   };
 
+  const handleOvenHeated = () => {
+    addLog(messages.ovenHeated);
+    // this.handleStartConveyor();
+    setTimeout(() => {
+      addLog(messages.machineWorking);
+    }, machineSpecs.pulse * 1000);
+  };
+
   useEffect(() => {
     const hubConnection = MachineHub.createConnection("/machinehub");
     MachineHub.subscribeToMachineStartup(handleMachineStarted);
+    MachineHub.subscribeToOvenHeated(handleOvenHeated);
 
     hubConnection
       .start()
@@ -78,7 +87,9 @@ export default function Machine({ user }) {
   };
 
   const addLog = (message) => {
-    setLogs([{ message, timestamp: now() }, ...logs]);
+    setLogs((logs) => {
+      return [{ message, timestamp: now() }, ...logs];
+    });
   };
 
   const buttonHandlers = {
@@ -98,12 +109,12 @@ export default function Machine({ user }) {
 
   return (
     <div>
-      <InfoMessage {...logs[logs.length - 1]} />
+      <InfoMessage {...logs[0]} />
       <div className="conveyor-wrapper">
-        <MachineComponents scale={shouldScale} speed={pulse} />
+        <MachineComponents scale={shouldScale} speed={machineSpecs.pulse} />
         <BiscuitBox biscuitBox={biscuitBox} />
         <div className="biscuit-line">
-          <MovingBiscuits biscuits={biscuits} speed={pulse} />
+          <MovingBiscuits biscuits={biscuits} speed={machineSpecs.pulse} />
         </div>
       </div>
       <Controls
