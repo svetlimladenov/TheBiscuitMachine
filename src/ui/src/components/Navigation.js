@@ -13,6 +13,7 @@ export default function Navigation() {
   const renderLoggedInLinks = () => {
     const handleLogout = () => {
       user.setCurrentUser(null);
+      localStorage.removeItem("userId");
     };
 
     return (
@@ -30,7 +31,7 @@ export default function Navigation() {
   const renderLoggedInComponents = () => {
     return (
       <React.Fragment>
-        <Route path="/conveyor">
+        <Route path={["/conveyor", "/"]}>
           {/* <Conveyor user={user} /> */}
           <Machine />
         </Route>

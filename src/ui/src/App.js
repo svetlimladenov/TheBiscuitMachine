@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./normalize.css";
 import "./App.css";
 
@@ -7,8 +7,8 @@ import UserContext from "./shared/UserContext";
 
 export default function App() {
   const [user, setUser] = useState({
-    isLoggedIn: false,
-    id: "",
+    isLoggedIn: localStorage.getItem("userId") && true,
+    id: localStorage.getItem("userId"),
     setCurrentUser(id) {
       let isLoggedIn = false;
       if (id) {
@@ -19,6 +19,7 @@ export default function App() {
         id: id,
         setCurrentUser: this.setCurrentUser,
       });
+      localStorage.setItem("userId", id);
     },
   });
 
