@@ -13,7 +13,6 @@ export default function Navigation() {
   const renderLoggedInLinks = () => {
     const handleLogout = () => {
       user.setCurrentUser(null);
-      localStorage.removeItem("userId");
     };
 
     return (

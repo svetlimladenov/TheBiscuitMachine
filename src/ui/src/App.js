@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./normalize.css";
 import "./App.css";
 
@@ -10,12 +10,8 @@ export default function App() {
     isLoggedIn: localStorage.getItem("userId") && true,
     id: localStorage.getItem("userId"),
     setCurrentUser(id) {
-      let isLoggedIn = false;
-      if (id) {
-        isLoggedIn = true;
-      }
       setUser({
-        isLoggedIn: isLoggedIn,
+        isLoggedIn: id && true,
         id: id,
         setCurrentUser: this.setCurrentUser,
       });
