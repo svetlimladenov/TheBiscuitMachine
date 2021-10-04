@@ -22,65 +22,89 @@ const serverEvents = {
   togglePause: "TogglePause",
 };
 
-const MachineHub = {
-  createConnection(url) {
-    const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${defaults.signalRUrl}${url}`)
-      .build();
+class MachineHub {
+  constructor() {
+    this.url = "/machinehub";
+  }
 
-    this.hubConnection = hubConnection;
-    return hubConnection;
-  },
+  createConnection() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(`${defaults.signalRUrl}${this.url}`)
+      .build();
+  }
+
+  stopConnection() {
+    this.hubConnection.stop();
+  }
+
+  getConnection() {
+    return this.hubConnection;
+  }
+
   subscribeToMachineStartup(callback) {
     this.hubConnection.on(events.machineStartedEvent, callback);
-  },
+  }
+
   subscribeToMachineStopped(callback) {
     this.hubConnection.on(events.machineStoppedEvent, callback);
-  },
+  }
+
   subscribeToOvenHeated(callback) {
     this.hubConnection.on(events.ovenHeatedEvent, callback);
-  },
+  }
+
   subscibeToOvenOverheated(callback) {
     this.hubConnection.on(events.ovenOverheatedEvent, callback);
-  },
+  }
+
   subscribeToOvenCold(callback) {
     this.hubConnection.on(events.ovenColdEvent, callback);
-  },
+  }
+
   subscribeToHeatingElementToggled(callback) {
     this.hubConnection.on(events.heatingElementToggled, callback);
-  },
+  }
+
   subscribeToPaused(callback) {
     this.hubConnection.on(events.paused, callback);
-  },
+  }
+
   subscribeToResumed(callback) {
     this.hubConnection.on(events.resumed, callback);
-  },
+  }
+
   subscribeToMachineAlreadyWorking(callback) {
     this.hubConnection.on(events.machineAlreadyWorking, callback);
-  },
+  }
+
   joinGroup(userId) {
     this.hubConnection.invoke(serverEvents.joinGroup, userId);
-  },
+  }
+
   startMachine(userId) {
     this.hubConnection.invoke(serverEvents.startBiscuitMachine, userId);
-  },
+  }
+
   stopMachine(userId) {
     this.hubConnection.invoke(serverEvents.stopBiscuitMachine, userId);
-  },
+  }
+
   toggleHeatingElement(userId) {
     this.hubConnection.invoke(serverEvents.toggleHeatingElement, userId);
-  },
+  }
+
   deliverBiscuits(userId, biscuitsCount) {
     this.hubConnection.invoke(
       serverEvents.deliverBiscuits,
       userId,
       biscuitsCount
     );
-  },
+  }
+
   togglePause(userId) {
     this.hubConnection.invoke(serverEvents.togglePause, userId);
-  },
-};
+  }
+}
 
 export default MachineHub;
 
