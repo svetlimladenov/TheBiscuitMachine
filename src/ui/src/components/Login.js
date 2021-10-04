@@ -1,12 +1,17 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Field from "./Field";
 import { useHistory } from "react-router-dom";
 import { renderValidationErrors } from "../shared/utils";
+import UserContext from "../shared/UserContext";
+import api from "../shared/fetch";
 
-export default function Login({ onSubmit, errors }) {
+export default function Login({ onSubmit }) {
+  const [errors, setErrors] = useState({});
   const history = useHistory();
   const usernameRef = useRef();
   const passwordRef = useRef();
+
+  const user = useContext(UserContext);
 
   const changeRoute = () => {
     history.push("/conveyor");
@@ -14,12 +19,21 @@ export default function Login({ onSubmit, errors }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = {
+    const body = {
       username: usernameRef.current.value,
       password: passwordRef.current.value,
     };
 
-    onSubmit(data, changeRoute);
+    api
+      .post("/Users/Login", body)
+      .then(({ data }) => {
+        user.handleLogin(data);
+      })
+      .catch((errors) => {
+        setErrors(errors);
+      });
+
+    changeRoute();
   };
 
   return (

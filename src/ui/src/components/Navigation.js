@@ -10,6 +10,7 @@ import UserContext from "../shared/UserContext";
 export default function Navigation({
   handleLoginSubmit,
   handleRegisterSubmit,
+  handleLogout,
   loginErrors,
   registerErrors,
 }) {
@@ -17,9 +18,14 @@ export default function Navigation({
 
   const renderLoggedInLinks = () => {
     return (
-      <li>
-        <Link to="/conveyor">Conveyor</Link>
-      </li>
+      <>
+        <li>
+          <Link to="/conveyor">Conveyor</Link>
+        </li>
+        <li>
+          <button onClick={handleLogout}>Logout</button>
+        </li>
+      </>
     );
   };
 
@@ -51,7 +57,7 @@ export default function Navigation({
     return (
       <React.Fragment>
         <Route exact path="/login">
-          <Login errors={loginErrors} onSubmit={handleLoginSubmit} />
+          <Login />
         </Route>
         <Route exact path="/register">
           <Register onSubmit={handleRegisterSubmit} errors={registerErrors} />
