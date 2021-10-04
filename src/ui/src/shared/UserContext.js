@@ -3,7 +3,7 @@ import React from "react";
 const UserContext = React.createContext({
   id: null,
   isLoggedIn: false,
-  handleLogin(id) {},
+  setCurrentUser(id) {},
 });
 
 export default UserContext;

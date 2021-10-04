@@ -30,46 +30,21 @@ export default function Login() {
       email: emailRef.current.value,
     };
 
-    if (validateData(body)) {
-      api
-        .post("/Users/Register", body)
-        .then(({ data }) => {
-          user.handleLogin(data);
-          changeRoute();
-        })
-        .catch((errors) => {
-          setErrors(errors);
-        });
-    }
-  };
-
-  const validateData = (data) => {
-    let isValid = true;
-    if (data.password.length < 3) {
-      setErrors({
-        ...errors,
-        Password: [
-          "The field ConfirmPassword must be a string or array type with a minimum length of '6'.",
-        ],
+    api
+      .post("/Users/Register", body)
+      .then(({ data }) => {
+        user.setCurrentUser(data);
+        changeRoute();
+      })
+      .catch((errors) => {
+        setErrors(errors);
       });
-      isValid = false;
-    } else {
-      setErrors({});
-    }
-    return isValid;
   };
-
-  let allErrors = {};
-  if (Object.keys(errors).length > 0) {
-    allErrors = errors;
-  } else {
-    allErrors = errors;
-  }
 
   return (
     <div className="form-wrapper">
       <div className="validation-errors-wrapper">
-        {renderValidationErrors(allErrors)}
+        {renderValidationErrors(errors)}
       </div>
       <form onSubmit={handleSubmit}>
         <Field ref={usernameRef} label="Username: " type="text" />

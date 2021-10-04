@@ -167,12 +167,14 @@ button {
 }
 
 nav ul li button {
+  cursor: pointer;
   background-color: #140f0f36;
   outline: none;
   border: none;
 }
 
-nav ul li a:hover {
+nav ul li a:hover,
+button:hover {
   color: var(--hover-color);
   transform: translateY(-5px) scale(0.9);
 }

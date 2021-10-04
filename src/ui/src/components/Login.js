@@ -27,13 +27,12 @@ export default function Login({ onSubmit }) {
     api
       .post("/Users/Login", body)
       .then(({ data }) => {
-        user.handleLogin(data);
+        user.setCurrentUser(data);
+        changeRoute();
       })
       .catch((errors) => {
         setErrors(errors);
       });
-
-    changeRoute();
   };
 
   return (

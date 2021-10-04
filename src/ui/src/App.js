@@ -3,18 +3,21 @@ import "./normalize.css";
 import "./App.css";
 
 import Navigation from "./components/Navigation";
-
-import api from "./shared/fetch";
 import UserContext from "./shared/UserContext";
 
 export default function App() {
   const [user, setUser] = useState({
     isLoggedIn: false,
     id: "",
-    handleLogin(id) {
+    setCurrentUser(id) {
+      let isLoggedIn = false;
+      if (id) {
+        isLoggedIn = true;
+      }
       setUser({
-        isLoggedIn: true,
+        isLoggedIn: isLoggedIn,
         id: id,
+        setCurrentUser: this.setCurrentUser,
       });
     },
   });

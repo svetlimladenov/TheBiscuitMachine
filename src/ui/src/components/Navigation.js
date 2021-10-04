@@ -7,16 +7,14 @@ import LandlingPage from "./LandingPage";
 import Machine from "./Machine";
 import UserContext from "../shared/UserContext";
 
-export default function Navigation({
-  handleLoginSubmit,
-  handleRegisterSubmit,
-  handleLogout,
-  loginErrors,
-  registerErrors,
-}) {
+export default function Navigation() {
   const user = useContext(UserContext);
 
   const renderLoggedInLinks = () => {
+    const handleLogout = () => {
+      user.setCurrentUser(null);
+    };
+
     return (
       <>
         <li>
@@ -60,7 +58,7 @@ export default function Navigation({
           <Login />
         </Route>
         <Route exact path="/register">
-          <Register onSubmit={handleRegisterSubmit} errors={registerErrors} />
+          <Register />
         </Route>
         <Route exact path="/" component={LandlingPage} />
       </React.Fragment>
