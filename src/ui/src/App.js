@@ -5,6 +5,7 @@ import "./App.css";
 import Navigation from "./components/Navigation";
 
 import api from "./shared/fetch";
+import UserContext from "./shared/UserContext";
 
 export default function App() {
   const [user, setUser] = useState({ isLoggedIn: false, id: "" });
@@ -42,12 +43,13 @@ export default function App() {
   };
 
   return (
-    <Navigation
-      user={user}
-      handleLoginSubmit={handleLoginSubmit}
-      handleRegisterSubmit={handleRegisterSubmit}
-      loginErrors={loginErrors}
-      registerErrors={registerErrors}
-    />
+    <UserContext.Provider value={user}>
+      <Navigation
+        handleLoginSubmit={handleLoginSubmit}
+        handleRegisterSubmit={handleRegisterSubmit}
+        loginErrors={loginErrors}
+        registerErrors={registerErrors}
+      />
+    </UserContext.Provider>
   );
 }

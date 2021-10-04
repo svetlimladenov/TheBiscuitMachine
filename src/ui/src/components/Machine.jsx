@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
@@ -11,8 +11,10 @@ import MovingBiscuits from "./MovingBiscuits";
 import MachineHub from "../signalR/machine-hub";
 import messages from "../shared/messages";
 import { now, addLogs } from "../shared/utils";
+import UserContext from "../shared/UserContext";
 
-export default function Machine({ user }) {
+export default function Machine() {
+  const user = useContext(UserContext);
   console.log("render");
   const [hubConnection, setHubConnection] = useState();
 

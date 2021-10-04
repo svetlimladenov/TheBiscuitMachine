@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Conveyor from "./Conveyor";
 import Register from "./Register";
 import Login from "./Login";
 import LandlingPage from "./LandingPage";
+import Machine from "./Machine";
+import UserContext from "../shared/UserContext";
 
 export default function Navigation({
-  user,
   handleLoginSubmit,
   handleRegisterSubmit,
   loginErrors,
   registerErrors,
 }) {
+  const user = useContext(UserContext);
+
   const renderLoggedInLinks = () => {
     return (
       <li>
@@ -20,11 +23,12 @@ export default function Navigation({
     );
   };
 
-  const renderLoggedInComponents = (user) => {
+  const renderLoggedInComponents = () => {
     return (
       <React.Fragment>
         <Route path="/conveyor">
-          <Conveyor user={user} />
+          {/* <Conveyor user={user} /> */}
+          <Machine />
         </Route>
       </React.Fragment>
     );
@@ -63,7 +67,7 @@ export default function Navigation({
         <nav>
           <ul>{renderLoggedInLinks()}</ul>
         </nav>
-        <Switch>{renderLoggedInComponents(user)}</Switch>
+        <Switch>{renderLoggedInComponents()}</Switch>
       </Router>
     );
   } else {

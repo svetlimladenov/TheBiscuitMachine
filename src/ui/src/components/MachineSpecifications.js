@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import api from "../shared/fetch";
+import UserContext from "../shared/UserContext";
 import NumberControl from "./NumberControl";
 import TimeInput from "./TimeInput";
 
-export default function MachineSpecifications({ userId }) {
+export default function MachineSpecifications() {
+  const userId = useContext(UserContext).id;
   const [pulse, setPulse] = useState(1);
   const [ovenHeatingDuration, setOvenHeatingDuration] = useState("00:00:00");
   const [ovenOverheatingDuration, setOvenOvereatingDuration] =
