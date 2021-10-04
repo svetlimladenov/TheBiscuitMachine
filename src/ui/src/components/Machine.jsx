@@ -15,9 +15,6 @@ import UserContext from "../shared/UserContext";
 
 export default function Machine() {
   const user = useContext(UserContext);
-  console.log("render");
-  const [hubConnection, setHubConnection] = useState();
-
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
@@ -44,7 +41,7 @@ export default function Machine() {
     ovenOverheatingDuration,
     ovenColdDuration,
   }) => {
-    // this will cause 3 renders :/
+    // this will cause 3 re-nders :/
     addLog(messages.waitingForOvenToBeHeated);
     setActiveConnectionId(activeConnectionId);
 
@@ -65,10 +62,15 @@ export default function Machine() {
     }, machineSpecs.pulse * 1000);
   };
 
+  const handleMachineStopped = () => {
+    addLog(messages.machineStopped);
+  };
+
   useEffect(() => {
     const hubConnection = MachineHub.createConnection("/machinehub");
     MachineHub.subscribeToMachineStartup(handleMachineStarted);
     MachineHub.subscribeToOvenHeated(handleOvenHeated);
+    MachineHub.subscribeToMachineStopped(handleMachineStopped);
 
     hubConnection
       .start()
@@ -77,36 +79,19 @@ export default function Machine() {
       })
       .catch((error) => console.error(error));
 
-    setHubConnection(hubConnection);
-
     return () => {
       hubConnection.stop();
     };
   }, [user.id]);
 
   const clearLogs = () => {
-    setLogs([]);
+    setLogs((logs) => [logs[0]]);
   };
 
   const addLog = (message) => {
     setLogs((logs) => {
       return [{ message, timestamp: now() }, ...logs];
     });
-  };
-
-  const buttonHandlers = {
-    handleStartButtonClick: () => {
-      MachineHub.startMachine(user.id);
-    },
-    handlePauseButtonClick: () => {
-      MachineHub.togglePause(user.id);
-    },
-    handleStopButtonClick: () => {
-      MachineHub.stopMachine(user.id);
-    },
-    handleToggleHeatingElement: () => {
-      MachineHub.toggleHeatingElement(user.id);
-    },
   };
 
   return (
@@ -120,7 +105,6 @@ export default function Machine() {
         </div>
       </div>
       <Controls
-        {...buttonHandlers}
         isPaused={isPaused}
         heatingElementOn={machineSpecs.heatingElementOn}
       />

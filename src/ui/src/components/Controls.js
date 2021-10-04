@@ -1,22 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
+import UserContext from "../shared/UserContext";
+import MachineHub from "../signalR/machine-hub";
 
-export default function Controls({
-  handleStartButtonClick,
-  handlePauseButtonClick,
-  handleStopButtonClick,
-  handleToggleHeatingElement,
-  heatingElementOn,
-  isPaused,
-}) {
+export default function Controls({ heatingElementOn, isPaused }) {
+  const userId = useContext(UserContext).id;
+
   return (
     <div className="controls-wrapper">
-      <button onClick={handleStartButtonClick}>Start</button>
-      <button onClick={handlePauseButtonClick}>
+      <button onClick={() => MachineHub.startMachine(userId)}>Start</button>
+      <button onClick={() => MachineHub.togglePause(userId)}>
         {isPaused ? "Resume" : "Pause"}
       </button>
-      <button onClick={handleStopButtonClick}>Stop</button>
+      <button onClick={() => MachineHub.stopMachine(userId)}>Stop</button>
 
-      <button onClick={handleToggleHeatingElement}>
+      <button onClick={() => MachineHub.toggleHeatingElement(userId)}>
         Heating Element{" "}
         <span
           className={

@@ -5,7 +5,7 @@ import { renderValidationErrors } from "../shared/utils";
 import UserContext from "../shared/UserContext";
 import api from "../shared/fetch";
 
-export default function Login({ onSubmit }) {
+export default function Login() {
   const [errors, setErrors] = useState({});
   const history = useHistory();
   const usernameRef = useRef();
