@@ -6,11 +6,14 @@ import TimeInput from "./TimeInput";
 
 export default function MachineSpecifications() {
   const userId = useContext(UserContext).id;
-  const [pulse, setPulse] = useState(1);
-  const [ovenHeatingDuration, setOvenHeatingDuration] = useState("00:00:00");
-  const [ovenOverheatingDuration, setOvenOvereatingDuration] =
-    useState("00:00:00");
-  const [ovenColdDuration, setOvenColdDuration] = useState("00:00:00");
+
+  const [machineSpecs, setMachineSpecs] = useState({
+    pulse: 1,
+    ovenHeatingDuration: "00:00:00",
+    ovenOverheatingDuration: "00:00:00",
+    ovenColdDuration: "00:00:00",
+  });
+
   const [savedText, setSavedText] = useState(false);
 
   const heatinRef = useRef();
@@ -19,30 +22,19 @@ export default function MachineSpecifications() {
 
   useEffect(() => {
     api.get(`/Machine?userId=${userId}`).then(({ data }) => {
-      setPulse(data.pulse);
-      setOvenHeatingDuration(data.ovenHeatingDuration);
-      setOvenOvereatingDuration(data.ovenOverheatingDuration);
-      setOvenColdDuration(data.ovenColdDuration);
+      setMachineSpecs({
+        pulse: data.pulse,
+        ovenHeatingDuration: data.ovenHeatingDuration,
+        ovenOverheatingDuration: data.ovenOverheatingDuration,
+        ovenColdDuration: data.ovenColdDuration,
+      });
     });
   }, [userId]);
-
-  const incrementDecrement = (state, hook) => {
-    return {
-      handleIncrement() {
-        hook(state + 1);
-      },
-      handleDecrement() {
-        if (state - 1 > 0) {
-          hook(state - 1);
-        }
-      },
-    };
-  };
 
   const saveMachineSpecifications = () => {
     const body = {
       userId: userId,
-      pulse: pulse,
+      pulse: machineSpecs.pulse,
       ovenHeatingDuration: heatinRef.current.value,
       ovenOverheatingDuration: overheatingRef.current.value,
       ovenColdDuration: ovenColdRef.current.value,
@@ -56,26 +48,44 @@ export default function MachineSpecifications() {
     });
   };
 
+  const handlePulseIncrement = () => {
+    setMachineSpecs((specs) =>
+      Object.assign({}, specs, { pulse: specs.pulse + 1 })
+    );
+  };
+
+  const handlePulseDecrement = () => {
+    setMachineSpecs((specs) => {
+      if (specs.pulse - 1 < 0) {
+        return specs;
+      }
+      return Object.assign({}, specs, { pulse: specs.pulse - 1 });
+    });
+  };
+
   return (
     <div>
       <h2>Machine Specification</h2>
-      <NumberControl number={pulse} {...incrementDecrement(pulse, setPulse)}>
-        Pulse:
-      </NumberControl>
+      <NumberControl
+        label="Pulse: "
+        number={machineSpecs.pulse}
+        handleIncrement={handlePulseIncrement}
+        handleDecrement={handlePulseDecrement}
+      ></NumberControl>
       <TimeInput
         ref={heatinRef}
         label={"Heating time:"}
-        time={ovenHeatingDuration}
+        time={machineSpecs.ovenHeatingDuration}
       />
       <TimeInput
         ref={overheatingRef}
         label={"Overheating time:"}
-        time={ovenOverheatingDuration}
+        time={machineSpecs.ovenOverheatingDuration}
       />
       <TimeInput
         ref={ovenColdRef}
         label={"Oven Cold time :"}
-        time={ovenColdDuration}
+        time={machineSpecs.ovenColdDuration}
       />
       <div className="save-specs">
         <span className="save-info">
