@@ -12,7 +12,7 @@ export default function App() {
     setCurrentUser(id) {
       setUser({
         isLoggedIn: id && true,
-        id: id,
+        id,
         setCurrentUser: this.setCurrentUser,
       });
       localStorage.setItem("userId", id);
