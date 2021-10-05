@@ -19,6 +19,8 @@ export default function Machine() {
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
+  const [pulse, setPulse] = useState(1);
+  const [intervalId, setIntervalId] = useState(null);
   const [logs, setLogs] = useState([
     { message: messages.notStarted, timestamp: now() },
   ]);
@@ -32,26 +34,35 @@ export default function Machine() {
   // useRef will give us the same ref object on every render, so our effect won't trigger
   const setupSubscribersRef = useRef((hub) => {
     hub.subscribeToMachineStartup(handleMachineStarted);
-    hub.subscribeToOvenHeated(handleOvenHeated);
     hub.subscribeToMachineStopped(handleMachineStopped);
+    hub.subscribeToOvenHeated(handleOvenHeated);
   });
 
   const hub = useMachineHub(user.id, setupSubscribersRef.current);
 
-  const handleMachineStarted = (data) => {
-    console.log(data);
+  const handleMachineStarted = ({ pulse }) => {
+    setPulse(pulse);
   };
 
   const handleMachineStopped = () => {
+    setIntervalId((i) => clearInterval(i));
     addLog(messages.machineStopped);
   };
 
   const handleOvenHeated = () => {
     addLog(messages.ovenHeated);
-    // this.handleStartConveyor();
+    handleStartConveyor();
     setTimeout(() => {
       addLog(messages.machineWorking);
-    }, 2 * 1000);
+    }, pulse * 1000);
+  };
+
+  const handleStartConveyor = () => {
+    const intervalId = setInterval(() => {
+      // move bisctuis
+    }, pulse * 1000);
+
+    setIntervalId(intervalId);
   };
 
   return (
