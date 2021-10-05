@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
@@ -7,51 +7,36 @@ import InfoMessage from "./InfoMessage";
 import MachineSpecifications from "./MachineSpecifications";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
-
-import MachineHub from "../signalR/machine-hub";
 import messages from "../shared/messages";
-import { now, addLogs } from "../shared/utils";
 import UserContext from "../shared/UserContext";
 
-function useMachineHub(groupId, setupHub) {
-  const [machineHub, setMachineHub] = useState(new MachineHub());
-
-  useEffect(() => {
-    machineHub.createConnection();
-
-    machineHub.hubConnection.start().then(() => {
-      machineHub.joinGroup(groupId);
-      setupHub(machineHub);
-      setMachineHub(machineHub);
-    });
-
-    return () => {
-      if (machineHub) {
-        machineHub.stopConnection();
-      }
-    };
-  }, [groupId, machineHub, setupHub]);
-
-  return machineHub;
-}
+import { now } from "../shared/utils";
+import { useMachineHub } from "../hooks/hooks";
 
 export default function Machine() {
+  console.log("Render");
   const user = useContext(UserContext);
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
-
   const [logs, setLogs] = useState([
     { message: messages.notStarted, timestamp: now() },
   ]);
 
-  const handleOvenHeated = () => {
-    addLog(messages.ovenHeated);
-    // this.handleStartConveyor();
-    setTimeout(() => {
-      addLog(messages.machineWorking);
-    }, 2 * 1000);
+  const addLog = (message) => {
+    setLogs((logs) => {
+      return [{ message, timestamp: now() }, ...logs];
+    });
   };
+
+  // useRef will give us the same ref object on every render, so our effect won't trigger
+  const setupSubscribersRef = useRef((hub) => {
+    hub.subscribeToMachineStartup(handleMachineStarted);
+    hub.subscribeToOvenHeated(handleOvenHeated);
+    hub.subscribeToMachineStopped(handleMachineStopped);
+  });
+
+  const hub = useMachineHub(user.id, setupSubscribersRef.current);
 
   const handleMachineStarted = (data) => {
     console.log(data);
@@ -61,20 +46,12 @@ export default function Machine() {
     addLog(messages.machineStopped);
   };
 
-  const hub = useMachineHub(user.id, (hub) => {
-    hub.subscribeToMachineStartup(handleMachineStarted);
-    hub.subscribeToOvenHeated(handleOvenHeated);
-    hub.subscribeToMachineStopped(handleMachineStopped);
-  });
-
-  const clearLogs = () => {
-    setLogs((logs) => [logs[0]]);
-  };
-
-  const addLog = (message) => {
-    setLogs((logs) => {
-      return [{ message, timestamp: now() }, ...logs];
-    });
+  const handleOvenHeated = () => {
+    addLog(messages.ovenHeated);
+    // this.handleStartConveyor();
+    setTimeout(() => {
+      addLog(messages.machineWorking);
+    }, 2 * 1000);
   };
 
   return (
@@ -89,7 +66,7 @@ export default function Machine() {
       </div>
       <Controls hub={hub} />
       <div className="logs-and-users-wrapper">
-        <Logs logs={logs} clearLogs={clearLogs} />
+        <Logs logs={logs} clearLogs={() => setLogs((logs) => [logs[0]])} />
         <MachineSpecifications userId={user.id} />
       </div>
     </div>

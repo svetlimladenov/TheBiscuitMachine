@@ -1,39 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import UserContext from "../shared/UserContext";
 
-export default function Controls({ hub }) {
+export default function Controls({ hub, isPaused, heatingElementOn }) {
   const userId = useContext(UserContext).id;
-
-  const [machineSpecs, setMachineSpecs] = useState({
-    pulse: 2,
-    heatingElementOn: false,
-    ovenHeatingDuration: "00:00:00",
-    ovenOverheatingDuration: "00:00:00",
-    ovenColdDuration: "00:00:00",
-  });
-
-  const [isPaused, setIsPaused] = useState(false);
-
-  const handleMachineStarted = ({
-    activeConnectionId,
-    pulse,
-    ovenHeatingDuration,
-    ovenOverheatingDuration,
-    ovenColdDuration,
-  }) => {
-    // this will cause 3 re-nders :/
-    setMachineSpecs({
-      pulse,
-      heatingElementOn: true,
-      ovenHeatingDuration,
-      ovenOverheatingDuration,
-      ovenColdDuration,
-    });
-  };
-
-  useEffect(() => {
-    // hub.subscribeToMachineStartup(handleMachineStarted);
-  }, [hub]);
 
   return (
     <div className="controls-wrapper">
@@ -47,12 +16,10 @@ export default function Controls({ hub }) {
         Heating Element{" "}
         <span
           className={
-            machineSpecs.heatingElementOn
-              ? "heating-element-on"
-              : "heating-element-off"
+            heatingElementOn ? "heating-element-on" : "heating-element-off"
           }
         >
-          {machineSpecs.heatingElementOn ? "On" : "Off"}
+          {heatingElementOn ? "On" : "Off"}
         </span>
       </button>
     </div>

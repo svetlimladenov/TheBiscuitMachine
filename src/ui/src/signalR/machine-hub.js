@@ -1,4 +1,4 @@
-import * as signalR from "@microsoft/signalr";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 import { defaults } from "../shared/fetch";
 
 const events = {
@@ -25,20 +25,23 @@ const serverEvents = {
 class MachineHub {
   constructor() {
     this.url = "/machinehub";
+    this.subscribeMethods = [];
+    this.createConnection();
   }
 
   createConnection() {
-    this.hubConnection = new signalR.HubConnectionBuilder()
+    this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${defaults.signalRUrl}${this.url}`)
       .build();
   }
 
-  stopConnection() {
-    this.hubConnection.stop();
+  // return the promise
+  start() {
+    return this.hubConnection.start();
   }
 
-  getConnection() {
-    return this.hubConnection;
+  stopConnection() {
+    this.hubConnection.stop();
   }
 
   subscribeToMachineStartup(callback) {
