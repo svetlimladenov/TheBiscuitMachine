@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Field from "./Field";
 import { renderValidationErrors } from "../shared/utils";
 import api from "../shared/fetch";
-import UserContext from "../shared/UserContext";
+import { StoreContext } from "../shared/StoreContext";
 
 export default function Login() {
   const history = useHistory();
@@ -13,7 +13,7 @@ export default function Login() {
   const configrmPasswordRef = useRef();
   const emailRef = useRef();
 
-  const user = useContext(UserContext);
+  const store = useContext(StoreContext);
 
   const [errors, setErrors] = useState([]);
 
@@ -33,7 +33,10 @@ export default function Login() {
     api
       .post("/Users/Register", body)
       .then(({ data }) => {
-        user.setCurrentUser(data);
+        store.dispatch({
+          type: "SET_USER",
+          userId: data,
+        });
         changeRoute();
       })
       .catch((errors) => {

@@ -8,14 +8,16 @@ import MachineSpecifications from "./MachineSpecifications";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 import messages from "../shared/messages";
-import UserContext from "../shared/UserContext";
 
 import { now } from "../shared/utils";
 import { useMachineHub } from "../hooks/hooks";
+import { StoreContext } from "../shared/StoreContext";
 
 export default function Machine() {
   console.log("Render");
-  const user = useContext(UserContext);
+  const store = useContext(StoreContext);
+  const user = store.getState().user;
+
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
@@ -38,7 +40,7 @@ export default function Machine() {
     hub.subscribeToOvenHeated(handleOvenHeated);
   });
 
-  const hub = useMachineHub(user.id, setupSubscribersRef.current);
+  const hub = useMachineHub(user.userId, setupSubscribersRef.current);
 
   const handleMachineStarted = ({ pulse }) => {
     setPulse(pulse);
@@ -78,7 +80,7 @@ export default function Machine() {
       <Controls hub={hub} />
       <div className="logs-and-users-wrapper">
         <Logs logs={logs} clearLogs={() => setLogs((logs) => [logs[0]])} />
-        <MachineSpecifications userId={user.id} />
+        <MachineSpecifications userId={user.userId} />
       </div>
     </div>
   );

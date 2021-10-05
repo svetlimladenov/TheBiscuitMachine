@@ -5,14 +5,18 @@ import Register from "./Register";
 import Login from "./Login";
 import LandingPage from "./LandingPage";
 import Machine from "./Machine";
-import UserContext from "../shared/UserContext";
+import { StoreContext } from "../shared/StoreContext";
 
 export default function Navigation() {
-  const user = useContext(UserContext);
+  const store = useContext(StoreContext);
+  const user = store.getState().user;
 
   const renderLoggedInLinks = () => {
     const handleLogout = () => {
-      user.setCurrentUser(null);
+      store.dispatch({
+        type: "REMOVE_USER",
+        userId: user.userId,
+      });
     };
 
     return (
@@ -31,7 +35,6 @@ export default function Navigation() {
     return (
       <>
         <Route path={["/conveyor", "/"]}>
-          {/* <Conveyor user={user} /> */}
           <Machine />
         </Route>
       </>
@@ -65,7 +68,7 @@ export default function Navigation() {
     );
   };
 
-  if (user.isLoggedIn) {
+  if (user.loggedIn) {
     return (
       <Router>
         <nav>
