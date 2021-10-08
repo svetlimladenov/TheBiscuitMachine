@@ -11,8 +11,13 @@ const stopMachine = (userId) => {
 const togglePause = (userId) => {
   return { type: machineActionTypes.togglePause, userId };
 };
+
 const toggleHeatingElement = (userId) => {
   return { type: machineActionTypes.toggleHeatingElement, userId };
+};
+
+const clearLogs = () => {
+  return { type: machineActionTypes.clearLogs };
 };
 
 export const machineActions = {
@@ -20,4 +25,5 @@ export const machineActions = {
   stopMachine,
   togglePause,
   toggleHeatingElement,
+  clearLogs,
 };

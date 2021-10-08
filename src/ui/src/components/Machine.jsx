@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
@@ -8,26 +8,17 @@ import MachineSpecifications from "./MachineSpecifications";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 import messages from "../shared/messages";
+import { machineActions } from "../machine/machine-actions";
 
-import { now } from "../shared/utils";
 import { useMachineHub } from "../hooks/hooks";
 import { connect } from "react-redux";
 
-let Machine = ({ user }) => {
+let Machine = ({ user, addLog }) => {
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
   const [pulse, setPulse] = useState(1);
   const [intervalId, setIntervalId] = useState(null);
-  const [logs, setLogs] = useState([
-    { message: messages.notStarted, timestamp: now() },
-  ]);
-
-  const addLog = (message) => {
-    setLogs((logs) => {
-      return [{ message, timestamp: now() }, ...logs];
-    });
-  };
 
   // useRef will give us the same ref object on every render, so our effect won't trigger
   const setupSubscribersRef = useRef((hub) => {
@@ -65,7 +56,7 @@ let Machine = ({ user }) => {
 
   return (
     <div>
-      <InfoMessage {...logs[0]} />
+      <InfoMessage />
       <div className="conveyor-wrapper">
         <MachineComponents scale={shouldScale} speed={2} />
         <BiscuitBox biscuitBox={biscuitBox} />
@@ -75,7 +66,7 @@ let Machine = ({ user }) => {
       </div>
       <Controls hub={hub} />
       <div className="logs-and-users-wrapper">
-        <Logs logs={logs} clearLogs={() => setLogs((logs) => [logs[0]])} />
+        <Logs />
         <MachineSpecifications />
       </div>
     </div>
@@ -88,6 +79,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-Machine = connect(mapStateToProps, null)(Machine);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addLog: (text) => {
+      dispatch(machineActions.addLog(text));
+    },
+  };
+};
+
+Machine = connect(mapStateToProps, mapDispatchToProps)(Machine);
 
 export default Machine;
