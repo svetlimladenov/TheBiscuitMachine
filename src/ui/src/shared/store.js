@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from "redux";
-import { userReducer } from "../reducers/user-reducer";
+import { userReducer } from "../user/user-reducer";
+import { machineReducer } from "../machine/machine-reducer";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  machine: machineReducer,
 });
 
 const reduxDevTools =

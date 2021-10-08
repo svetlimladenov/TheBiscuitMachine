@@ -1,17 +1,16 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Field from "./Field";
 import { useHistory } from "react-router-dom";
 import { renderValidationErrors } from "../shared/utils";
 import api from "../shared/fetch";
-import { StoreContext } from "../shared/StoreContext";
+import { userActions } from "../user/user-actions";
+import { connect } from "react-redux";
 
-export default function Login() {
+let Login = ({ setUser }) => {
   const [errors, setErrors] = useState({});
   const history = useHistory();
   const usernameRef = useRef();
   const passwordRef = useRef();
-
-  const store = useContext(StoreContext);
 
   const changeRoute = () => {
     history.push("/conveyor");
@@ -27,10 +26,7 @@ export default function Login() {
     api
       .post("/Users/Login", body)
       .then(({ data }) => {
-        store.dispatch({
-          type: "SET_USER",
-          userId: data,
-        });
+        setUser(data);
         changeRoute();
       })
       .catch((errors) => {
@@ -52,4 +48,16 @@ export default function Login() {
       </form>
     </div>
   );
-}
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (data) => {
+      dispatch(userActions.setUser(data));
+    },
+  };
+};
+
+Login = connect(null, mapDispatchToProps)(Login);
+
+export default Login;

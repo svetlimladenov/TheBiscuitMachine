@@ -1,19 +1,20 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import Field from "./Field";
-import { renderValidationErrors } from "../shared/utils";
-import api from "../shared/fetch";
-import { StoreContext } from "../shared/StoreContext";
+import { connect } from "react-redux";
 
-export default function Login() {
+import api from "../shared/fetch";
+import { userActions } from "../user/user-actions";
+
+import { renderValidationErrors } from "../shared/utils";
+import Field from "./Field";
+
+let Register = ({ setUser }) => {
   const history = useHistory();
 
   const usernameRef = useRef();
   const passwordRef = useRef();
   const configrmPasswordRef = useRef();
   const emailRef = useRef();
-
-  const store = useContext(StoreContext);
 
   const [errors, setErrors] = useState([]);
 
@@ -33,10 +34,7 @@ export default function Login() {
     api
       .post("/Users/Register", body)
       .then(({ data }) => {
-        store.dispatch({
-          type: "SET_USER",
-          userId: data,
-        });
+        setUser(data);
         changeRoute();
       })
       .catch((errors) => {
@@ -64,4 +62,16 @@ export default function Login() {
       </form>
     </div>
   );
-}
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (data) => {
+      dispatch(userActions.setUser(data));
+    },
+  };
+};
+
+Register = connect(null, mapDispatchToProps)(Register);
+
+export default Register;

@@ -12,7 +12,6 @@ export const userReducer = (state = initialState, action) => {
       };
     }
     case "REMOVE_USER": {
-      localStorage.removeItem("userId");
       return {
         userId: null,
         loggedIn: false,

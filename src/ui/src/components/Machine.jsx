@@ -11,13 +11,9 @@ import messages from "../shared/messages";
 
 import { now } from "../shared/utils";
 import { useMachineHub } from "../hooks/hooks";
-import { StoreContext } from "../shared/StoreContext";
+import { connect } from "react-redux";
 
-export default function Machine() {
-  console.log("Render");
-  const store = useContext(StoreContext);
-  const user = store.getState().user;
-
+let Machine = ({ user }) => {
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
@@ -80,8 +76,18 @@ export default function Machine() {
       <Controls hub={hub} />
       <div className="logs-and-users-wrapper">
         <Logs logs={logs} clearLogs={() => setLogs((logs) => [logs[0]])} />
-        <MachineSpecifications userId={user.userId} />
+        <MachineSpecifications />
       </div>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+Machine = connect(mapStateToProps, null)(Machine);
+
+export default Machine;

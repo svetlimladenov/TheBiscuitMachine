@@ -1,12 +1,10 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { connect } from "react-redux";
 import api from "../shared/fetch";
-import UserContext from "../shared/UserContext";
 import NumberControl from "./NumberControl";
 import TimeInput from "./TimeInput";
 
-export default function MachineSpecifications() {
-  const userId = useContext(UserContext).id;
-
+let MachineSpecifications = ({ userId }) => {
   const [machineSpecs, setMachineSpecs] = useState({
     pulse: 1,
     ovenHeatingDuration: "00:00:00",
@@ -103,4 +101,14 @@ export default function MachineSpecifications() {
       </div>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    userId: state.user.userId,
+  };
+};
+
+MachineSpecifications = connect(mapStateToProps)(MachineSpecifications);
+
+export default MachineSpecifications;

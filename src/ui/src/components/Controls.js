@@ -1,18 +1,25 @@
-import React, { useContext } from "react";
-import UserContext from "../shared/UserContext";
+import React from "react";
+import { connect } from "react-redux";
+import { machineActions } from "../machine/machine-actions";
 
-export default function Controls({ hub, isPaused, heatingElementOn }) {
-  const userId = useContext(UserContext).id;
-
+let Controls = ({
+  isPaused,
+  heatingElementOn,
+  userId,
+  startMachine,
+  stopMachine,
+  togglePause,
+  toggleHeatingElement,
+}) => {
   return (
     <div className="controls-wrapper">
-      <button onClick={() => hub.startMachine(userId)}>Start</button>
-      <button onClick={() => hub.togglePause(userId)}>
+      <button onClick={() => startMachine(userId)}>Start</button>
+      <button onClick={() => togglePause(userId)}>
         {isPaused ? "Resume" : "Pause"}
       </button>
-      <button onClick={() => hub.stopMachine(userId)}>Stop</button>
+      <button onClick={() => stopMachine(userId)}>Stop</button>
 
-      <button onClick={() => hub.toggleHeatingElement(userId)}>
+      <button onClick={() => toggleHeatingElement(userId)}>
         Heating Element{" "}
         <span
           className={
@@ -24,4 +31,31 @@ export default function Controls({ hub, isPaused, heatingElementOn }) {
       </button>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    userId: state.user.userId,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    startMachine: (userId) => {
+      dispatch(machineActions.startMachine(userId));
+    },
+    stopMachine: (userId) => {
+      dispatch(machineActions.stopMachine(userId));
+    },
+    togglePause: (userId) => {
+      dispatch(machineActions.togglePause(userId));
+    },
+    toggleHeatingElement: (userId) => {
+      dispatch(machineActions.toggleHeatingElement(userId));
+    },
+  };
+};
+
+Controls = connect(mapStateToProps, mapDispatchToProps)(Controls);
+
+export default Controls;
