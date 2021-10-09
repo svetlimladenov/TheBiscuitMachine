@@ -105,7 +105,7 @@ let MachineSpecifications = ({ userId }) => {
 
 const mapStateToProps = (state) => {
   return {
-    userId: state.user.userId,
+    userId: state.user.id,
   };
 };
 

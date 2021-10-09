@@ -1,5 +1,5 @@
 const initialState = {
-  userId: localStorage.getItem("userId"),
+  id: localStorage.getItem("userId"),
   loggedIn: localStorage.getItem("userId") && true,
 };
 
@@ -7,13 +7,13 @@ export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_USER": {
       return {
-        userId: action.userId,
+        id: action.id,
         loggedIn: true,
       };
     }
     case "REMOVE_USER": {
       return {
-        userId: null,
+        id: null,
         loggedIn: false,
       };
     }

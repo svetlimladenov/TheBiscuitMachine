@@ -1,10 +1,10 @@
 import { userActionTypes } from "./user-action-types";
 
-const setUser = (userId) => {
-  localStorage.setItem("userId", userId);
+const setUser = (id) => {
+  localStorage.setItem("userId", id);
   return {
     type: userActionTypes.setUser,
-    userId,
+    id,
   };
 };
 

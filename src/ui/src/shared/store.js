@@ -22,8 +22,8 @@ const reduxDevTools =
 
 const store = createStore(
   rootReducer,
-  // reduxDevTools,
-  applyMiddleware(loggingMiddleware, crashReporterMiddleware)
+  reduxDevTools
+  // applyMiddleware(loggingMiddleware, crashReporterMiddleware)
 );
 
 // applyMiddlewareFake(store, [loggingMiddleware, crashReporterMiddleware]);
