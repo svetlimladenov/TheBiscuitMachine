@@ -1,5 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
+import { defaults } from "../shared/fetch";
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
 import Controls from "./Controls";
@@ -12,37 +13,53 @@ import { machineActions } from "../machine/machine-actions";
 
 import { useMachineHub } from "../hooks/hooks";
 import { connect } from "react-redux";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
-let Machine = ({ user, addLog }) => {
+let Machine = ({ user }) => {
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
   const [pulse, setPulse] = useState(1);
   const [intervalId, setIntervalId] = useState(null);
 
-  // useRef will give us the same ref object on every render, so our effect won't trigger
-  const setupSubscribersRef = useRef((hub) => {
-    hub.subscribeToMachineStartup(handleMachineStarted);
-    hub.subscribeToMachineStopped(handleMachineStopped);
-    hub.subscribeToOvenHeated(handleOvenHeated);
-  });
+  const [connection, setConnection] = useState();
 
-  const hub = useMachineHub(user.userId, setupSubscribersRef.current);
+  useEffect(() => {
+    createConnection(user.userId);
+    return () => {
+      // connection.stop();
+      setConnection(null);
+    };
+  }, [user.userId]);
+
+  const createConnection = async (groupId) => {
+    const connection = new HubConnectionBuilder()
+      .withUrl(`${defaults.signalRUrl}/machinehub`)
+      .build();
+
+    connection.on("MachineStarted", handleMachineStarted);
+    connection.on("MachineStopped", handleMachineStopped);
+
+    await connection.start();
+    await connection.invoke("JoinGroup", groupId);
+    setConnection(connection);
+  };
 
   const handleMachineStarted = ({ pulse }) => {
+    console.log("Handling Signal R EVENT");
     setPulse(pulse);
   };
 
   const handleMachineStopped = () => {
     setIntervalId((i) => clearInterval(i));
-    addLog(messages.machineStopped);
+    // addLog(messages.machineStopped);
   };
 
   const handleOvenHeated = () => {
-    addLog(messages.ovenHeated);
+    // addLog(messages.ovenHeated);
     handleStartConveyor();
     setTimeout(() => {
-      addLog(messages.machineWorking);
+      // addLog(messages.machineWorking);
     }, pulse * 1000);
   };
 
@@ -64,7 +81,7 @@ let Machine = ({ user, addLog }) => {
           <MovingBiscuits biscuits={biscuits} speed={2} />
         </div>
       </div>
-      <Controls hub={hub} />
+      <Controls />
       <div className="logs-and-users-wrapper">
         <Logs />
         <MachineSpecifications />
@@ -79,14 +96,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addLog: (text) => {
-      dispatch(machineActions.addLog(text));
-    },
-  };
-};
-
-Machine = connect(mapStateToProps, mapDispatchToProps)(Machine);
+Machine = connect(mapStateToProps)(Machine);
 
 export default Machine;

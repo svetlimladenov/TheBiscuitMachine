@@ -10,28 +10,26 @@ let Controls = ({
   stopMachine,
   togglePause,
   toggleHeatingElement,
-}) => {
-  return (
-    <div className="controls-wrapper">
-      <button onClick={() => startMachine(userId)}>Start</button>
-      <button onClick={() => togglePause(userId)}>
-        {isPaused ? "Resume" : "Pause"}
-      </button>
-      <button onClick={() => stopMachine(userId)}>Stop</button>
+}) => (
+  <div className="controls-wrapper">
+    <button onClick={() => startMachine(userId)}>Start</button>
+    <button onClick={() => togglePause(userId)}>
+      {isPaused ? "Resume" : "Pause"}
+    </button>
+    <button onClick={() => stopMachine(userId)}>Stop</button>
 
-      <button onClick={() => toggleHeatingElement(userId)}>
-        Heating Element{" "}
-        <span
-          className={
-            heatingElementOn ? "heating-element-on" : "heating-element-off"
-          }
-        >
-          {heatingElementOn ? "On" : "Off"}
-        </span>
-      </button>
-    </div>
-  );
-};
+    <button onClick={() => toggleHeatingElement(userId)}>
+      Heating Element{" "}
+      <span
+        className={
+          heatingElementOn ? "heating-element-on" : "heating-element-off"
+        }
+      >
+        {heatingElementOn ? "On" : "Off"}
+      </span>
+    </button>
+  </div>
+);
 
 const mapStateToProps = (state) => {
   return {

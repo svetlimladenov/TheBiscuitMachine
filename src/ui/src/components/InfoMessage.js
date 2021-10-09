@@ -8,9 +8,7 @@ let InfoMessage = ({ message }) => (
 );
 
 const mapStateToProps = (state) => {
-  const logs = state.machine.logs;
-  const lastMessage = logs[0];
-  console.log(lastMessage);
+  const lastMessage = state.machine.logs[0];
   return {
     message: lastMessage?.message || messages.notStarted,
   };
