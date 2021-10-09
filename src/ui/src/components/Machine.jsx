@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import BiscuitBox from "./BiscuitBox";
 import MachineComponents from "./MachineComponent";
@@ -11,14 +11,15 @@ import messages from "../shared/messages";
 import UserContext from "../shared/UserContext";
 
 import { now } from "../shared/utils";
-import { useMachineHub } from "../hooks/hooks";
+import MachineHubSingleton from "../signalR/machine-hub-singleton";
 
 export default function Machine() {
-  console.log("Render");
   const user = useContext(UserContext);
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
   const [shouldScale, setShouldScale] = useState(false);
+  const [pulse, setPulse] = useState(1);
+  const [intervalId, setIntervalId] = useState(null);
   const [logs, setLogs] = useState([
     { message: messages.notStarted, timestamp: now() },
   ]);
@@ -29,30 +30,29 @@ export default function Machine() {
     });
   };
 
-  // useRef will give us the same ref object on every render, so our effect won't trigger
-  const setupSubscribersRef = useRef((hub) => {
-    hub.subscribeToMachineStartup(handleMachineStarted);
-    hub.subscribeToOvenHeated(handleOvenHeated);
-    hub.subscribeToMachineStopped(handleMachineStopped);
-  });
+  useEffect(() => {
+    MachineHubSingleton.startHubConnection(user.id);
 
-  const hub = useMachineHub(user.id, setupSubscribersRef.current);
+    const handleMachineStarted = ({ pulse }) => {
+      console.log("Machine started");
+    };
 
-  const handleMachineStarted = (data) => {
-    console.log(data);
-  };
+    const handleMachineStopped = () => {
+      console.log("Machine stopped");
+    };
 
-  const handleMachineStopped = () => {
-    addLog(messages.machineStopped);
-  };
+    const handleOvenHeated = () => {
+      console.log("Oven heated...");
+    };
 
-  const handleOvenHeated = () => {
-    addLog(messages.ovenHeated);
-    // this.handleStartConveyor();
-    setTimeout(() => {
-      addLog(messages.machineWorking);
-    }, 2 * 1000);
-  };
+    MachineHubSingleton.subscribeToMachineStartup(handleMachineStarted);
+    MachineHubSingleton.subscribeToMachineStopped(handleMachineStopped);
+    MachineHubSingleton.subscribeToOvenHeated(handleOvenHeated);
+
+    return () => {
+      MachineHubSingleton.stopHubConnection();
+    };
+  }, [user.id]);
 
   return (
     <div>
@@ -64,7 +64,7 @@ export default function Machine() {
           <MovingBiscuits biscuits={biscuits} speed={2} />
         </div>
       </div>
-      <Controls hub={hub} />
+      <Controls />
       <div className="logs-and-users-wrapper">
         <Logs logs={logs} clearLogs={() => setLogs((logs) => [logs[0]])} />
         <MachineSpecifications userId={user.id} />
