@@ -4,4 +4,7 @@ export const machineActionTypes = {
   togglePause: "TOGGLE_PAUSE",
   toggleHeatingElement: "TOGGLE_HEATING_ELEMENT",
   clearLogs: "CLEAR_LOGS",
+  machineStarted: "MACHINE_STARTED",
+  machineStopped: "MACHINE_STOPPED",
+  ovenHeated: "OVEN_HEATED",
 };

@@ -25,10 +25,25 @@ const clearLogs = () => {
   return { type: machineActionTypes.clearLogs };
 };
 
+const handleMachineStarted = (pulse) => {
+  return { type: machineActionTypes.machineStarted, pulse };
+};
+
+const handleMachineStopped = () => {
+  return { type: machineActionTypes.machineStopped };
+};
+
+const ovenHeated = () => {
+  return { type: machineActionTypes.ovenHeated };
+};
+
 export const machineActions = {
   startMachine,
   stopMachine,
   togglePause,
   toggleHeatingElement,
   clearLogs,
+  handleMachineStarted,
+  handleMachineStopped,
+  ovenHeated,
 };

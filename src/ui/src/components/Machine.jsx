@@ -10,6 +10,7 @@ import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 
 import MachineHubSingleton from "../signalR/machine-hub";
+import { machineActions } from "../machine/machine-actions";
 
 let Machine = ({
   user,
@@ -33,7 +34,7 @@ let Machine = ({
     return () => {
       MachineHubSingleton.stopHubConnection();
     };
-  }, [user.id]);
+  }, [user.id, handleMachineStarted, handleMachineStopped, handleOvenHeated]);
 
   return (
     <div>
@@ -63,13 +64,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     handleMachineStarted: ({ pulse }) => {
-      dispatch({ type: "MACHINE_STARTED", pulse });
+      dispatch(machineActions.handleMachineStarted(pulse));
     },
     handleMachineStopped: () => {
-      dispatch({ type: "MACHINE_STOPPED" });
+      dispatch(machineActions.handleMachineStopped());
     },
     handleOvenHeated: () => {
-      dispatch({ type: "OVEN_HEATED" });
+      dispatch(machineActions.ovenHeated());
     },
   };
 };
