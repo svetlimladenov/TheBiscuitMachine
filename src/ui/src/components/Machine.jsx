@@ -12,6 +12,7 @@ import MovingBiscuits from "./MovingBiscuits";
 import MachineHubSingleton from "../signalR/machine-hub";
 import { machineActions } from "../machine/machine-actions";
 import { userActions } from "../user/user-actions";
+import messages from "../shared/messages";
 
 let Machine = ({
   user,
@@ -28,12 +29,18 @@ let Machine = ({
   useEffect(() => {
     MachineHubSingleton.startHubConnection(user.id, setConnectionId);
     MachineHubSingleton.subscribeToMachineStartup(handleMachineStarted);
-    MachineHubSingleton.subscribeToMachineStopped(handleMachineStopped);
+    MachineHubSingleton.subscribeToMachineStopped(() =>
+      handleMachineStopped(messages.machineStopped)
+    );
     MachineHubSingleton.subscribeToPaused(handleMachinePaused);
     MachineHubSingleton.subscribeToResumed(handleMachineResumed);
     MachineHubSingleton.subscribeToOvenHeated(handleOvenHeated);
-    MachineHubSingleton.subscibeToOvenOverheated(handleOvenOverheated);
-    MachineHubSingleton.subscribeToOvenCold(handleOvenCold);
+    MachineHubSingleton.subscibeToOvenOverheated(() =>
+      handleMachineStopped(messages.ovenOverheated)
+    );
+    MachineHubSingleton.subscribeToOvenCold(() =>
+      handleMachineStopped(messages.ovenTooCold)
+    );
     MachineHubSingleton.subscribeToHeatingElementToggled(
       handleHeatingElementToggled
     );
@@ -89,8 +96,8 @@ const mapDispatchToProps = (dispatch) => {
     handleMachineStarted: ({ pulse, activeConnectionId }) => {
       dispatch(machineActions.handleMachineStarted(pulse, activeConnectionId));
     },
-    handleMachineStopped: () => {
-      dispatch(machineActions.handleMachineStopped());
+    handleMachineStopped: (log) => {
+      dispatch(machineActions.handleMachineStopped(log));
     },
     handleMachinePaused: () => {
       dispatch(machineActions.handleMachinePauseToggled(true));
@@ -100,12 +107,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleOvenHeated: () => {
       dispatch(machineActions.ovenHeated());
-    },
-    handleOvenOverheated: () => {
-      dispatch(machineActions.ovenOverheated());
-    },
-    handleOvenCold: () => {
-      dispatch(machineActions.ovenCold());
     },
     handleHeatingElementToggled: () => {
       dispatch(machineActions.heatingElementToggled());

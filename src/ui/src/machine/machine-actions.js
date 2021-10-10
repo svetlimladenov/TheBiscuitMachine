@@ -55,13 +55,9 @@ const ovenHeated = () => (dispatch, getState) => {
   });
 };
 
-const handleMachineStopped = () => (dispatch, getState) => {
+const clearConveyor = (getState, dispatch) => {
+  console.log("clear ");
   const { pulse } = getState().machine;
-
-  dispatch({
-    type: machineActionTypes.machineStopping,
-  });
-
   setTimeout(() => {
     const state = getState();
     clearPulseInterval(state);
@@ -74,9 +70,15 @@ const handleMachineStopped = () => (dispatch, getState) => {
       type: machineActionTypes.machineStopped,
     });
   }, pulse * 5 * 1000);
+};
 
-  // dispatch event to change the state to running to stopping, so we dont make new cookies
-  // and dispatch another event with a timeout to clear the interval, but to wait for all cookies to reach the end
+const handleMachineStopped = (log) => (dispatch, getState) => {
+  dispatch({
+    type: machineActionTypes.machineStopping,
+    log: log,
+  });
+
+  clearConveyor(getState, dispatch);
 };
 
 const handleMachinePauseToggled = (paused) => {
@@ -84,20 +86,6 @@ const handleMachinePauseToggled = (paused) => {
     type: machineActionTypes.machinePauseToggled,
     paused,
   };
-};
-
-const ovenOverheated = () => (dispatch, getState) => {
-  clearPulseInterval(getState());
-  dispatch({
-    type: machineActionTypes.ovenOverheated,
-  });
-};
-
-const ovenCold = () => (dispatch, getState) => {
-  clearPulseInterval(getState());
-  dispatch({
-    type: machineActionTypes.ovenCold,
-  });
 };
 
 const heatingElementToggled = () => {
@@ -122,7 +110,5 @@ export const machineActions = {
   handleMachineStopped,
   handleMachinePauseToggled,
   ovenHeated,
-  ovenOverheated,
-  ovenCold,
   heatingElementToggled,
 };

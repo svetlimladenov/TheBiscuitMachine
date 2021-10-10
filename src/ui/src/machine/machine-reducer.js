@@ -49,9 +49,11 @@ export const machineReducer = (state = initialState, action) => {
       return newState;
     }
     case machineActionTypes.machineStopping: {
+      const logs = addLog(state.logs, action.log);
       return {
         ...state,
         running: false,
+        logs,
       };
     }
     case machineActionTypes.machineStopped: {
@@ -74,26 +76,6 @@ export const machineReducer = (state = initialState, action) => {
         intervalId: action.intervalId,
         heatingElementOn: true,
         running: true,
-      };
-    }
-    case machineActionTypes.ovenOverheated: {
-      const logs = addLog(state.logs, messages.ovenOverheated);
-      return {
-        ...state,
-        intervalId: null,
-        running: false,
-        paused: false,
-        logs,
-      };
-    }
-    case machineActionTypes.ovenCold: {
-      const logs = addLog(state.logs, messages.ovenTooCold);
-      return {
-        ...state,
-        intervalId: null,
-        running: false,
-        paused: false,
-        logs,
       };
     }
     case machineActionTypes.heatingElementToggled: {
