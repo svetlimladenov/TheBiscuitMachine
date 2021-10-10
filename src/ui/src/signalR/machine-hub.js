@@ -56,14 +56,12 @@ const MachineHubSingleton = (() => {
   const stopHubConnection = async () => {
     try {
       await connection.stop();
-      console.log("Connection closed...");
     } catch (error) {
       console.error(error);
     }
   };
 
   const addSubscriber = (event, callback) => {
-    console.log("setup");
     if (connection?.state !== HubConnectionState.Connected) {
       subscribers.push(() => {
         connection.on(event, callback);
