@@ -11,16 +11,6 @@ const stopMachine = (userId) => {
   return { type: machineActionTypes.stopMachine, userId };
 };
 
-const togglePause = (userId) => {
-  MachineHubSingleton.togglePause(userId);
-  return { type: machineActionTypes.togglePause, userId };
-};
-
-const toggleHeatingElement = (userId) => {
-  MachineHubSingleton.toggleHeatingElement(userId);
-  return { type: machineActionTypes.toggleHeatingElement, userId };
-};
-
 const clearLogs = () => {
   return { type: machineActionTypes.clearLogs };
 };
@@ -103,8 +93,6 @@ const clearPulseInterval = (state) => {
 export const machineActions = {
   startMachine,
   stopMachine,
-  togglePause,
-  toggleHeatingElement,
   clearLogs,
   handleMachineStarted,
   handleMachineStopped,

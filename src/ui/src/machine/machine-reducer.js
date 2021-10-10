@@ -32,12 +32,6 @@ export const machineReducer = (state = initialState, action) => {
       const newState = { ...state, logs };
       return newState;
     }
-    case machineActionTypes.togglePause: {
-      return state;
-    }
-    case machineActionTypes.toggleHeatingElement: {
-      return state;
-    }
     case machineActionTypes.machineStarted: {
       const logs = addLog(state.logs, messages.waitingForOvenToBeHeated);
       const newState = {

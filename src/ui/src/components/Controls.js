@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { machineActions } from "../machine/machine-actions";
+import MachineHubSingleton from "../signalR/machine-hub";
 
 let Controls = ({
   paused,
@@ -8,17 +9,15 @@ let Controls = ({
   userId,
   startMachine,
   stopMachine,
-  togglePause,
-  toggleHeatingElement,
 }) => (
   <div className="controls-wrapper">
     <button onClick={() => startMachine(userId)}>Start</button>
-    <button onClick={() => togglePause(userId)}>
+    <button onClick={() => MachineHubSingleton.togglePause(userId)}>
       {paused ? "Resume" : "Pause"}
     </button>
     <button onClick={() => stopMachine(userId)}>Stop</button>
 
-    <button onClick={() => toggleHeatingElement(userId)}>
+    <button onClick={() => MachineHubSingleton.toggleHeatingElement(userId)}>
       Heating Element{" "}
       <span
         className={
@@ -46,12 +45,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     stopMachine: (userId) => {
       dispatch(machineActions.stopMachine(userId));
-    },
-    togglePause: (userId) => {
-      dispatch(machineActions.togglePause(userId));
-    },
-    toggleHeatingElement: (userId) => {
-      dispatch(machineActions.toggleHeatingElement(userId));
     },
   };
 };
