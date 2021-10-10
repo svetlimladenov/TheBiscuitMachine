@@ -8,6 +8,7 @@ const initialState = {
   pulse: null,
   running: false,
   paused: false,
+  heatingElementOn: false,
   logs: [],
   biscuits: [],
 };
@@ -61,11 +62,22 @@ export const machineReducer = (state = initialState, action) => {
       return {
         ...state,
         intervalId: action.intervalId,
+        heatingElementOn: true,
         running: true,
       };
     }
     case machineActionTypes.ovenOverheated: {
       const logs = addLog(state.logs, messages.ovenOverheated);
+      return {
+        ...state,
+        intervalId: null,
+        running: false,
+        paused: false,
+        logs,
+      };
+    }
+    case machineActionTypes.ovenCold: {
+      const logs = addLog(state.logs, messages.ovenTooCold);
       return {
         ...state,
         intervalId: null,

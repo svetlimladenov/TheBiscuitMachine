@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { machineActions } from "../machine/machine-actions";
 
 let Controls = ({
-  isPaused,
+  paused,
   heatingElementOn,
   userId,
   startMachine,
@@ -14,7 +14,7 @@ let Controls = ({
   <div className="controls-wrapper">
     <button onClick={() => startMachine(userId)}>Start</button>
     <button onClick={() => togglePause(userId)}>
-      {isPaused ? "Resume" : "Pause"}
+      {paused ? "Resume" : "Pause"}
     </button>
     <button onClick={() => stopMachine(userId)}>Stop</button>
 
@@ -34,6 +34,8 @@ let Controls = ({
 const mapStateToProps = (state) => {
   return {
     userId: state.user.id,
+    paused: state.machine.paused,
+    heatingElementOn: state.machine.heatingElementOn,
   };
 };
 

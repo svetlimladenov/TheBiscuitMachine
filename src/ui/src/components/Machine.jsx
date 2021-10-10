@@ -20,6 +20,7 @@ let Machine = ({
   handleMachineResumed,
   handleOvenHeated,
   handleOvenOverheated,
+  handleOvenCold,
 }) => {
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
@@ -33,7 +34,7 @@ let Machine = ({
     MachineHubSingleton.subscribeToResumed(handleMachineResumed);
     MachineHubSingleton.subscribeToOvenHeated(handleOvenHeated);
     MachineHubSingleton.subscibeToOvenOverheated(handleOvenOverheated);
-
+    MachineHubSingleton.subscribeToOvenCold(handleOvenCold);
     return () => {
       MachineHubSingleton.stopHubConnection();
     };
@@ -45,6 +46,7 @@ let Machine = ({
     handleMachinePaused,
     handleMachineResumed,
     handleOvenOverheated,
+    handleOvenCold,
   ]);
 
   return (
@@ -91,6 +93,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleOvenOverheated: () => {
       dispatch(machineActions.ovenOverheated());
+    },
+    handleOvenCold: () => {
+      dispatch(machineActions.ovenCold());
     },
   };
 };
