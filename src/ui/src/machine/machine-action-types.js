@@ -8,4 +8,5 @@ export const machineActionTypes = {
   machineStopped: "MACHINE_STOPPED",
   ovenHeated: "OVEN_HEATED",
   machinePauseToggled: "MACHINE_PAUSED",
+  ovenOverheated: "MACHINE_OVERHEATED",
 };

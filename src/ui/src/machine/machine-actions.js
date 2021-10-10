@@ -50,9 +50,7 @@ const ovenHeated = () => (dispatch, getState) => {
 };
 
 const handleMachineStopped = () => (dispatch, getState) => {
-  const state = getState();
-  const { intervalId } = state.machine;
-  clearInterval(intervalId);
+  const intervalId = clearPulseInterval(getState());
   dispatch({
     type: machineActionTypes.machineStopped,
     intervalId,
@@ -66,6 +64,21 @@ const handleMachinePauseToggled = (paused) => {
   };
 };
 
+const ovenOverheated = () => (dispatch, getState) => {
+  console.log("dispatching oven overheated...");
+  const intervalId = clearPulseInterval(getState());
+  dispatch({
+    type: machineActionTypes.ovenOverheated,
+    intervalId,
+  });
+};
+
+const clearPulseInterval = (state) => {
+  const { intervalId } = state.machine;
+  clearInterval(intervalId);
+  return intervalId;
+};
+
 export const machineActions = {
   startMachine,
   stopMachine,
@@ -76,4 +89,5 @@ export const machineActions = {
   handleMachineStopped,
   handleMachinePauseToggled,
   ovenHeated,
+  ovenOverheated,
 };

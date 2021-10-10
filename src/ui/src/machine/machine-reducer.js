@@ -64,6 +64,16 @@ export const machineReducer = (state = initialState, action) => {
         running: true,
       };
     }
+    case machineActionTypes.ovenOverheated: {
+      const logs = addLog(state.logs, messages.ovenOverheated);
+      return {
+        ...state,
+        intervalId: null,
+        running: false,
+        paused: false,
+        logs,
+      };
+    }
     case machineActionTypes.clearLogs: {
       return {
         ...state,
