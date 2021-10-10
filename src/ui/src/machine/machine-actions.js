@@ -62,7 +62,13 @@ const handleMachineStopped = () => (dispatch, getState) => {
   });
 
   setTimeout(() => {
-    clearPulseInterval(getState());
+    const state = getState();
+    clearPulseInterval(state);
+    const { box } = state.machine;
+    const { id } = state.user;
+    if (box.length > 0) {
+      MachineHubSingleton.deliverBiscuits(id, box.length);
+    }
     dispatch({
       type: machineActionTypes.machineStopped,
     });

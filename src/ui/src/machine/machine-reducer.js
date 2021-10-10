@@ -58,6 +58,8 @@ export const machineReducer = (state = initialState, action) => {
       return {
         ...state,
         intervalId: null,
+        box: [],
+        biscuits: [],
       };
     }
     case machineActionTypes.machinePauseToggled: {
