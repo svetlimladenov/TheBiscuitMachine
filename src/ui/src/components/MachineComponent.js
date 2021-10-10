@@ -2,8 +2,9 @@ import React from "react";
 import ovenSrc from "../assets/oven.png";
 import extruderSrc from "../assets/extruder.png";
 import stamperSrc from "../assets/stamper.png";
+import { connect } from "react-redux";
 
-export default function MachineComponents({ scale, speed }) {
+let MachineComponents = ({ running, pulse }) => {
   const elements = [
     { name: "extruder", src: extruderSrc, maxWidth: 100, shouldElement: true },
     { name: "stamper", src: stamperSrc, maxWidth: 100, shouldElement: true },
@@ -23,8 +24,10 @@ export default function MachineComponents({ scale, speed }) {
               <img
                 style={{
                   transform:
-                    element.shouldElement && scale ? `scale(1.50)` : "scale(1)",
-                  transition: `all ${speed * 500}ms ease-in-out`,
+                    element.shouldElement && running
+                      ? `scale(1.50)`
+                      : "scale(1)",
+                  transition: `all ${pulse * 500}ms ease-in-out`,
                 }}
                 src={element.src}
                 alt={element.name}
@@ -35,4 +38,15 @@ export default function MachineComponents({ scale, speed }) {
       })}
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    running: state.machine.running,
+    pulse: state.machine.pulse,
+  };
+};
+
+MachineComponents = connect(mapStateToProps)(MachineComponents);
+
+export default MachineComponents;

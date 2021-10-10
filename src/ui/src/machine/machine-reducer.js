@@ -3,8 +3,13 @@ import { now } from "../shared/utils";
 import { machineActionTypes } from "./machine-action-types";
 
 const initialState = {
-  logs: [],
+  activeConnectionId: null,
+  intervalId: null,
+  pulse: null,
   running: false,
+  paused: false,
+  logs: [],
+  biscuits: [],
 };
 
 const addLog = (logs, message) => {
@@ -28,6 +33,36 @@ export const machineReducer = (state = initialState, action) => {
     }
     case machineActionTypes.toggleHeatingElement: {
       return state;
+    }
+    case machineActionTypes.machineStarted: {
+      const logs = addLog(state.logs, messages.waitingForOvenToBeHeated);
+      const newState = {
+        ...state,
+        logs,
+        activeConnectionId: action.activeConnectionId,
+        pulse: action.pulse,
+      };
+      return newState;
+    }
+    case machineActionTypes.machineStopped: {
+      return {
+        ...state,
+        intervalId: null,
+        running: false,
+      };
+    }
+    case machineActionTypes.machinePauseToggled: {
+      return {
+        ...state,
+        paused: action.paused,
+      };
+    }
+    case machineActionTypes.ovenHeated: {
+      return {
+        ...state,
+        intervalId: action.intervalId,
+        running: true,
+      };
     }
     case machineActionTypes.clearLogs: {
       return {

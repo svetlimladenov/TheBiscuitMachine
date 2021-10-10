@@ -88,25 +88,25 @@ const MachineHubSingleton = (() => {
     addSubscriber(events.ovenOverheatedEvent, callback);
   };
 
-  // const subscribeToOvenCold(callback) {
-  //   this.hubConnection.on(events.ovenColdEvent, callback);
-  // }
+  const subscribeToOvenCold = (callback) => {
+    addSubscriber(events.ovenColdEvent, callback);
+  };
 
-  // const subscribeToHeatingElementToggled(callback) {
-  //   this.hubConnection.on(events.heatingElementToggled, callback);
-  // }
+  const subscribeToHeatingElementToggled = (callback) => {
+    addSubscriber(events.heatingElementToggled, callback);
+  };
 
-  // const subscribeToPaused(callback) {
-  //   this.hubConnection.on(events.paused, callback);
-  // }
+  const subscribeToPaused = (callback) => {
+    addSubscriber(events.paused, callback);
+  };
 
-  // const subscribeToResumed(callback) {
-  //   this.hubConnection.on(events.resumed, callback);
-  // }
+  const subscribeToResumed = (callback) => {
+    addSubscriber(events.resumed, callback);
+  };
 
-  // const subscribeToMachineAlreadyWorking(callback) {
-  //   this.hubConnection.on(events.machineAlreadyWorking, callback);
-  // }
+  const subscribeToMachineAlreadyWorking = (callback) => {
+    addSubscriber(events.machineAlreadyWorking, callback);
+  };
 
   const joinGroup = (userId) => {
     connection.invoke(serverEvents.joinGroup, userId);
@@ -124,13 +124,13 @@ const MachineHubSingleton = (() => {
     connection.invoke(serverEvents.toggleHeatingElement, userId);
   };
 
-  // const deliverBiscuits(userId, biscuitsCount) {
-  //   this.hubConnection.invoke(
-  //     serverEvents.deliverBiscuits,
-  //     userId,
-  //     biscuitsCount
-  //   );
-  // }
+  const deliverBiscuits = (userId, biscuitsCount) => {
+    this.hubConnection.invoke(
+      serverEvents.deliverBiscuits,
+      userId,
+      biscuitsCount
+    );
+  };
 
   const togglePause = (userId) => {
     connection.invoke(serverEvents.togglePause, userId);
@@ -143,11 +143,17 @@ const MachineHubSingleton = (() => {
     subscribeToMachineStopped,
     subscribeToOvenHeated,
     subscibeToOvenOverheated,
+    subscribeToOvenCold,
+    subscribeToHeatingElementToggled,
+    subscribeToPaused,
+    subscribeToResumed,
+    subscribeToMachineAlreadyWorking,
     joinGroup,
     startMachine,
     stopMachine,
     togglePause,
     toggleHeatingElement,
+    deliverBiscuits,
   };
 })();
 

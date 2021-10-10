@@ -25,16 +25,45 @@ const clearLogs = () => {
   return { type: machineActionTypes.clearLogs };
 };
 
-const handleMachineStarted = (pulse) => {
-  return { type: machineActionTypes.machineStarted, pulse };
+const handleMachineStarted = (pulse, activeConnectionId) => {
+  return { type: machineActionTypes.machineStarted, pulse, activeConnectionId };
 };
 
-const handleMachineStopped = () => {
-  return { type: machineActionTypes.machineStopped };
+const ovenHeated = () => (dispatch, getState) => {
+  console.log("starting the pulse");
+  const { pulse } = getState().machine;
+  const intervalId = setInterval(() => {
+    const { paused } = getState().machine;
+    if (paused) {
+      return;
+    }
+    dispatch({
+      type: "PULSE",
+      id: 1,
+    });
+  }, pulse * 1000);
+
+  dispatch({
+    type: machineActionTypes.ovenHeated,
+    intervalId,
+  });
 };
 
-const ovenHeated = () => {
-  return { type: machineActionTypes.ovenHeated };
+const handleMachineStopped = () => (dispatch, getState) => {
+  const state = getState();
+  const { intervalId } = state.machine;
+  clearInterval(intervalId);
+  dispatch({
+    type: machineActionTypes.machineStopped,
+    intervalId,
+  });
+};
+
+const handleMachinePauseToggled = (paused) => {
+  return {
+    type: machineActionTypes.machinePauseToggled,
+    paused,
+  };
 };
 
 export const machineActions = {
@@ -45,5 +74,6 @@ export const machineActions = {
   clearLogs,
   handleMachineStarted,
   handleMachineStopped,
+  handleMachinePauseToggled,
   ovenHeated,
 };

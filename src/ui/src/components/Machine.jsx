@@ -16,31 +16,39 @@ let Machine = ({
   user,
   handleMachineStarted,
   handleMachineStopped,
+  handleMachinePaused,
+  handleMachineResumed,
   handleOvenHeated,
 }) => {
   const [biscuits, setBiscuits] = useState([]);
   const [biscuitBox, setBiscuitBox] = useState([]);
-  const [shouldScale, setShouldScale] = useState(false);
-  const [pulse, setPulse] = useState(1);
-  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
     MachineHubSingleton.startHubConnection(user.id);
 
     MachineHubSingleton.subscribeToMachineStartup(handleMachineStarted);
     MachineHubSingleton.subscribeToMachineStopped(handleMachineStopped);
+    MachineHubSingleton.subscribeToPaused(handleMachinePaused);
+    MachineHubSingleton.subscribeToResumed(handleMachineResumed);
     MachineHubSingleton.subscribeToOvenHeated(handleOvenHeated);
 
     return () => {
       MachineHubSingleton.stopHubConnection();
     };
-  }, [user.id, handleMachineStarted, handleMachineStopped, handleOvenHeated]);
+  }, [
+    user.id,
+    handleMachineStarted,
+    handleMachineStopped,
+    handleOvenHeated,
+    handleMachinePaused,
+    handleMachineResumed,
+  ]);
 
   return (
     <div>
       <InfoMessage />
       <div className="conveyor-wrapper">
-        <MachineComponents scale={shouldScale} speed={2} />
+        <MachineComponents />
         <BiscuitBox biscuitBox={biscuitBox} />
         <div className="biscuit-line">
           <MovingBiscuits biscuits={biscuits} speed={2} />
@@ -63,11 +71,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleMachineStarted: ({ pulse }) => {
-      dispatch(machineActions.handleMachineStarted(pulse));
+    handleMachineStarted: ({ pulse, activeConnectionId }) => {
+      dispatch(machineActions.handleMachineStarted(pulse, activeConnectionId));
     },
     handleMachineStopped: () => {
       dispatch(machineActions.handleMachineStopped());
+    },
+    handleMachinePaused: () => {
+      dispatch(machineActions.handleMachinePauseToggled(true));
+    },
+    handleMachineResumed: () => {
+      dispatch(machineActions.handleMachinePauseToggled(false));
     },
     handleOvenHeated: () => {
       dispatch(machineActions.ovenHeated());
