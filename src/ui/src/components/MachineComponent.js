@@ -4,7 +4,7 @@ import extruderSrc from "../assets/extruder.png";
 import stamperSrc from "../assets/stamper.png";
 import { connect } from "react-redux";
 
-let MachineComponents = ({ running, pulse }) => {
+let MachineComponents = ({ scale, pulse }) => {
   const elements = [
     { name: "extruder", src: extruderSrc, maxWidth: 100, shouldElement: true },
     { name: "stamper", src: stamperSrc, maxWidth: 100, shouldElement: true },
@@ -24,9 +24,7 @@ let MachineComponents = ({ running, pulse }) => {
               <img
                 style={{
                   transform:
-                    element.shouldElement && running
-                      ? `scale(1.50)`
-                      : "scale(1)",
+                    element.shouldElement && scale ? `scale(1.50)` : "scale(1)",
                   transition: `all ${pulse * 500}ms ease-in-out`,
                 }}
                 src={element.src}
@@ -42,7 +40,7 @@ let MachineComponents = ({ running, pulse }) => {
 
 const mapStateToProps = (state) => {
   return {
-    running: state.machine.running,
+    scale: state.machine.scale,
     pulse: state.machine.pulse,
   };
 };

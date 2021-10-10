@@ -9,9 +9,11 @@ const initialState = {
   running: false,
   paused: false,
   heatingElementOn: false,
+  scale: false,
   logs: [],
   biscuits: [],
   box: [],
+  biscuitId: 0,
 };
 
 const addLog = (logs, message) => {
@@ -94,7 +96,7 @@ export const machineReducer = (state = initialState, action) => {
       };
     }
     case machineActionTypes.pulse: {
-      const { biscuits, box, running } = state;
+      const { biscuits, box, running, biscuitId } = state;
       const newBiscuits = biscuits.map((biscuit) => {
         if (biscuit.step === 0) {
           return { y: biscuit.y, step: biscuit.step + 1, id: biscuit.id };
@@ -103,17 +105,23 @@ export const machineReducer = (state = initialState, action) => {
       });
 
       if (running) {
-        newBiscuits.push({ y: 12, step: 0, id: 1 }); // USE CURRENT ID
+        newBiscuits.push({ y: 12, step: 0, id: biscuitId }); // USE CURRENT ID
       }
 
       const biscuitForBox = newBiscuits.filter((biscuit) => biscuit.step === 5);
 
       let updatedBox = [...box, ...biscuitForBox];
 
+      if (updatedBox.length > 5) {
+        updatedBox = [];
+      }
+
       return {
         ...state,
+        scale: !state.scale,
         biscuits: newBiscuits,
         box: updatedBox,
+        biscuitId: biscuitId + 1,
       };
     }
     case machineActionTypes.clearLogs: {

@@ -2,7 +2,6 @@ import Biscuit from "./Biscuit";
 import { connect } from "react-redux";
 
 let MovingBiscuits = ({ biscuits, pulse }) => {
-  console.log(biscuits);
   return biscuits.map((biscuit) => {
     return (
       <Biscuit

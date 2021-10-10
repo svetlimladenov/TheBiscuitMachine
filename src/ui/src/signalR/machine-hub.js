@@ -125,11 +125,7 @@ const MachineHubSingleton = (() => {
   };
 
   const deliverBiscuits = (userId, biscuitsCount) => {
-    this.hubConnection.invoke(
-      serverEvents.deliverBiscuits,
-      userId,
-      biscuitsCount
-    );
+    connection.invoke(serverEvents.deliverBiscuits, userId, biscuitsCount);
   };
 
   const togglePause = (userId) => {
