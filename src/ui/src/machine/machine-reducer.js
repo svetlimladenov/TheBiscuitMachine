@@ -11,6 +11,7 @@ const initialState = {
   heatingElementOn: false,
   logs: [],
   biscuits: [],
+  box: [],
 };
 
 const addLog = (logs, message) => {
@@ -84,6 +85,35 @@ export const machineReducer = (state = initialState, action) => {
         running: false,
         paused: false,
         logs,
+      };
+    }
+    case machineActionTypes.heatingElementToggled: {
+      return {
+        ...state,
+        heatingElementOn: !state.heatingElementOn,
+      };
+    }
+    case machineActionTypes.pulse: {
+      const { biscuits, box, running } = state;
+      const newBiscuits = biscuits.map((biscuit) => {
+        if (biscuit.step === 0) {
+          return { y: biscuit.y, step: biscuit.step + 1, id: biscuit.id };
+        }
+        return { y: biscuit.y + 25, step: biscuit.step + 1, id: biscuit.id };
+      });
+
+      if (running) {
+        newBiscuits.push({ y: 12, step: 0, id: 1 }); // USE CURRENT ID
+      }
+
+      const biscuitForBox = newBiscuits.filter((biscuit) => biscuit.step === 5);
+
+      let updatedBox = [...box, ...biscuitForBox];
+
+      return {
+        ...state,
+        biscuits: newBiscuits,
+        box: updatedBox,
       };
     }
     case machineActionTypes.clearLogs: {

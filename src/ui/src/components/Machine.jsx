@@ -21,10 +21,8 @@ let Machine = ({
   handleOvenHeated,
   handleOvenOverheated,
   handleOvenCold,
+  handleHeatingElementToggled,
 }) => {
-  const [biscuits, setBiscuits] = useState([]);
-  const [biscuitBox, setBiscuitBox] = useState([]);
-
   useEffect(() => {
     MachineHubSingleton.startHubConnection(user.id);
 
@@ -35,6 +33,10 @@ let Machine = ({
     MachineHubSingleton.subscribeToOvenHeated(handleOvenHeated);
     MachineHubSingleton.subscibeToOvenOverheated(handleOvenOverheated);
     MachineHubSingleton.subscribeToOvenCold(handleOvenCold);
+    MachineHubSingleton.subscribeToHeatingElementToggled(
+      handleHeatingElementToggled
+    );
+
     return () => {
       MachineHubSingleton.stopHubConnection();
     };
@@ -47,6 +49,7 @@ let Machine = ({
     handleMachineResumed,
     handleOvenOverheated,
     handleOvenCold,
+    handleHeatingElementToggled,
   ]);
 
   return (
@@ -54,9 +57,9 @@ let Machine = ({
       <InfoMessage />
       <div className="conveyor-wrapper">
         <MachineComponents />
-        <BiscuitBox biscuitBox={biscuitBox} />
+        <BiscuitBox />
         <div className="biscuit-line">
-          <MovingBiscuits biscuits={biscuits} speed={2} />
+          <MovingBiscuits />
         </div>
       </div>
       <Controls />
@@ -96,6 +99,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleOvenCold: () => {
       dispatch(machineActions.ovenCold());
+    },
+    handleHeatingElementToggled: () => {
+      dispatch(machineActions.heatingElementToggled());
     },
   };
 };

@@ -38,8 +38,7 @@ const ovenHeated = () => (dispatch, getState) => {
       return;
     }
     dispatch({
-      type: "PULSE",
-      id: 1,
+      type: machineActionTypes.pulse,
     });
   }, pulse * 1000);
 
@@ -77,6 +76,12 @@ const ovenCold = () => (dispatch, getState) => {
   });
 };
 
+const heatingElementToggled = () => {
+  return {
+    type: machineActionTypes.heatingElementToggled,
+  };
+};
+
 const clearPulseInterval = (state) => {
   const { intervalId } = state.machine;
   clearInterval(intervalId);
@@ -95,4 +100,5 @@ export const machineActions = {
   ovenHeated,
   ovenOverheated,
   ovenCold,
+  heatingElementToggled,
 };

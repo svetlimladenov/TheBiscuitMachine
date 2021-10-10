@@ -10,4 +10,6 @@ export const machineActionTypes = {
   machinePauseToggled: "MACHINE_PAUSED",
   ovenOverheated: "OVEN_OVERHEATED",
   ovenCold: "OVEN_COLD",
+  heatingElementToggled: "HEATING_ELEMENT_TOGGLED",
+  pulse: "PULSE",
 };
