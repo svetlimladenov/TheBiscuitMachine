@@ -16,6 +16,7 @@ import messages from "../shared/messages";
 
 let Machine = ({
   user,
+  shouldStopOnClose,
   setConnectionId,
   handleMachineStarted,
   handleMachineStopped,
@@ -61,7 +62,14 @@ let Machine = ({
     handleHeatingElementToggled,
   ]);
 
-  useEffect(() => {});
+  useEffect(() => {
+    window.addEventListener("beforeunload", (ev) => {
+      ev.preventDefault();
+      if (shouldStopOnClose) {
+        return MachineHubSingleton.stopMachine(user.id);
+      }
+    });
+  });
 
   return (
     <div>
@@ -85,6 +93,8 @@ let Machine = ({
 const mapStateToProps = (state) => {
   return {
     user: state.user,
+    shouldStopOnClose:
+      state.user.connectionId === state.machine.activeConnectionId,
   };
 };
 
