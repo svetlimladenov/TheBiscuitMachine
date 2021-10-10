@@ -1,16 +1,6 @@
 import { machineActionTypes } from "./machine-action-types";
 import MachineHubSingleton from "../signalR/machine-hub";
 
-const startMachine = (userId) => {
-  MachineHubSingleton.startMachine(userId);
-  return { type: machineActionTypes.startMachine, userId };
-};
-
-const stopMachine = (userId) => {
-  MachineHubSingleton.stopMachine(userId);
-  return { type: machineActionTypes.stopMachine, userId };
-};
-
 const clearLogs = () => {
   return { type: machineActionTypes.clearLogs };
 };
@@ -91,8 +81,6 @@ const clearPulseInterval = (state) => {
 };
 
 export const machineActions = {
-  startMachine,
-  stopMachine,
   clearLogs,
   handleMachineStarted,
   handleMachineStopped,

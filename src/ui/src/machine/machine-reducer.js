@@ -22,16 +22,6 @@ const addLog = (logs, message) => {
 
 export const machineReducer = (state = initialState, action) => {
   switch (action.type) {
-    case machineActionTypes.startMachine: {
-      const logs = addLog(state.logs, messages.machineWorking);
-      const newState = { ...state, logs };
-      return newState;
-    }
-    case machineActionTypes.stopMachine: {
-      const logs = addLog(state.logs, messages.machineStopped);
-      const newState = { ...state, logs };
-      return newState;
-    }
     case machineActionTypes.machineStarted: {
       const logs = addLog(state.logs, messages.waitingForOvenToBeHeated);
       const newState = {
@@ -51,11 +41,13 @@ export const machineReducer = (state = initialState, action) => {
       };
     }
     case machineActionTypes.machineStopped: {
+      const logs = addLog(state.logs, messages.machineStopped);
       return {
         ...state,
         intervalId: null,
         box: [],
         biscuits: [],
+        logs,
       };
     }
     case machineActionTypes.machinePauseToggled: {
@@ -65,11 +57,13 @@ export const machineReducer = (state = initialState, action) => {
       };
     }
     case machineActionTypes.ovenHeated: {
+      const logs = addLog(state.logs, messages.machineWorking);
       return {
         ...state,
         intervalId: action.intervalId,
         heatingElementOn: true,
         running: true,
+        logs,
       };
     }
     case machineActionTypes.heatingElementToggled: {

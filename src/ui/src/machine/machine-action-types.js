@@ -1,6 +1,4 @@
 export const machineActionTypes = {
-  startMachine: "START_MACHINE",
-  stopMachine: "STOP_MACHINE",
   clearLogs: "CLEAR_LOGS",
   machineStarted: "MACHINE_STARTED",
   machineStopped: "MACHINE_STOPPED",

@@ -9,7 +9,7 @@ import MachineSpecifications from "./MachineSpecifications";
 import Logs from "./Logs";
 import MovingBiscuits from "./MovingBiscuits";
 
-import MachineHubSingleton from "../signalR/machine-hub";
+import MachineHubSingleton, { states } from "../signalR/machine-hub";
 import { machineActions } from "../machine/machine-actions";
 import { userActions } from "../user/user-actions";
 import messages from "../shared/messages";
@@ -31,7 +31,7 @@ let Machine = ({
     MachineHubSingleton.startHubConnection(user.id, setConnectionId);
     MachineHubSingleton.subscribeToMachineStartup(handleMachineStarted);
     MachineHubSingleton.subscribeToMachineStopped(() =>
-      handleMachineStopped(messages.machineStopped)
+      handleMachineStopped(messages.machineStopping)
     );
     MachineHubSingleton.subscribeToPaused(handleMachinePaused);
     MachineHubSingleton.subscribeToResumed(handleMachineResumed);
@@ -44,6 +44,21 @@ let Machine = ({
     );
     MachineHubSingleton.subscribeToHeatingElementToggled(
       handleHeatingElementToggled
+    );
+    MachineHubSingleton.subscribeToMachineAlreadyWorking(
+      (state, heatingElementOn, pulse) => {
+        // this.setState({ heatingElementOn, pulse });
+        if (state === states.working) {
+          handleOvenHeated();
+        } else if (state === states.paused) {
+          handleMachinePaused();
+        } else if (state === states.ovenHeating) {
+          handleMachineStarted({
+            pulse,
+            activeConnectionId: "active-connection-id",
+          });
+        }
+      }
     );
 
     return () => {
@@ -104,6 +119,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(userActions.setConnectionId(connectionId));
     },
     handleMachineStarted: ({ pulse, activeConnectionId }) => {
+      console.log(pulse);
       dispatch(machineActions.handleMachineStarted(pulse, activeConnectionId));
     },
     handleMachineStopped: (log) => {
