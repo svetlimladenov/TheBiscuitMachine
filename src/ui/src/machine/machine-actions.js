@@ -39,7 +39,6 @@ const ovenHeated = () => (dispatch, getState) => {
       return;
     }
 
-    console.log(box.length);
     if (box.length === 5) {
       MachineHubSingleton.deliverBiscuits(id, box.length);
     }
@@ -56,12 +55,21 @@ const ovenHeated = () => (dispatch, getState) => {
 };
 
 const handleMachineStopped = () => (dispatch, getState) => {
-  clearPulseInterval(getState());
+  const { pulse } = getState().machine;
+
+  dispatch({
+    type: machineActionTypes.machineStopping,
+  });
+
+  setTimeout(() => {
+    clearPulseInterval(getState());
+    dispatch({
+      type: machineActionTypes.machineStopped,
+    });
+  }, pulse * 5 * 1000);
+
   // dispatch event to change the state to running to stopping, so we dont make new cookies
   // and dispatch another event with a timeout to clear the interval, but to wait for all cookies to reach the end
-  dispatch({
-    type: machineActionTypes.machineStopped,
-  });
 };
 
 const handleMachinePauseToggled = (paused) => {

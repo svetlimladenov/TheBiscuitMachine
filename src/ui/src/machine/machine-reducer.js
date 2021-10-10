@@ -48,11 +48,16 @@ export const machineReducer = (state = initialState, action) => {
       };
       return newState;
     }
+    case machineActionTypes.machineStopping: {
+      return {
+        ...state,
+        running: false,
+      };
+    }
     case machineActionTypes.machineStopped: {
       return {
         ...state,
         intervalId: null,
-        running: false,
       };
     }
     case machineActionTypes.machinePauseToggled: {
@@ -105,7 +110,7 @@ export const machineReducer = (state = initialState, action) => {
       });
 
       if (running) {
-        newBiscuits.push({ y: 12, step: 0, id: biscuitId }); // USE CURRENT ID
+        newBiscuits.push({ y: 12, step: 0, id: biscuitId });
       }
 
       const biscuitForBox = newBiscuits.filter((biscuit) => biscuit.step === 5);
