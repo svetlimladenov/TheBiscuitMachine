@@ -15,7 +15,15 @@ const removeUser = () => {
   };
 };
 
+const setConnectionId = (connectionId) => {
+  return {
+    type: userActionTypes.setConnectionId,
+    connectionId,
+  };
+};
+
 export const userActions = {
   setUser,
   removeUser,
+  setConnectionId,
 };

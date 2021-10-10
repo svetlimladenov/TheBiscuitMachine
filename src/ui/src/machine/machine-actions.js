@@ -31,7 +31,8 @@ const handleMachineStarted = (pulse, activeConnectionId) => {
 
 const ovenHeated = () => (dispatch, getState) => {
   const state = getState();
-  const { pulse } = state.machine;
+  const { pulse, activeConnectionId } = state.machine;
+  const { connectionId } = state.user;
   const { id } = state.user;
   const intervalId = setInterval(() => {
     const { paused, box } = getState().machine;
@@ -39,7 +40,7 @@ const ovenHeated = () => (dispatch, getState) => {
       return;
     }
 
-    if (box.length === 5) {
+    if (box.length === 5 && activeConnectionId === connectionId) {
       MachineHubSingleton.deliverBiscuits(id, box.length);
     }
 

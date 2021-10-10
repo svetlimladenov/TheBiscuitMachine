@@ -29,7 +29,7 @@ const serverEvents = {
 const MachineHubSingleton = (() => {
   let connection = null;
   let subscribers = [];
-  const startHubConnection = async (userId) => {
+  const startHubConnection = async (userId, setConnectionId) => {
     if (
       connection?.state === HubConnectionState.Connected ||
       connection?.state === HubConnectionState.Connecting ||
@@ -46,6 +46,7 @@ const MachineHubSingleton = (() => {
     try {
       await connection.start();
       joinGroup(userId);
+      setConnectionId(connection.connectionId);
       subscribers.forEach((subscriber) => subscriber());
     } catch (error) {
       console.error(error);

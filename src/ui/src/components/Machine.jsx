@@ -11,9 +11,11 @@ import MovingBiscuits from "./MovingBiscuits";
 
 import MachineHubSingleton from "../signalR/machine-hub";
 import { machineActions } from "../machine/machine-actions";
+import { userActions } from "../user/user-actions";
 
 let Machine = ({
   user,
+  setConnectionId,
   handleMachineStarted,
   handleMachineStopped,
   handleMachinePaused,
@@ -24,8 +26,7 @@ let Machine = ({
   handleHeatingElementToggled,
 }) => {
   useEffect(() => {
-    MachineHubSingleton.startHubConnection(user.id);
-
+    MachineHubSingleton.startHubConnection(user.id, setConnectionId);
     MachineHubSingleton.subscribeToMachineStartup(handleMachineStarted);
     MachineHubSingleton.subscribeToMachineStopped(handleMachineStopped);
     MachineHubSingleton.subscribeToPaused(handleMachinePaused);
@@ -42,6 +43,7 @@ let Machine = ({
     };
   }, [
     user.id,
+    setConnectionId,
     handleMachineStarted,
     handleMachineStopped,
     handleOvenHeated,
@@ -51,6 +53,8 @@ let Machine = ({
     handleOvenCold,
     handleHeatingElementToggled,
   ]);
+
+  useEffect(() => {});
 
   return (
     <div>
@@ -79,6 +83,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setConnectionId: (connectionId) => {
+      dispatch(userActions.setConnectionId(connectionId));
+    },
     handleMachineStarted: ({ pulse, activeConnectionId }) => {
       dispatch(machineActions.handleMachineStarted(pulse, activeConnectionId));
     },

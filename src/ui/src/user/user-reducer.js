@@ -1,3 +1,5 @@
+import { userActionTypes } from "./user-action-types";
+
 const initialState = {
   id: localStorage.getItem("userId"),
   loggedIn: localStorage.getItem("userId") && true,
@@ -15,6 +17,13 @@ export const userReducer = (state = initialState, action) => {
       return {
         id: null,
         loggedIn: false,
+      };
+    }
+
+    case userActionTypes.setConnectionId: {
+      return {
+        ...state,
+        connectionId: action.connectionId,
       };
     }
     default:
