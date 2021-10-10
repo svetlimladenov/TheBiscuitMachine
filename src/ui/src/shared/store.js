@@ -1,4 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 import { userReducer } from "../user/user-reducer";
 import { machineReducer } from "../machine/machine-reducer";
 import {
@@ -17,13 +19,9 @@ const rootReducer = combineReducers({
   machine: machineReducer,
 });
 
-const reduxDevTools =
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
-
 const store = createStore(
   rootReducer,
-  reduxDevTools
-  // applyMiddleware(loggingMiddleware, crashReporterMiddleware)
+  composeWithDevTools(applyMiddleware(thunk))
 );
 
 // applyMiddlewareFake(store, [loggingMiddleware, crashReporterMiddleware]);
