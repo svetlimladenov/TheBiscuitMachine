@@ -1,12 +1,12 @@
 export default function NumberControl({
-  children,
+  label,
   number,
   handleIncrement,
   handleDecrement,
 }) {
   return (
     <div className="number-control horizontal-row">
-      <label>{children}</label>
+      <label>{label}</label>
       <div style={{ display: "flex" }}>
         <button onClick={handleDecrement}>-</button>
         <div className="number">{number}</div>

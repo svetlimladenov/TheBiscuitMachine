@@ -1,4 +1,8 @@
-import * as signalR from "@microsoft/signalr";
+import {
+  HubConnectionBuilder,
+  HubConnectionState,
+  LogLevel,
+} from "@microsoft/signalr";
 import { defaults } from "../shared/fetch";
 
 const events = {
@@ -22,67 +26,133 @@ const serverEvents = {
   togglePause: "TogglePause",
 };
 
-const MachineHub = {
-  createConnection(url) {
-    const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${defaults.signalRUrl}${url}`)
+const MachineHubSingleton = (() => {
+  let connection = null;
+  let subscribers = [];
+  const startHubConnection = async (userId, setConnectionId) => {
+    if (
+      connection?.state === HubConnectionState.Connected ||
+      connection?.state === HubConnectionState.Connecting ||
+      connection?.state === HubConnectionState.Reconnecting
+    ) {
+      return;
+    }
+
+    connection = new HubConnectionBuilder()
+      .configureLogging(LogLevel.Information)
+      .withUrl(`${defaults.signalRUrl}/machinehub`)
       .build();
 
-    this.hubConnection = hubConnection;
-    return hubConnection;
-  },
-  subscribeToMachineStartup(callback) {
-    this.hubConnection.on(events.machineStartedEvent, callback);
-  },
-  subscribeToMachineStopped(callback) {
-    this.hubConnection.on(events.machineStoppedEvent, callback);
-  },
-  subscribeToOvenHeated(callback) {
-    this.hubConnection.on(events.ovenHeatedEvent, callback);
-  },
-  subscibeToOvenOverheated(callback) {
-    this.hubConnection.on(events.ovenOverheatedEvent, callback);
-  },
-  subscribeToOvenCold(callback) {
-    this.hubConnection.on(events.ovenColdEvent, callback);
-  },
-  subscribeToHeatingElementToggled(callback) {
-    this.hubConnection.on(events.heatingElementToggled, callback);
-  },
-  subscribeToPaused(callback) {
-    this.hubConnection.on(events.paused, callback);
-  },
-  subscribeToResumed(callback) {
-    this.hubConnection.on(events.resumed, callback);
-  },
-  subscribeToMachineAlreadyWorking(callback) {
-    this.hubConnection.on(events.machineAlreadyWorking, callback);
-  },
-  joinGroup(userId) {
-    this.hubConnection.invoke(serverEvents.joinGroup, userId);
-  },
-  startMachine(userId) {
-    this.hubConnection.invoke(serverEvents.startBiscuitMachine, userId);
-  },
-  stopMachine(userId) {
-    this.hubConnection.invoke(serverEvents.stopBiscuitMachine, userId);
-  },
-  toggleHeatingElement(userId) {
-    this.hubConnection.invoke(serverEvents.toggleHeatingElement, userId);
-  },
-  deliverBiscuits(userId, biscuitsCount) {
-    this.hubConnection.invoke(
-      serverEvents.deliverBiscuits,
-      userId,
-      biscuitsCount
-    );
-  },
-  togglePause(userId) {
-    this.hubConnection.invoke(serverEvents.togglePause, userId);
-  },
-};
+    try {
+      await connection.start();
+      joinGroup(userId);
+      setConnectionId(connection.connectionId);
+      subscribers.forEach((subscriber) => subscriber());
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-export default MachineHub;
+  const stopHubConnection = async () => {
+    try {
+      await connection.stop();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addSubscriber = (event, callback) => {
+    if (connection?.state !== HubConnectionState.Connected) {
+      subscribers.push(() => {
+        connection.on(event, callback);
+      });
+    } else {
+      connection.on(event, callback);
+    }
+  };
+
+  const subscribeToMachineStartup = (callback) => {
+    addSubscriber(events.machineStartedEvent, callback);
+  };
+
+  const subscribeToMachineStopped = (callback) => {
+    addSubscriber(events.machineStoppedEvent, callback);
+  };
+
+  const subscribeToOvenHeated = (callback) => {
+    addSubscriber(events.ovenHeatedEvent, callback);
+  };
+
+  const subscibeToOvenOverheated = (callback) => {
+    addSubscriber(events.ovenOverheatedEvent, callback);
+  };
+
+  const subscribeToOvenCold = (callback) => {
+    addSubscriber(events.ovenColdEvent, callback);
+  };
+
+  const subscribeToHeatingElementToggled = (callback) => {
+    addSubscriber(events.heatingElementToggled, callback);
+  };
+
+  const subscribeToPaused = (callback) => {
+    addSubscriber(events.paused, callback);
+  };
+
+  const subscribeToResumed = (callback) => {
+    addSubscriber(events.resumed, callback);
+  };
+
+  const subscribeToMachineAlreadyWorking = (callback) => {
+    addSubscriber(events.machineAlreadyWorking, callback);
+  };
+
+  const joinGroup = (userId) => {
+    connection.invoke(serverEvents.joinGroup, userId);
+  };
+
+  const startMachine = (userId) => {
+    connection.invoke(serverEvents.startBiscuitMachine, userId);
+  };
+
+  const stopMachine = (userId) => {
+    connection.invoke(serverEvents.stopBiscuitMachine, userId);
+  };
+
+  const toggleHeatingElement = (userId) => {
+    connection.invoke(serverEvents.toggleHeatingElement, userId);
+  };
+
+  const deliverBiscuits = (userId, biscuitsCount) => {
+    connection.invoke(serverEvents.deliverBiscuits, userId, biscuitsCount);
+  };
+
+  const togglePause = (userId) => {
+    connection.invoke(serverEvents.togglePause, userId);
+  };
+
+  return {
+    startHubConnection,
+    stopHubConnection,
+    subscribeToMachineStartup,
+    subscribeToMachineStopped,
+    subscribeToOvenHeated,
+    subscibeToOvenOverheated,
+    subscribeToOvenCold,
+    subscribeToHeatingElementToggled,
+    subscribeToPaused,
+    subscribeToResumed,
+    subscribeToMachineAlreadyWorking,
+    joinGroup,
+    startMachine,
+    stopMachine,
+    togglePause,
+    toggleHeatingElement,
+    deliverBiscuits,
+  };
+})();
+
+export default MachineHubSingleton;
 
 const states = {
   ovenHeating: "OvenHeating",

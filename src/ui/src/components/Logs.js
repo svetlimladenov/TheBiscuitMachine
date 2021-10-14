@@ -1,4 +1,7 @@
-export default function Logs({ logs, clearLogs }) {
+import { connect } from "react-redux";
+import { machineActions } from "../machine/machine-actions";
+
+let Logs = ({ logs, clearLogs }) => {
   const renderLogs = () => {
     return logs.map(({ message, timestamp }, idx) => {
       return (
@@ -20,4 +23,22 @@ export default function Logs({ logs, clearLogs }) {
       {renderLogs()}
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    logs: state.machine.logs,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearLogs: () => {
+      dispatch(machineActions.clearLogs());
+    },
+  };
+};
+
+Logs = connect(mapStateToProps, mapDispatchToProps)(Logs);
+
+export default Logs;

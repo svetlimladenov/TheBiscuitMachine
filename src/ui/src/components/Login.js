@@ -1,9 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Field from "./Field";
 import { useHistory } from "react-router-dom";
 import { renderValidationErrors } from "../shared/utils";
+import api from "../shared/fetch";
+import { userActions } from "../user/user-actions";
+import { connect } from "react-redux";
 
-export default function Login({ onSubmit, errors }) {
+let Login = ({ setUser }) => {
+  const [errors, setErrors] = useState({});
   const history = useHistory();
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -14,12 +18,20 @@ export default function Login({ onSubmit, errors }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = {
+    const body = {
       username: usernameRef.current.value,
       password: passwordRef.current.value,
     };
 
-    onSubmit(data, changeRoute);
+    api
+      .post("/Users/Login", body)
+      .then(({ data }) => {
+        setUser(data);
+        changeRoute();
+      })
+      .catch((errors) => {
+        setErrors(errors);
+      });
   };
 
   return (
@@ -36,4 +48,16 @@ export default function Login({ onSubmit, errors }) {
       </form>
     </div>
   );
-}
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (data) => {
+      dispatch(userActions.setUser(data));
+    },
+  };
+};
+
+Login = connect(null, mapDispatchToProps)(Login);
+
+export default Login;

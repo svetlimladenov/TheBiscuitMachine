@@ -7,6 +7,10 @@ const messages = {
     text: "Machine started, waiting for the oven to be heated...",
     color: "white",
   },
+  machineStopping: {
+    text: "Machine stopping...",
+    color: "white",
+  },
   machineStopped: {
     text: "Machine stopped!",
     color: "white",
